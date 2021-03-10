@@ -19,3 +19,48 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
+/**
+ * Represents a service.
+ */
+export interface Service {
+  /**
+   * Called when `Application.dispose` is called, this ensures
+   * anything that is disposable should be disposed.
+   */
+  dispose?(): void;
+
+  /**
+   * Called when `Application.verify` is called. Ensures
+   * that the service is loaded.
+   */
+  load?(): void | Promise<void>;
+
+  /**
+   * Priority to load the service. If the priority
+   * number is lowered, it'll be loaded first.
+   */
+  priority: number;
+
+  /**
+   * The name of the service
+   */
+  name: string;
+}
+
+/**
+ * Simple function to check if a [value] is a instanceof a Service.
+ * @param value The value to check
+ */
+export function isServiceLike(value: unknown): value is Service {
+  return (
+    // arrays and `null` is considered a object in "typeof x"
+    (typeof value === 'object' && !Array.isArray(value) && value !== null) &&
+
+    // check if `name` is a string
+    typeof (value as Service).name === 'string' &&
+
+    // check if `priority` is a number
+    typeof (value as Service).priority === 'number'
+  );
+}
