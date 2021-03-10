@@ -20,10 +20,10 @@
  * SOFTWARE.
  */
 
-import type { Component, Service, Singleton } from '..';
+import { Component, Service, Singleton } from '..';
 import { Collection } from '@augu/collections';
 
-export type ReferenceLike<T> = T extends Component | Service | Singleton
+export type ReferenceLike<T> = T extends Component | Service | Singleton<any>
   ? T
   : T extends string
     ? string

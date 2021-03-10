@@ -21,7 +21,8 @@
     "lint": "eslint src --ext .ts --fix"
   },
   "dependencies": {
-    "@augu/collections": "1.0.4"
+    "@augu/collections": "1.0.4",
+    "reflect-metadata": "^0.1.13"
   },
   "devDependencies": {
     "@augu/eslint-config": "1.10.0",

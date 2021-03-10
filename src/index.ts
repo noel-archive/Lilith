@@ -35,4 +35,5 @@ export {
 export { isComponentLike, Component } from './Component';
 export { isServiceLike, Service } from './Service';
 export { default as Application } from './Application';
+export { default as Singleton } from './Singleton';
 export * from './decorators';
