@@ -20,10 +20,142 @@
  * SOFTWARE.
  */
 
-/** Represents the entrypoint of @augu/lillith */
-declare namespace Lillith {
+import { Collection } from '@augu/collections';
+import { EventBus } from '@augu/utils';
 
+/** Represents the entrypoint of @augu/lilith */
+declare namespace Lilith {
+  // ~ Constants ~
+  /** Returns the version of Lilith */
+  export const version: string;
+
+  /**
+   * Decorator to inject components, services, or singletons
+   * into a property.
+   */
+  export const Inject: PropertyDecorator;
+
+  // ~ Types ~
+  /** Type-alias to check if [T] could be a component/service. */
+  export type ReferenceLike<T> = T extends Lilith.Component | Lilith.Service ? T : any;
+
+  // ~ Functions ~
+  /**
+   * Marks this class as non-injectable
+   */
+  export function NotInjectable(): ClassDecorator;
+
+  // ~ Classes ~
+  export interface Component {
+    /**
+     * Called when `Application.dispose` is called, this ensures
+     * anything that is disposable should be disposed.
+     */
+    dispose?(): void;
+
+    /**
+     * Called when `Application.verify` is called. Ensures
+     * that the component is loaded.
+     */
+    load?(): void | Promise<void>;
+
+    /**
+     * Priority to load the component. If the priority
+     * number is lowered, it'll be loaded first.
+     */
+    priority: number;
+
+    /**
+     * The name of the component
+     */
+    name: string;
+  }
+
+  export interface Service {
+    /**
+     * Called when `Application.dispose` is called, this ensures
+     * anything that is disposable should be disposed.
+     */
+    dispose?(): void;
+
+    /**
+     * Called when `Application.verify` is called. Ensures
+     * that the service is loaded.
+     */
+    load?(): void | Promise<void>;
+
+    /**
+     * The name of the service
+     */
+    name: string;
+  }
+
+  interface LilithEvents {
+    'component.loaded'(component: Component): void;
+    'singleton.loaded'(singleton: any): void;
+    'service.loaded'(service: Service): void;
+    warn(message: string): void;
+  }
+
+  /**
+   * Main entrypoint to Lilith. This is where all injectables
+   * get referenced and are available in.
+   */
+  export class Application extends EventBus<LilithEvents> {
+    /** List of the singletons available to this Application context. */
+    public singletons: Collection<string, any>;
+
+    /** List of the components available to this Application context. */
+    public components: Collection<string, Component>;
+
+    /** List of references available to this Application context. */
+    public references: Collection<any, string>;
+
+    /** List of the services available to this Application context. */
+    public services: Collection<string, Service>;
+
+    /**
+     * Verify the current state of Lilith. If anything that wasn't
+     * correctly placed, then a [Error] will throw.
+     */
+    verify(): Promise<void>;
+
+    /**
+     * Return a reference from the reference tree
+     * @param reference The reference to find
+     */
+    $ref<T extends any>(reference: ReferenceLike<T>): T;
+
+    /**
+     * Sets the directory to find components in
+     * @param dir The directory
+     */
+    findComponentsIn(dir: string): this;
+
+    /**
+     * Sets the directory to find singletons in
+     * @param dir The directory
+     */
+    findSingletonsIn(dir: string): this;
+
+    /**
+     * Sets the directory to find services in
+     * @param dir The directory
+     */
+    findServicesIn(dir: string): this;
+
+    /**
+     * Scope a [singleton] value to this [Application]
+     * @param singleton The singleton to add
+     */
+    addSingleton(singleton: any): this;
+
+    /**
+     * Dispose this [Application] instance.
+     */
+    dispose(): void;
+  }
 }
 
-export = Lillith;
-export as namespace Lillith;
+export = Lilith;
+export as namespace Lilith;
