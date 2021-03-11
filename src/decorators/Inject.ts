@@ -32,8 +32,8 @@ interface InjectReference {
   ref: any;
 }
 
-export const getInjectables = (target: any) =>
-  Reflect.getMetadata<InjectReference[]>(MetadataKeys.Injections, target) ?? [];
+export const getInjectables = (target: any): InjectReference[] =>
+  Reflect.getMetadata(MetadataKeys.Injections, target) ?? [];
 
 /**
  * Inject a reference to a property and return it. If the referenced
@@ -48,7 +48,7 @@ const _Inject: PropertyDecorator = (target: any, prop) => {
   if (!isInjectable($ref))
     throw new TypeError('Reference was marked as a non injectable.');
 
-  const injections = Reflect.getMetadata<InjectReference[]>(MetadataKeys.Injections, target) ?? [];
+  const injections: InjectReference[] = Reflect.getMetadata(MetadataKeys.Injections, target) ?? [];
   injections.push({
     property: String(prop),
     ref: $ref

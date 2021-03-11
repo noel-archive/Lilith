@@ -1,9 +1,9 @@
-# @augu/lillith
+# @augu/lilith
 > :thread: **Simple application framework made in TypeScript (made for personal usage)**
 
 ## Usage
 ```ts
-import { Application } from '@augu/lillith';
+import { Application } from '@augu/lilith';
 
 const app = new Application();
 app.findComponentsIn(__dirname); // find components
@@ -15,4 +15,4 @@ app.verify(); // Verify all components, singletons, and services and implements 
 ```
 
 ## License
-**Lillith** is released under [MIT](/LICENSE) License! :sparkling_heart:
+**Lilith** is released under [MIT](/LICENSE) License! :sparkling_heart:

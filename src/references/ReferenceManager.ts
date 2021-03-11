@@ -20,49 +20,20 @@
  * SOFTWARE.
  */
 
-import { Singleton, Application } from '..';
 import { Collection } from '@augu/collections';
-
-export type SingletonReturnValue<T> = T extends Singleton<infer P> ? P : T;
 
 /**
  * Represents a storage manager for holding references to singletons, components
  * and services. Use `ReferenceManager.$ref` to retrieve a reference.
  */
 export default class ReferenceManager extends Collection<any, string> {
-  #app: Application;
-
-  constructor(app: Application) {
-    super();
-
-    this.#app = app;
-  }
-
   /**
    * Adds a reference to this [ReferenceManager]
    * @param type The type of reference to add
    * @param name The reference's name
    * @param ref The reference value to place
    */
-  addReference(type: 'component' | 'singleton' | 'service', name: string, ref: any) {
-    switch (type) {
-      case 'component':
-        this.#app.components.set(name, ref);
-        return this;
-
-      case 'singleton':
-        this.#app.singletons.set(name, new Singleton(ref));
-        break;
-
-      case 'service':
-        this.#app.services.set(name, ref);
-        break;
-
-      default:
-        throw new TypeError(`Expecting literal value "component", "singleton", or "service". Received ${type}.`);
-    }
-
-    // add it to this reference tree
+  addReference(name: string, ref: any) {
     this.set(ref, name);
     return this;
   }

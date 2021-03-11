@@ -25,15 +25,8 @@
  */
 export const version: string = (require('../package.json')).version;
 
-// export src/references types
-export {
-  ReferenceLike,
-  SingletonReturnValue
-} from './references';
-
 // export everything else
 export { isComponentLike, Component } from './Component';
 export { isServiceLike, Service } from './Service';
 export { default as Application } from './Application';
-export { default as Singleton } from './Singleton';
 export * from './decorators';

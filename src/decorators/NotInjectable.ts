@@ -26,14 +26,14 @@ import { MetadataKeys } from '../internal/MetadataKeys';
  * Checks if a [target] class is injectable or not
  * @param target The target class
  */
-export const isInjectable = (target: any) =>
-  Reflect.getMetadata<boolean>(MetadataKeys.NotInjectable, target) ?? false;
+export const isInjectable = (target: any): boolean =>
+  Reflect.getMetadata(MetadataKeys.NotInjectable, target) ?? true;
 
 /**
  * Marks a class as a not injectable instance.
  */
 export default function NotInjectable(): ClassDecorator {
   return (target) => {
-    Reflect.defineMetadata(MetadataKeys.NotInjectable, true, target);
+    Reflect.defineMetadata(MetadataKeys.NotInjectable, false, target);
   };
 }
