@@ -22,7 +22,8 @@
   },
   "dependencies": {
     "@augu/collections": "1.0.4",
-    "reflect-metadata": "^0.1.13"
+    "@augu/utils": "1.2.0",
+    "reflect-metadata": "0.1.13"
   },
   "devDependencies": {
     "@augu/eslint-config": "1.10.0",

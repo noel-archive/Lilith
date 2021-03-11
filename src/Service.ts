@@ -37,12 +37,6 @@ export interface Service {
   load?(): void | Promise<void>;
 
   /**
-   * Priority to load the service. If the priority
-   * number is lowered, it'll be loaded first.
-   */
-  priority: number;
-
-  /**
    * The name of the service
    */
   name: string;
@@ -58,9 +52,6 @@ export function isServiceLike(value: unknown): value is Service {
     (typeof value === 'object' && !Array.isArray(value) && value !== null) &&
 
     // check if `name` is a string
-    typeof (value as Service).name === 'string' &&
-
-    // check if `priority` is a number
-    typeof (value as Service).priority === 'number'
+    typeof (value as Service).name === 'string'
   );
 }

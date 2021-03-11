@@ -20,4 +20,4 @@
  * SOFTWARE.
  */
 
-export { default as ReferenceManager, ReferenceLike, SingletonReturnValue } from './ReferenceManager';
+export { default as ReferenceManager, SingletonReturnValue } from './ReferenceManager';

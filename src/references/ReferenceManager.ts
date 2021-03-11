@@ -20,14 +20,8 @@
  * SOFTWARE.
  */
 
-import { Component, Service, Singleton } from '..';
+import { Singleton, Application } from '..';
 import { Collection } from '@augu/collections';
-
-export type ReferenceLike<T> = T extends Component | Service | Singleton<any>
-  ? T
-  : T extends string
-    ? string
-    : never;
 
 export type SingletonReturnValue<T> = T extends Singleton<infer P> ? P : T;
 
@@ -36,61 +30,12 @@ export type SingletonReturnValue<T> = T extends Singleton<infer P> ? P : T;
  * and services. Use `ReferenceManager.$ref` to retrieve a reference.
  */
 export default class ReferenceManager extends Collection<any, string> {
-  // (private) List of singletons registered
-  private singletons: Collection<string, Singleton<any>> = new Collection();
+  #app: Application;
 
-  // (private) List of the components registered
-  private components: Collection<string, Component> = new Collection();
+  constructor(app: Application) {
+    super();
 
-  // (private) List of services registered
-  private services:   Collection<string, Service>   = new Collection();
-
-  /**
-   * Retrieve the reference of a [Component].
-   * @param component The component to look for
-   */
-  $ref(component: Component): Component;
-
-  /**
-   * Retrieve the singleton's value from it's class
-   * @param singleton The singleton class to use (use `Application.singleton(<name>)` to get it)
-   */
-  $ref<T extends Singleton<any>>(singleton: T): SingletonReturnValue<T>;
-
-  /**
-   * Retrieve a service from it's service class
-   * @param service The service to find
-   * @returns The service found or a [TypeError] thrown if not found.
-   */
-  $ref(service: Service): Service;
-
-  /**
-   * Retrieve a reference by it's name
-   * @param name The name of the reference
-   * @returns The reference value if found or a [TypeError]
-   * thrown if not found.
-   */
-  $ref(name: string): Component | Singleton<any> | Service;
-
-  /**
-   * Retrive a reference by it's name or class.
-   * @param reference The reference to retrieve from
-   * @returns The reference's name or `null` if not found.
-   */
-  $ref<T extends Component | Service | Singleton<any>>(reference: ReferenceLike<T>) {
-    if (typeof reference === 'string') {
-      const ref = this.find(name => name === reference);
-      if (!ref)
-        throw new TypeError(`Reference by name '${reference}' wasn\'t found.`);
-
-      return ref;
-    }
-
-    const $ref = this.get(reference);
-    if (!$ref)
-      throw new TypeError(`Reference by class ${reference} was not found.`);
-
-    return $ref; // return the reference name
+    this.#app = app;
   }
 
   /**
@@ -102,15 +47,15 @@ export default class ReferenceManager extends Collection<any, string> {
   addReference(type: 'component' | 'singleton' | 'service', name: string, ref: any) {
     switch (type) {
       case 'component':
-        this.components.set(name, ref);
+        this.#app.components.set(name, ref);
         return this;
 
       case 'singleton':
-        this.singletons.set(name, new Singleton(ref));
+        this.#app.singletons.set(name, new Singleton(ref));
         break;
 
       case 'service':
-        this.services.set(name, ref);
+        this.#app.services.set(name, ref);
         break;
 
       default:
