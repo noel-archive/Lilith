@@ -20,9 +20,9 @@
  * SOFTWARE.
  */
 
+import { getInjectables, InjectReference } from './decorators';
 import { ReferenceManager } from './references';
 import { Collection } from '@augu/collections';
-import { getInjectables } from './decorators';
 import { randomBytes } from 'crypto';
 import * as utils from '@augu/utils';
 
@@ -107,18 +107,7 @@ export default class Application extends utils.EventBus<LilithEvents> {
         if (component.priority < 0 && injections.length > 0)
           throw new SyntaxError(`Component "${component.name}"'s priority was set to lower than 0 and requires injections. Make the priority higher than zero.`);
 
-        for (const inject of injections) {
-          Object.defineProperty(component, inject.property, {
-            get: () => this.$ref(inject.ref),
-            set: () => {
-              throw new SyntaxError(`Injectable "${inject.property}" is a read-only property.`);
-            },
-
-            enumerable: true,
-            configurable: true
-          });
-        }
-
+        this.inject(injections, component);
         await component.load?.();
 
         this.components.set(component.name, component);
@@ -145,18 +134,7 @@ export default class Application extends utils.EventBus<LilithEvents> {
         if (injections.some($ref => isServiceLike($ref.ref) && !isComponentLike($ref.ref)))
           throw new TypeError('Services cannot inject other services');
 
-        for (const inject of injections) {
-          Object.defineProperty(service, inject.property, {
-            get: () => this.$ref(inject.ref),
-            set: () => {
-              throw new SyntaxError(`Injectable "${inject.property}" is a read-only property.`);
-            },
-
-            enumerable: true,
-            configurable: true
-          });
-        }
-
+        this.inject(injections, service);
         await service.load?.();
         this.references.addReference(service.name, service.constructor);
         this.services.set(service.name, service);
@@ -214,9 +192,12 @@ export default class Application extends utils.EventBus<LilithEvents> {
    */
   addSingleton(singleton: any) {
     const id = randomBytes(4).toString('hex');
-    this.references.addReference(id, singleton);
-    this.singletons.set(id, singleton);
-    this.emit('singleton.loaded', singleton);
+
+    // if it has a [default] export, use it
+    const value = returnFromExport(singleton);
+    this.references.addReference(id, value.constructor !== undefined ? value.constructor : returnFromExport(singleton));
+    this.singletons.set(id, value);
+    this.emit('singleton.loaded', value);
 
     return this;
   }
@@ -234,5 +215,24 @@ export default class Application extends utils.EventBus<LilithEvents> {
     this.components.clear();
     this.singletons.clear();
     this.services.clear();
+  }
+
+  /**
+   * Add injectables to a [target] class
+   * @param injections List of injections to implement
+   * @param target The target class
+   */
+  inject(injections: InjectReference[], target: any) {
+    for (const inject of injections) {
+      Object.defineProperty(target, inject.property, {
+        get: () => this.$ref(inject.ref),
+        set: () => {
+          throw new SyntaxError('Injected references cannot mutate new state.');
+        },
+
+        enumerable: true,
+        configurable: true
+      });
+    }
   }
 }

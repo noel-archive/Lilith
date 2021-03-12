@@ -39,11 +39,32 @@ declare namespace Lilith {
   /** Type-alias to check if [T] could be a component/service. */
   export type ReferenceLike<T> = T extends Lilith.Component | Lilith.Service ? T : any;
 
+  /** References to injectable values from a property. */
+  interface InjectReferences {
+    property: string;
+    ref: any;
+  }
+
   // ~ Functions ~
   /**
    * Marks this class as non-injectable
    */
   export function NotInjectable(): ClassDecorator;
+
+  /**
+   * Retrieve a list of injectables from a specific [target] class.
+   * @param target The target class
+   * @returns An array of references
+   */
+  export function getInjectables(target: any): Lilith.InjectReferences[];
+
+  /**
+   * Checks if a [target] class is injectable or not. All classes are injectable
+   * by default except if a class is marked with `@NonInjectable()`.
+   *
+   * @param target The target class
+   */
+  export function isInjectable(target: any): boolean;
 
   // ~ Classes ~
   export interface Component {
@@ -154,6 +175,13 @@ declare namespace Lilith {
      * Dispose this [Application] instance.
      */
     dispose(): void;
+
+    /**
+     * Add injectables to a [target] class
+     * @param injections List of injections to implement
+     * @param target The target class
+     */
+    inject(injections: Lilith.InjectReferences[], target: any): void;
   }
 }
 

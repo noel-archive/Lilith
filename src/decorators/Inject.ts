@@ -24,7 +24,7 @@ import { isInjectable } from './NotInjectable';
 import { MetadataKeys } from '../internal/MetadataKeys';
 
 // represents a injectable reference
-interface InjectReference {
+export interface InjectReference {
   // the property key that should be injected
   property: string;
 

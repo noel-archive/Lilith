@@ -20,5 +20,5 @@
  * SOFTWARE.
  */
 
+export { default as Inject, getInjectables, InjectReference } from './Inject';
 export { default as NotInjectable, isInjectable } from './NotInjectable';
-export { default as Inject, getInjectables } from './Inject';
