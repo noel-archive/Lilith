@@ -112,9 +112,19 @@ declare namespace Lilith {
   }
 
   interface LilithEvents {
+    // Component hooks
+    'component.initializing'(component: Component): void;
     'component.loaded'(component: Component): void;
+
+    // Singleton hooks
     'singleton.loaded'(singleton: any): void;
+
+    // Service hooks
+    'service.initializing'(service: Service): void;
     'service.loaded'(service: Service): void;
+
+    // other
+    debug(message: string): void;
     warn(message: string): void;
   }
 
