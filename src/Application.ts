@@ -30,9 +30,19 @@ import { Component, isComponentLike } from './Component';
 import { Service, isServiceLike } from './Service';
 
 interface LilithEvents {
+  // Component hooks
+  'component.initializing'(component: Component): void;
   'component.loaded'(component: Component): void;
+
+  // Singleton hooks
   'singleton.loaded'(singleton: any): void;
+
+  // Service hooks
+  'service.initializing'(service: Service): void;
   'service.loaded'(service: Service): void;
+
+  // other
+  debug(message: string): void;
   warn(message: string): void;
 }
 
@@ -69,19 +79,19 @@ export default class Application extends utils.EventBus<LilithEvents> {
    * correctly placed, then a [Error] will throw.
    */
   async verify() {
-    if (this.#componentsDir === null && this.#servicesDir === null && this.#singletonsDir === null)
-      throw new Error('No components, singletons, or services were able to be loaded.');
-
     // singletons get loaded first because yes
     if (this.#singletonsDir !== null) {
       const singletonList = utils.readdirSync(this.#singletonsDir);
       for (let i = 0; i < singletonList.length; i++) {
         const _import = await import(singletonList[i]);
-
         const id = randomBytes(4).toString('hex');
-        this.references.addReference(id, _import.constructor !== undefined ? _import.constructor : returnFromExport(_import));
-        this.singletons.set(id, _import);
-        this.emit('singleton.loaded', _import.constructor !== undefined ? _import.constructor : returnFromExport(_import));
+        const val = returnFromExport(_import);
+        const singleton = val.constructor !== undefined ? val.constructor : val;
+
+        this.emit('debug', `Adding singleton from path "${singletonList[i]}" (ID: ${id})`);
+        this.references.addReference(id, singleton);
+        this.singletons.set(id, val);
+        this.emit('singleton.loaded', val);
       }
     }
 
@@ -107,6 +117,7 @@ export default class Application extends utils.EventBus<LilithEvents> {
         if (component.priority < 0 && injections.length > 0)
           throw new SyntaxError(`Component "${component.name}"'s priority was set to lower than 0 and requires injections. Make the priority higher than zero.`);
 
+        this.emit('component.initializing', component);
         this.inject(injections, component);
         await component.load?.();
 
@@ -134,8 +145,10 @@ export default class Application extends utils.EventBus<LilithEvents> {
         if (injections.some($ref => isServiceLike($ref.ref) && !isComponentLike($ref.ref)))
           throw new TypeError('Services cannot inject other services');
 
+        this.emit('service.initializing', service);
         this.inject(injections, service);
         await service.load?.();
+
         this.references.addReference(service.name, service.constructor);
         this.services.set(service.name, service);
         this.emit('service.loaded', service);
@@ -194,8 +207,11 @@ export default class Application extends utils.EventBus<LilithEvents> {
     const id = randomBytes(4).toString('hex');
 
     // if it has a [default] export, use it
+    this.emit('debug', `Adding singleton from function... (ID: ${id})`);
     const value = returnFromExport(singleton);
-    this.references.addReference(id, value.constructor !== undefined ? value.constructor : returnFromExport(singleton));
+    const single = value.constructor !== undefined ? value.constructor : value;
+
+    this.references.addReference(id, single);
     this.singletons.set(id, value);
     this.emit('singleton.loaded', value);
 
