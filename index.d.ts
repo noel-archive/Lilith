@@ -192,6 +192,20 @@ declare namespace Lilith {
      * @param target The target class
      */
     inject(injections: Lilith.InjectReferences[], target: any): void;
+
+    /**
+     * Adds a component to this Lilith instance
+     * @param component The component to use
+     * @param load If we should initialize the component
+     */
+    addComponent(component: Component, load?: boolean): Promise<void>;
+
+    /**
+     * Adds a service to this Lilith instance
+     * @param service The service to use
+     * @param load If we should load the component or not
+     */
+    addService(service: Service, load?: boolean): Promise<void>;
   }
 }
 
