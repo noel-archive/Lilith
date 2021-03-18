@@ -104,7 +104,7 @@ export default class Application extends utils.EventBus<LilithEvents> {
         throw new TypeError(`${treeList.filter(u => !isComponentLike(u)).length} files were not a "Component".`);
 
       const componentTree = treeList.sort((a, b) =>
-        b.priority - a.priority
+        a.priority - b.priority
       );
 
       for (let i = 0; i < componentTree.length; i++) {
@@ -250,5 +250,52 @@ export default class Application extends utils.EventBus<LilithEvents> {
         configurable: true
       });
     }
+  }
+
+  /**
+   * Adds a component to this Lilith instance
+   * @param component The component to use
+   * @param load If we should initialize the component
+   */
+  async addComponent(component: Component, load: boolean = true) {
+    // If the component's priority is lower than 0 and needs
+    // other components or services, just throw a error
+    // due to how Lilith performs :shrug:
+    const injections = getInjectables(component);
+    if (component.priority < 0 && injections.length > 0)
+      throw new SyntaxError(`Component "${component.name}"'s priority was set to lower than 0 and requires injections. Make the priority higher than zero.`);
+
+    this.emit('debug', `Loading component ${component.name} programmatically...`);
+    this.inject(injections, component);
+
+    this.emit('component.initializing', component);
+    if (load)
+      await component.load?.();
+
+    this.components.set(component.name, component);
+    this.references.addReference(component.name, component.constructor);
+    this.emit('component.loaded', component);
+  }
+
+  async addService(service: Service, load: boolean = true) {
+    const injections = getInjectables(service);
+
+    // Check if any service is requiring another service(s)
+
+    // why the !isComponentLike condition?
+    // Since both services and components have names to each other, it can
+    // cause race conditions
+    if (injections.some($ref => isServiceLike($ref.ref) && !isComponentLike($ref.ref)))
+      throw new TypeError('Services cannot inject other services');
+
+    this.emit('service.initializing', service);
+    this.inject(injections, service);
+
+    if (load === true)
+      await service.load?.();
+
+    this.references.addReference(service.name, service.constructor);
+    this.services.set(service.name, service);
+    this.emit('service.loaded', service);
   }
 }
