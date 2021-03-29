@@ -32,3 +32,6 @@ jobs:
 
       - name: Lints the repository
         run: npm run lint
+
+      - name: Build the project for any errors
+        run: tsc --noEmit
