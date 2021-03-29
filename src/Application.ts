@@ -33,6 +33,7 @@ interface LilithEvents {
   // Component hooks
   'component.initializing'(component: Component): void;
   'component.loaded'(component: Component): void;
+  'component.error'(component: any): void;
 
   // Singleton hooks
   'singleton.loaded'(singleton: any): void;
@@ -97,16 +98,21 @@ export default class Application extends utils.EventBus<LilithEvents> {
 
     // components get loaded second
     if (this.#componentsDir !== null) {
-      const componentList = await Promise.all<utils.Ctor<Component>>(utils.readdirSync(this.#componentsDir).map(file => import(file)));
-      const treeList = await Promise.all<Component>(componentList.map(f => f.default ? new f.default() : new f()));
+      const componentsList = utils.readdirSync(this.#componentsDir);
+      const components: Component[] = [];
 
-      if (treeList.some(s => !isComponentLike(s)))
-        throw new TypeError(`${treeList.filter(u => !isComponentLike(u)).length} files were not a "Component".`);
+      for (let i = 0; i < componentsList.length; i++) {
+        const ctor: utils.Ctor<Component> = await import(componentsList[i]);
+        const f = ctor.default ? new ctor.default() : new ctor();
 
-      const componentTree = treeList.sort((a, b) =>
-        a.priority - b.priority
-      );
+        if (!isComponentLike(f)) {
+          throw new SyntaxError(`Component "${componentsList[i]}" was not a component.`);
+        }
 
+        components.push(f);
+      }
+
+      const componentTree = components.sort((a, b) => a.priority - b.priority);
       for (let i = 0; i < componentTree.length; i++) {
         const component = componentTree[i];
 
@@ -115,7 +121,7 @@ export default class Application extends utils.EventBus<LilithEvents> {
         // due to how Lilith performs :shrug:
         const injections = getInjectables(component);
         if (component.priority < 0 && injections.length > 0)
-          throw new SyntaxError(`Component "${component.name}"'s priority was set to lower than 0 and requires injections. Make the priority higher than zero.`);
+          throw new SyntaxError(`Component ${component.name} priority was set to lower than 0 and requires injections. Make the priority higher than zero.`);
 
         this.emit('component.initializing', component);
         this.inject(injections, component);
