@@ -23,7 +23,7 @@
   },
   "dependencies": {
     "@augu/collections": "1.0.5",
-    "@augu/utils": "1.3.0",
+    "@augu/utils": "1.4.2",
     "reflect-metadata": "0.1.13"
   },
   "devDependencies": {
