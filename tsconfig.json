@@ -2,6 +2,7 @@
   "extends": "@augu/tsconfig",
   "compilerOptions": {
     "moduleResolution": "node",
+    "removeComments": true,
     "types": ["node", "reflect-metadata"],
     "rootDir": "./src",
     "outDir": "./build"

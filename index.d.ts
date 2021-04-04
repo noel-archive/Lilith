@@ -123,6 +123,18 @@ declare namespace Lilith {
      * Disposes this [[Container]]
      */
     public dispose(): void;
+
+    /**
+     * Applies a component to this [[Container]]
+     * @param cls The component to add
+     */
+    addComponent(cls: any): void;
+
+    /**
+     * Applies a service to this [[Container]]
+     * @param cls The service to add
+     */
+    addService(cls: any): void;
   }
 
   // ~ Decorators ~

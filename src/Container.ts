@@ -343,4 +343,66 @@ export class Container extends utils.EventBus<ContainerEvents> {
 
     this.objects.clear();
   }
+
+  /**
+   * Applies a component to this [[Container]]
+   * @param cls The component to add
+   */
+  addComponent(cls: any) {
+    const metadata: ReferredObjectDefinition = Reflect.getMetadata(MetadataKeys.Component, cls.constructor);
+    if (metadata === undefined)
+      throw new TypeError('Unable to find component metadata, did you add the @Component decorator?');
+
+    if (metadata.type !== 'component')
+      throw new TypeError(`"Component" ${metadata.name} was not a component`);
+
+    const component = utils.omitUndefinedOrNull<BaseComponent>({
+      priority: metadata.priority,
+      dispose: cls.dispose?.bind(cls),
+      type: 'component',
+      name: metadata.name,
+      ctor: cls.constructor,
+      load: cls.load?.bind(cls)
+    });
+
+    this.emit('debug', `Registered component ${component.name} programmatically`);
+    this.#references.set(cls.constructor, metadata.name);
+    this.objects.set(metadata.name, component as any);
+
+    const pending: PendingInjectDefinition[] = (Reflect.getMetadata(MetadataKeys.PendingInjections, global) ?? [])
+      .filter((injection: PendingInjectDefinition) => injection.target.constructor !== undefined ? injection.target.constructor === cls.constructor : injection.target === cls);
+
+    for (const injection of pending) this.inject(injection);
+  }
+
+  /**
+   * Applies a service to this [[Container]]
+   * @param cls The component to add
+   */
+  addService(cls: any) {
+    const metadata: ReferredObjectDefinition = Reflect.getMetadata(MetadataKeys.Service, cls.constructor);
+    if (metadata === undefined)
+      throw new TypeError('Unable to find component metadata, did you add the @Service decorator?');
+
+    if (metadata.type !== 'service')
+      throw new TypeError(`"Service" ${metadata.name} was not a component`);
+
+    const service = utils.omitUndefinedOrNull<BaseComponent>({
+      priority: metadata.priority,
+      dispose: cls.dispose?.bind(cls),
+      type: 'service',
+      name: metadata.name,
+      ctor: cls.constructor,
+      load: cls.load?.bind(cls)
+    });
+
+    this.emit('debug', `Registered service ${service.name} programmatically`);
+    this.#references.set(cls.constructor, metadata.name);
+    this.objects.set(metadata.name, service as any);
+
+    const pending: PendingInjectDefinition[] = (Reflect.getMetadata(MetadataKeys.PendingInjections, global) ?? [])
+      .filter((injection: PendingInjectDefinition) => injection.target.constructor !== undefined ? injection.target.constructor === cls.constructor : injection.target === cls);
+
+    for (const injection of pending) this.inject(injection);
+  }
 }
