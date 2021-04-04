@@ -20,4 +20,20 @@
  * SOFTWARE.
  */
 
-export { default as ReferenceManager } from './ReferenceManager';
+import { ReferredObjectDefinition, MetadataKeys } from '../types';
+
+/**
+* Class decorator to mark the target class as a service
+*/
+export function Service({ name, priority }: {
+  name: string;
+  priority: number;
+}): ClassDecorator {
+  return (target) => {
+    Reflect.defineMetadata(MetadataKeys.Service, (<ReferredObjectDefinition> {
+      priority,
+      type: 'service',
+      name
+    }), target);
+  };
+}

@@ -20,41 +20,22 @@
  * SOFTWARE.
  */
 
-import { isInjectable } from './NotInjectable';
-import { MetadataKeys } from '../internal/MetadataKeys';
-
-// represents a injectable reference
-export interface InjectReference {
-  // the property key that should be injected
-  property: string;
-
-  // the reference class itself
-  ref: any;
-}
-
-export const getInjectables = (target: any): InjectReference[] =>
-  Reflect.getMetadata(MetadataKeys.Injections, target) ?? [];
+import { PendingInjectDefinition, MetadataKeys } from '../types';
 
 /**
- * Inject a reference to a property and return it. If the referenced
- * class is marked a non injectable (used with the `@NonInjectable()` decorator),
- * then it'll error out.
+ * Decorator to inject a component, service, or singleton into
  */
-const _Inject: PropertyDecorator = (target: any, prop) => {
+export const Inject: PropertyDecorator = (target: any, prop) => {
   const $ref = Reflect.getMetadata('design:type', target, prop);
   if ($ref === undefined)
-    throw new TypeError(`Inferred reference for "${target.name ?? '<unknown>'}#${String(prop)}" was not found.`);
+    throw new TypeError(`Inferred reference for property ${String(prop)} was not found`);
 
-  if (!isInjectable($ref))
-    throw new TypeError('Reference was marked as a non injectable.');
-
-  const injections: InjectReference[] = Reflect.getMetadata(MetadataKeys.Injections, target) ?? [];
-  injections.push({
-    property: String(prop),
-    ref: $ref
+  const pending: PendingInjectDefinition[] = Reflect.getMetadata(MetadataKeys.PendingInjections, global) ?? [];
+  pending.push({
+    target,
+    prop,
+    $ref
   });
 
-  Reflect.defineMetadata(MetadataKeys.Injections, injections, target);
+  Reflect.defineMetadata(MetadataKeys.PendingInjections, pending, global);
 };
-
-export default _Inject;

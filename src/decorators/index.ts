@@ -20,5 +20,6 @@
  * SOFTWARE.
  */
 
-export { default as Inject, getInjectables, InjectReference } from './Inject';
-export { default as NotInjectable, isInjectable } from './NotInjectable';
+export * from './Component';
+export * from './Service';
+export * from './Inject';

@@ -20,13 +20,19 @@
  * SOFTWARE.
  */
 
+import { Container, isComponentLike, isServiceLike } from './Container';
+
+export * from './decorators';
+export * from './types';
+
+export {
+  Container,
+  isComponentLike,
+  isServiceLike,
+  Container as Application
+};
+
 /**
- * Returns the version of Lilith.
+ * Returns the current version of @augu/lilith
  */
 export const version: string = (require('../package.json')).version;
-
-// export everything else
-export { isComponentLike, Component } from './Component';
-export { isServiceLike, Service } from './Service';
-export { default as Application } from './Application';
-export * from './decorators';

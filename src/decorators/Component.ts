@@ -20,38 +20,20 @@
  * SOFTWARE.
  */
 
+import { ReferredObjectDefinition, MetadataKeys } from '../types';
+
 /**
- * Represents a service.
+ * Class decorator to mark the target class as a component
  */
-export interface Service {
-  /**
-   * Called when `Application.dispose` is called, this ensures
-   * anything that is disposable should be disposed.
-   */
-  dispose?(): void;
-
-  /**
-   * Called when `Application.verify` is called. Ensures
-   * that the service is loaded.
-   */
-  load?(): void | Promise<void>;
-
-  /**
-   * The name of the service
-   */
+export function Component({ name, priority }: {
   name: string;
-}
-
-/**
- * Simple function to check if a [value] is a instanceof a Service.
- * @param value The value to check
- */
-export function isServiceLike(value: unknown): value is Service {
-  return (
-    // arrays and `null` is considered a object in "typeof x"
-    (typeof value === 'object' && !Array.isArray(value) && value !== null) &&
-
-    // check if `name` is a string
-    typeof (value as Service).name === 'string'
-  );
+  priority: number;
+}): ClassDecorator {
+  return (target) => {
+    Reflect.defineMetadata(MetadataKeys.Component, (<ReferredObjectDefinition> {
+      priority,
+      type: 'component',
+      name
+    }), target);
+  };
 }

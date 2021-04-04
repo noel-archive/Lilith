@@ -29,183 +29,295 @@ declare namespace Lilith {
   /** Returns the version of Lilith */
   export const version: string;
 
+  // ~ Classes ~
+  /**
+   * Represents a "container" of components, singletons, and services. This is the main
+   * entrypoint to Lilith, this is your creation tool to create your application! **(\*≧∀≦\*)**
+   */
+  export class Container extends EventBus<Lilith.ContainerEvents> {
+    /**
+     * Represents a "container" of components, singletons, and services. This is the main
+     * entrypoint to Lilith, this is your creation tool to create your application! **(\*≧∀≦\*)**
+     *
+     * @param options Any additional options to use
+     */
+    constructor(options?: Lilith.ContainerOptions);
+
+    /**
+     * Returns the component tree
+     */
+    public components: Lilith.BaseComponent[];
+
+    /**
+     * Returns the singleton tree
+     */
+    public singletons: Lilith.BaseSingleton[];
+
+    /**
+     * Returns the service tree
+     */
+    public services: Lilith.BaseService;
+
+    /**
+     * The objects that were implemented in this [[Container]]
+     */
+    public objects: Collection<string, Lilith.BaseComponent | Lilith.BaseSingleton | Lilith.BaseService>;
+
+    /**
+     * Verifies the current state of this [[Container]], this initializes all components, services, and singletons.
+     *
+     * @deprecated This method is deprecated and will be removed in a future release, use [[Container.load]].
+     */
+    public verify(): Promise<void>;
+
+    /**
+     * Initializes all components, services, and singletons.
+     */
+    public load(): Promise<void>;
+
+    /**
+     * Sets the directory to find components in
+     * @deprecated This method is deprecated and will be removed in a future release. Use `componentsDir` when
+     * creating this [[Container]]
+     *
+     * @param dir The directory
+     */
+    public findComponentsIn(dir: string): this;
+
+    /**
+     * Sets the directory to find services in
+     * @deprecated This method is deprecated and will be removed in a future release. Use `servicesDir` when
+     * creating this [[Container]]
+     *
+     * @param dir The directory
+     */
+    public findServicesIn(dir: string): this;
+
+    /**
+     * Returns a reference from the component, singleton, or service tree
+     * @param ref The reference to find
+     * @typeparam Ref The reference by class (it'll return `typeof <ref>`, use the second generic to return the class)
+     * @typeparam TReturn The return value
+     */
+    public $ref<Ref extends any, TReturn extends any = any>(ref: Ref): TReturn;
+
+    /**
+     * Injects all pending references to the target class
+     * @param pending The pending injections
+     */
+    public inject(pending: Lilith.PendingInjectDefinition): void;
+
+    /**
+     * Bulk-add a list of singletons
+     * @param singletons The singletons to add
+     */
+    public addSingletons(singletons: any[]): void;
+
+    /**
+     * Registers a singleton to this [[Container]]
+     * @param singleton The singleton to register
+     */
+    public addSingleton(singleton: any): void;
+
+    /**
+     * Disposes this [[Container]]
+     */
+    public dispose(): void;
+  }
+
+  // ~ Decorators ~
   /**
    * Decorator to inject components, services, or singletons
    * into a property.
    */
   export const Inject: PropertyDecorator;
 
-  // ~ Types ~
-  /** Type-alias to check if [T] could be a component/service. */
-  export type ReferenceLike<T> = T extends Lilith.Component | Lilith.Service ? T : any;
-
-  /** References to injectable values from a property. */
-  interface InjectReferences {
-    property: string;
-    ref: any;
-  }
-
-  // ~ Functions ~
   /**
-   * Marks this class as non-injectable
+   * Decorator to mark this class as a Component
+   * @param priority The priority hierarchy
+   * @param name The name of the component
    */
-  export function NotInjectable(): ClassDecorator;
+  export function Component({ priority, name }: { priority: number; name: string; }): ClassDecorator;
 
   /**
-   * Retrieve a list of injectables from a specific [target] class.
-   * @param target The target class
-   * @returns An array of references
+   * Decorator to mark this class as a Service
+   * @param priority The priority hierarchy
+   * @param name The name of the component
    */
-  export function getInjectables(target: any): Lilith.InjectReferences[];
+  export function Service({ priority, name }: { priority: number; name: string; }): ClassDecorator;
+
+  // ~ Types & Interfaces ~
+  /**
+   * Type alias to represented the return value of `require()` or `import()`
+   */
+  type ImportedDefaultExport<T> = T extends { default: infer P }
+    ? P
+    : T;
 
   /**
-   * Checks if a [target] class is injectable or not. All classes are injectable
-   * by default except if a class is marked with `@NonInjectable()`.
-   *
-   * @param target The target class
+   * Represents a base component; typed for [[Application.components]].
+   * You can inject singletons, services, and components.
    */
-  export function isInjectable(target: any): boolean;
-
-  // ~ Classes ~
-  export interface Component {
+  interface BaseComponent {
     /**
-     * Called when `Application.dispose` is called, this ensures
-     * anything that is disposable should be disposed.
+     * Represents the type for this [[BaseComponent]]. It's always
+     * gonna be `component`, just here for simplicity
      */
-    dispose?(): void;
-
-    /**
-     * Called when `Application.verify` is called. Ensures
-     * that the component is loaded.
-     */
-    load?(): void | Promise<void>;
-
-    /**
-     * Priority to load the component. If the priority
-     * number is lowered, it'll be loaded first.
-     */
-    priority: number;
+    type: string;
 
     /**
      * The name of the component
      */
     name: string;
-  }
 
-  export interface Service {
     /**
-     * Called when `Application.dispose` is called, this ensures
-     * anything that is disposable should be disposed.
+     * The priority of this [[BaseComponent]]
      */
-    dispose?(): void;
+    priority: number;
 
     /**
-     * Called when `Application.verify` is called. Ensures
-     * that the service is loaded.
+     * The constructor reference to this [[BaseComponent]]
+     */
+    ctor: any;
+
+    /**
+     * Initializes the component, this will fire the `onBeforeInit` lifecycle hook
+     * with this component being the `cls` property.
      */
     load?(): void | Promise<void>;
 
     /**
-     * The name of the service
+     * Disposes the component, this function is fired when [[Application.dispose]] is called
      */
-    name: string;
-  }
-
-  interface LilithEvents {
-    // Component hooks
-    'component.initializing'(component: Component): void;
-    'component.loaded'(component: Component): void;
-
-    // Singleton hooks
-    'singleton.loaded'(singleton: any): void;
-
-    // Service hooks
-    'service.initializing'(service: Service): void;
-    'service.loaded'(service: Service): void;
-
-    // other
-    debug(message: string): void;
-    warn(message: string): void;
+    dispose?(): void | Promise<void>;
   }
 
   /**
-   * Main entrypoint to Lilith. This is where all injectables
-   * get referenced and are available in.
+   * Represents a base service; typed for [[Application.services]].
+   * You can inject singletons, services, and components.
    */
-  export class Application extends EventBus<LilithEvents> {
-    /** List of the singletons available to this Application context. */
-    public singletons: Collection<string, any>;
-
-    /** List of the components available to this Application context. */
-    public components: Collection<string, Component>;
-
-    /** List of references available to this Application context. */
-    public references: Collection<any, string>;
-
-    /** List of the services available to this Application context. */
-    public services: Collection<string, Service>;
+  interface BaseService {
+    /**
+     * Represents the type for this [[BaseComponent]]. It's always
+     * gonna be `component`, just here for simplicity
+     */
+    type: string;
 
     /**
-     * Verify the current state of Lilith. If anything that wasn't
-     * correctly placed, then a [Error] will throw.
+     * The name of the component
      */
-    verify(): Promise<void>;
+    name: string;
 
     /**
-     * Return a reference from the reference tree
-     * @param reference The reference to find
+     * The priority of this [[BaseComponent]]
      */
-    $ref<T extends any>(reference: ReferenceLike<T>): T;
+    priority: number;
 
     /**
-     * Sets the directory to find components in
-     * @param dir The directory
+     * The constructor reference to this [[BaseComponent]]
      */
-    findComponentsIn(dir: string): this;
+    ctor: any;
 
     /**
-     * Sets the directory to find singletons in
-     * @param dir The directory
+     * Initializes the component, this will fire the `onBeforeInit` lifecycle hook
+     * with this component being the `cls` property.
      */
-    findSingletonsIn(dir: string): this;
+    load?(): void | Promise<void>;
 
     /**
-     * Sets the directory to find services in
-     * @param dir The directory
+     * Disposes the component, this function is fired when [[Application.dispose]] is called
      */
-    findServicesIn(dir: string): this;
+    dispose?(): void | Promise<void>;
+  }
+
+  /**
+   * Represents a singleton that is registered into Lilith
+   */
+  interface BaseSingleton {
+    /**
+     * The reference to the singleton itself
+     */
+    $ref: any;
 
     /**
-     * Scope a [singleton] value to this [Application]
-     * @param singleton The singleton to add
+     * The type for this [[BaseSingleton]]. It'll always default to `'singleton'`.
      */
-    addSingleton(singleton: any): this;
+    type: string;
 
     /**
-     * Dispose this [Application] instance.
+     * The singleton's key, just a random scribble of words.
      */
-    dispose(): void;
+    key: string;
+  }
+
+  /**
+   * Represents the pending injections from all classes
+   */
+  interface PendingInjectDefinition {
+    /**
+     * The target class
+     */
+    target: any;
 
     /**
-     * Add injectables to a [target] class
-     * @param injections List of injections to implement
-     * @param target The target class
+     * The property key
      */
-    inject(injections: Lilith.InjectReferences[], target: any): void;
+    prop: string | symbol;
 
     /**
-     * Adds a component to this Lilith instance
-     * @param component The component to use
-     * @param load If we should initialize the component
+     * The inferred reference to inject
      */
-    addComponent(component: Component, load?: boolean): Promise<void>;
+    $ref: any;
+  }
+
+  /**
+   * The container events used for the [[Container]].
+   */
+  interface ContainerEvents {
+    /**
+     * Emitted before we initialize a component or service
+     * @param cls The component or service in mind
+     */
+    onBeforeInit(cls: BaseComponent | BaseService): void;
 
     /**
-     * Adds a service to this Lilith instance
-     * @param service The service to use
-     * @param load If we should load the component or not
+     * Emitted after we initialize the component or service
+     * @param cls The component or service in mind
      */
-    addService(service: Service, load?: boolean): Promise<void>;
+    onAfterInit(cls: BaseService | BaseComponent): void;
+
+    /**
+     * Emitted when an error occured while initializing a component or service
+     * @param cls The component or service
+     * @param error The error that occured
+     */
+    initError(cls: BaseComponent | BaseService, error: any): void;
+
+    /**
+     * Emitted when a debug event has happened
+     * @param message The message
+     */
+    debug(message: string): void;
+  }
+
+  /**
+   * Represents the container's options
+   */
+  interface ContainerOptions {
+    /**
+     * The directory to the component tree
+     */
+    componentsDir?: string;
+
+    /**
+     * The directory to the services tree
+     */
+    servicesDir?: string;
+
+    /**
+     * A list of singletons to bulk add
+     */
+    singletons?: any[];
   }
 }
 
