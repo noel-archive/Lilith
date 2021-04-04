@@ -1,5 +1,5 @@
 node_modules/
-foundation/
+.husky/_/
 .vscode/
 .idea/
 build/

@@ -20,17 +20,9 @@
  * SOFTWARE.
  */
 
-import { Container, isComponentLike, isServiceLike } from './Container';
-
 export * from './decorators';
+export * from './Container';
 export * from './types';
-
-export {
-  Container,
-  isComponentLike,
-  isServiceLike,
-  Container as Application
-};
 
 /**
  * Returns the current version of @augu/lilith
