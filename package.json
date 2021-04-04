@@ -19,7 +19,8 @@
     "clean:win:tar": "cp node_modules/@augu/collections/build/index.js.* node_modules/@augu/collections/build/index.js && rm node_modules/@augu/collections/build/index.js.*",
     "prepare": "npm run build",
     "build": "npm run lint && rm -rf build && tsc",
-    "lint": "eslint src --ext .ts --fix"
+    "lint": "eslint src --ext .ts --fix",
+    "docs": "typedoc src --out docs --theme node_modules/eledoc/bin/default/"
   },
   "dependencies": {
     "@augu/collections": "1.0.5",
@@ -32,8 +33,10 @@
     "@types/node": "14.14.37",
     "@typescript-eslint/eslint-plugin": "4.20.0",
     "@typescript-eslint/parser": "4.20.0",
+    "eledoc": "0.2.1",
     "eslint": "7.23.0",
-    "husky": "^6.0.0",
+    "husky": "6.0.0",
+    "typedoc": "0.20.35",
     "typescript": "4.2.3"
   }
 }
