@@ -181,7 +181,7 @@ export class Container extends utils.EventBus<ContainerEvents> {
       throw new Error('This container is missing a component directory since components are crucial to Lilith.');
 
     // Fetch all components
-    const componentList = utils.readdirSync(this.#componentsDir);
+    const componentList = utils.readdirSync(this.#componentsDir, { exclude: ['.js.map'] });
     if (componentList.length === 0)
       throw new Error('Missing components to initialize');
 
@@ -223,7 +223,7 @@ export class Container extends utils.EventBus<ContainerEvents> {
 
     // Loads all services (if any)
     if (this.#servicesDir !== undefined) {
-      const servicesList = utils.readdirSync(this.#servicesDir);
+      const servicesList = utils.readdirSync(this.#servicesDir, { exclude: ['.js.map'] });
       if (servicesList.length === 0)
         throw new Error('Missing services to initialize');
 
@@ -268,38 +268,38 @@ export class Container extends utils.EventBus<ContainerEvents> {
     for (const injection of injections) this.inject(injection);
 
     this.emit('debug', `Done! Now initializing ${this.objects.size} objects...`);
-    for (const obj of this.objects.filter(c => isComponentLike(c) || isServiceLike(c))) {
-      if (isServiceLike(obj) || isComponentLike(obj)) {
-        this.emit('debug', `Found ${obj.type} ${obj.name}`);
+    const objects = this.objects.filter(c => isComponentLike(c) || isServiceLike(c));
+    for (let i = 0; i < objects.length; i++) {
+      const obj: BaseComponent | BaseService = objects[i] as unknown as BaseService | BaseComponent;
+      this.emit('debug', `Found ${obj.type} ${obj.name}`);
 
-        // Initialize the component or service
+      // Initialize the component/service
+      try {
+        this.emit('onBeforeInit', obj);
+        await obj._classRef.load?.();
+        this.emit('onAfterInit', obj);
+      } catch(ex) {
+        this.emit('initError', obj, ex);
+      }
+
+      // Initialize the children
+      const children = ((Reflect.getMetadata(MetadataKeys.LinkParent, global) ?? []) as ChildrenDefinition[]).filter(child =>
+        child.parentCls === obj._classRef.constructor
+      );
+
+      this.emit('debug', `${obj.name} -> Found ${children.length} children`);
+      for (const child of children) {
+        const c = new child.childCls();
+        c.parent = obj;
+
         try {
-          this.emit('onBeforeInit', obj);
-          await obj._classRef.load?.();
-          this.emit('onAfterInit', obj);
+          this.emit('onBeforeChildInit', obj, c);
+          await obj._classRef.onChildLoad?.(c);
+          obj.children.push(c);
+
+          this.emit('onAfterChildInit', obj, c);
         } catch(ex) {
-          this.emit('initError', obj, ex);
-        }
-
-        // Initialize the children
-        const children = ((Reflect.getMetadata(MetadataKeys.LinkParent, global) ?? []) as ChildrenDefinition[]).filter(child =>
-          child.parentCls === obj._classRef.constructor
-        );
-
-        this.emit('debug', `${obj.name} -> Found ${children.length} children`);
-        for (const child of children) {
-          const c = new child.childCls();
-          c.parent = obj;
-
-          try {
-            this.emit('onBeforeChildInit', obj, c);
-            await obj._classRef.onChildLoad?.(c);
-            obj.children.push(c);
-
-            this.emit('onAfterChildInit', obj, c);
-          } catch(ex) {
-            this.emit('childInitError', obj, c, ex);
-          }
+          this.emit('childInitError', obj, c, ex);
         }
       }
     }
@@ -345,7 +345,7 @@ export class Container extends utils.EventBus<ContainerEvents> {
     const obj = this.objects.find(o => isComponentLike(o) || isServiceLike(o) ? o.name === $ref : o.key === $ref);
     if (isComponentLike(obj) || isServiceLike(obj))
       return obj._classRef;
-    else if (isServiceLike(obj))
+    else if (obj?.type === 'singleton')
       return obj.$ref;
     else
       // Primitives or non-components/services/singletons can be referenced

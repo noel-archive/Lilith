@@ -1,7 +1,7 @@
 {
   "name": "@augu/lilith",
   "description": "🧵 Simple application framework made in TypeScript (made for personal usage)",
-  "version": "2.2.0",
+  "version": "2.2.1",
   "main": "build/index.js",
   "license": "MIT",
   "author": "Chris \"August\" Hernandez <cutie@floofy.dev>",
@@ -13,6 +13,9 @@
   ],
   "funding": {
     "url": "https://github.com/sponsors/auguwu"
+  },
+  "engines": {
+    "node": ">=14"
   },
   "scripts": {
     "clean:node_modules": "rm -rf node_modules/@types/**/node_modules && rm -rf node_modules/@augu/**/node_modules",
