@@ -192,6 +192,8 @@ export class Container extends utils.EventBus<ContainerEvents> {
         name: metadata.name
       });
 
+      this.#references.set(imported.default, metadata.name);
+
       // Import the children classes if the component has a @FindChildrenIn decorator
       // hacky solution but :shrug:
       const childPath: string | undefined = Reflect.getMetadata(MetadataKeys.FindChildrenIn, imported.default);
@@ -201,10 +203,10 @@ export class Container extends utils.EventBus<ContainerEvents> {
 
     if (this.#servicesDir !== undefined) {
       const serviceList = utils.readdirSync(this.#servicesDir, { exclude: ['.js.map'] });
-      this.emit('debug', `Registering ${serviceList.length} pending components...`);
+      this.emit('debug', `Registering ${serviceList.length} pending services...`);
       for (let i = 0; i < serviceList.length; i++) {
         const file = serviceList[i];
-        const imported: utils.Ctor<any> = await import(file);
+        const imported: utils.Ctor<any> = require(file);
 
         if (imported.default === undefined) {
           this.emit('debug', `Missing default export -> ${file} (skipping)`);
@@ -222,6 +224,8 @@ export class Container extends utils.EventBus<ContainerEvents> {
           type: 'service',
           name: metadata.name
         });
+
+        this.#references.set(imported.default, metadata.name);
 
         // Import the children classes if the component has a @FindChildrenIn decorator
         // hacky solution but :shrug:
@@ -241,7 +245,6 @@ export class Container extends utils.EventBus<ContainerEvents> {
       const cls = sorted[i];
       cls._classRef = new cls._classRef();
 
-      this.#references.set(cls.constructor, cls.name);
       this.objects.set(cls.name, cls);
     }
 
