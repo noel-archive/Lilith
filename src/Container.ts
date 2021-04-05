@@ -225,8 +225,6 @@ export class Container extends utils.EventBus<ContainerEvents> {
           name: metadata.name
         });
 
-        this.#references.set(imported.default, metadata.name);
-
         // Import the children classes if the component has a @FindChildrenIn decorator
         // hacky solution but :shrug:
         const childPath: string | undefined = Reflect.getMetadata(MetadataKeys.FindChildrenIn, imported.default);
@@ -307,8 +305,8 @@ export class Container extends utils.EventBus<ContainerEvents> {
     const obj = this.objects.find(o => isComponentLike(o) || isServiceLike(o) ? o.name === $ref : o.key === $ref);
     if (isComponentLike(obj) || isServiceLike(obj))
       return obj._classRef;
-    else if (obj?.type === 'singleton')
-      return obj.$ref;
+    else if (obj!.type === 'singleton')
+      return obj!.$ref;
     else
       // Primitives or non-components/services/singletons can be referenced
       throw new SyntaxError('Reference object was not a component, singleton, or service');
