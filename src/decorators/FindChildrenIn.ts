@@ -20,8 +20,22 @@
  * SOFTWARE.
  */
 
-export * from './FindChildrenIn';
-export * from './LinkParent';
-export * from './Component';
-export * from './Service';
-export * from './Inject';
+import { MetadataKeys } from '../types';
+import { isAbsolute } from 'path';
+
+/**
+ * Decorator to find all children in
+ * @param path The absolute path to use
+ */
+export function FindChildrenIn(path: string): ClassDecorator {
+  return (target) => {
+    if (!isAbsolute(path))
+      throw new TypeError(`Path ${path} was not a absolute path`);
+
+    const hasPath = Reflect.getMetadata(MetadataKeys.FindChildrenIn, target);
+    if (hasPath !== undefined)
+      throw new TypeError(`Class already has a path set (${hasPath})`);
+
+    Reflect.defineMetadata(MetadataKeys.FindChildrenIn, path, target);
+  };
+}

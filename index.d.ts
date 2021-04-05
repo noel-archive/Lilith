@@ -65,7 +65,6 @@ declare namespace Lilith {
 
     /**
      * Verifies the current state of this [[Container]], this initializes all components, services, and singletons.
-     *
      * @deprecated This method is deprecated and will be removed in a future release, use [[Container.load]].
      */
     public verify(): Promise<void>;
@@ -79,7 +78,6 @@ declare namespace Lilith {
      * Sets the directory to find components in
      * @deprecated This method is deprecated and will be removed in a future release. Use `componentsDir` when
      * creating this [[Container]]
-     *
      * @param dir The directory
      */
     public findComponentsIn(dir: string): this;
@@ -88,7 +86,6 @@ declare namespace Lilith {
      * Sets the directory to find services in
      * @deprecated This method is deprecated and will be removed in a future release. Use `servicesDir` when
      * creating this [[Container]]
-     *
      * @param dir The directory
      */
     public findServicesIn(dir: string): this;
@@ -128,13 +125,13 @@ declare namespace Lilith {
      * Applies a component to this [[Container]]
      * @param cls The component to add
      */
-    addComponent(cls: any): void;
+    public addComponent(cls: any): Promise<void>;
 
     /**
      * Applies a service to this [[Container]]
      * @param cls The service to add
      */
-    addService(cls: any): void;
+    public addService(cls: any): Promise<void>;
   }
 
   // ~ Decorators ~
@@ -157,6 +154,19 @@ declare namespace Lilith {
    * @param name The name of the component
    */
   export function Service({ priority, name }: { priority: number; name: string; }): ClassDecorator;
+
+  /**
+   * Links a parent component or service to this class
+   * @param cls The parent component or service
+   * @example `@LinkParent(SomeService)`
+   */
+  export function LinkParent(cls: any): ClassDecorator;
+
+  /**
+   * Decorator to find all children in
+   * @param path The absolute path to use
+   */
+  export function FindChildrenIn(path: string): ClassDecorator;
 
   // ~ Types & Interfaces ~
   /**
@@ -188,20 +198,9 @@ declare namespace Lilith {
     priority: number;
 
     /**
-     * The constructor reference to this [[BaseComponent]]
+     * The children classes in this [[BaseComponent]]
      */
-    ctor: any;
-
-    /**
-     * Initializes the component, this will fire the `onBeforeInit` lifecycle hook
-     * with this component being the `cls` property.
-     */
-    load?(): void | Promise<void>;
-
-    /**
-     * Disposes the component, this function is fired when [[Application.dispose]] is called
-     */
-    dispose?(): void | Promise<void>;
+    children: any[];
   }
 
   /**
@@ -226,20 +225,9 @@ declare namespace Lilith {
     priority: number;
 
     /**
-     * The constructor reference to this [[BaseComponent]]
+     * The children classes in this [[BaseService]]
      */
-    ctor: any;
-
-    /**
-     * Initializes the component, this will fire the `onBeforeInit` lifecycle hook
-     * with this component being the `cls` property.
-     */
-    load?(): void | Promise<void>;
-
-    /**
-     * Disposes the component, this function is fired when [[Application.dispose]] is called
-     */
-    dispose?(): void | Promise<void>;
+    children: any[];
   }
 
   /**
@@ -286,6 +274,34 @@ declare namespace Lilith {
    * The container events used for the [[Container]].
    */
   interface ContainerEvents {
+    /**
+     * Emitted before we initialize a child to the parent component or service
+     *
+     * @param cls The component or service
+     * @param child The child of the parent, the child has access
+     * to the parent with `child.parent`.
+     */
+    onBeforeChildInit(cls: BaseComponent | BaseService, child: any): void;
+
+    /**
+     * Emitted after we initialize a child to the parent component or service
+     *
+     * @param cls The component or service
+     * @param child The child of the parent, the child has access
+     * to the parent with `child.parent`.
+     */
+    onAfterChildInit(cls: BaseService | BaseComponent, child: any): void;
+
+    /**
+     * Emitted if a child has errored while initializing
+     *
+     * @param cls The component or service
+     * @param child The child of the parent, the child has access
+     * to the parent with `child.parent`.
+     * @param error The error that occured
+     */
+    childInitError(cls: BaseComponent | BaseService, child: any, error: any): void;
+
     /**
      * Emitted before we initialize a component or service
      * @param cls The component or service in mind

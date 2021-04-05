@@ -32,6 +32,13 @@ export type ImportedDefaultExport<T> = T extends { default: infer P }
  * You can inject singletons, services, and components.
  */
 export interface BaseComponent {
+  _classRef: any;
+
+  /**
+   * List of children attached to this [[BaseComponent]] as it's parent
+   */
+  children: any[];
+
   /**
    * Represents the type for this [[BaseComponent]]. It's always
    * gonna be `component`, just here for simplicity
@@ -47,22 +54,6 @@ export interface BaseComponent {
    * The priority of this [[BaseComponent]]
    */
   priority: number;
-
-  /**
-   * The constructor reference to this [[BaseComponent]]
-   */
-   ctor: any;
-
-  /**
-   * Initializes the component, this will fire the `onBeforeInit` lifecycle hook
-   * with this component being the `cls` property.
-   */
-  load?(): void | Promise<void>;
-
-  /**
-   * Disposes the component, this function is fired when [[Application.dispose]] is called
-   */
-  dispose?(): void | Promise<void>;
 }
 
 /**
@@ -70,6 +61,13 @@ export interface BaseComponent {
  * You can inject singletons, services, and components.
  */
 export interface BaseService {
+  _classRef: any;
+
+  /**
+   * List of children attached to this [[BaseService]] as it's parent
+   */
+  children: any[];
+
   /**
    * Represents the type for this [[BaseService]]. It's always
    * gonna be `service`, just here for simplicity
@@ -85,22 +83,6 @@ export interface BaseService {
    * The priority of this [[BaseService]]
    */
   priority: number;
-
-  /**
-   * The constructor reference to this [[BaseService]]
-   */
-  ctor: any;
-
-  /**
-   * Initializes the service, this will fire the `onBeforeInit` lifecycle hook
-   * with this service being the `cls` property.
-   */
-  load?(): void | Promise<void>;
-
-   /**
-    * Disposes the service, this function is fired when [[Application.dispose]] is called
-    */
-  dispose?(): void | Promise<void>;
 }
 
 /**
@@ -108,10 +90,11 @@ export interface BaseService {
  */
 export const enum MetadataKeys {
   PendingInjections = '$lilith::api::injections::pending',
+  FindChildrenIn    = '$lilith::api::link-parent::find',
   Subscriptions     = '$lilith::api::subscriptions',
+  LinkParent        = '$lilith::api::link-parent',
   Component         = '$lilith::api::component',
-  Service           = '$lilith::api::service',
-  Parent            = '$lilith::api::parent'
+  Service           = '$lilith::api::service'
 }
 
 /**
@@ -173,4 +156,19 @@ export interface BaseSingleton {
    * The singleton's key, just a random scribble of words.
    */
   key: string;
+}
+
+/**
+ * Represents a definition of parent / children of a [[BaseComponent]] or [[BaseService]]
+ */
+export interface ChildrenDefinition {
+  /**
+   * The parent class that this [[ChildrenDefinition]] belongs to
+   */
+  parentCls: any;
+
+  /**
+   * The child class that this [[ChildrenDefinition]] belongs to
+   */
+  childCls: any;
 }

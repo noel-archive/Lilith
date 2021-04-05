@@ -20,8 +20,21 @@
  * SOFTWARE.
  */
 
-export * from './FindChildrenIn';
-export * from './LinkParent';
-export * from './Component';
-export * from './Service';
-export * from './Inject';
+import { ChildrenDefinition, MetadataKeys } from '../types';
+
+/**
+ * Links a parent component or service to this class
+ * @param cls The parent component or service
+ * @example `@LinkParent(SomeService)`
+ */
+export function LinkParent(cls: any): ClassDecorator {
+  return (target) => {
+    const parentToChildDefs: ChildrenDefinition[] = Reflect.getMetadata(MetadataKeys.LinkParent, global) ?? [];
+    parentToChildDefs.push({
+      parentCls: cls,
+      childCls: target
+    });
+
+    Reflect.defineMetadata(MetadataKeys.LinkParent, parentToChildDefs, global);
+  };
+}
