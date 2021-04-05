@@ -48,16 +48,6 @@ interface ContainerEvents {
   onAfterChildInit(cls: BaseService | BaseComponent, child: any): void;
 
   /**
-   * Emitted if a child has errored while initializing
-   *
-   * @param cls The component or service
-   * @param child The child of the parent, the child has access
-   * to the parent with `child.parent`.
-   * @param error The error that occured
-   */
-  childInitError(cls: BaseComponent | BaseService, child: any, error: any): void;
-
-  /**
    * Emitted before we initialize a component or service
    * @param cls The component or service in mind
    */
@@ -68,13 +58,6 @@ interface ContainerEvents {
    * @param cls The component or service in mind
    */
   onAfterInit(cls: BaseService | BaseComponent): void;
-
-  /**
-   * Emitted when an error occured while initializing a component or service
-   * @param cls The component or service
-   * @param error The error that occured
-   */
-  initError(cls: BaseComponent | BaseService, error: any): void;
 
   /**
    * Emitted when a debug event has happened
@@ -180,127 +163,103 @@ export class Container extends utils.EventBus<ContainerEvents> {
     if (this.#componentsDir === undefined)
       throw new Error('This container is missing a component directory since components are crucial to Lilith.');
 
-    // Fetch all components
+    const pending: (BaseService | BaseComponent)[] = [];
+
+    // Components
     const componentList = utils.readdirSync(this.#componentsDir, { exclude: ['.js.map'] });
     if (componentList.length === 0)
       throw new Error('Missing components to initialize');
 
-    // Get and create all components
-    const components = componentList.map(file => {
-      const ctor: utils.Ctor<any> = require(file);
-      return ctor.default !== undefined ? new ctor.default() : new ctor();
-    }).sort((a, b) => a.priority - b.priority);
+    this.emit('debug', `Registering ${componentList.length} pending components...`);
+    for (let i = 0; i < componentList.length; i++) {
+      const file = componentList[i];
+      const imported: utils.Ctor<any> = await import(file);
 
-    this.emit('debug', `Found ${components.length} components to register`);
-    for (let i = 0; i < components.length; i++) {
-      const component = components[i];
-      const metadata: ReferredObjectDefinition = Reflect.getMetadata(MetadataKeys.Component, component.constructor);
-
-      if (metadata === undefined)
+      if (imported.default === undefined) {
+        this.emit('debug', `Missing default export -> ${file} (skipping)`);
         continue;
+      }
 
-      if (metadata.type !== 'component')
-        throw new TypeError(`"Component" ${metadata.name} was not a component`);
+      const metadata: ReferredObjectDefinition | undefined = Reflect.getMetadata(MetadataKeys.Component, imported.default);
+      if (metadata === undefined)
+        throw new SyntaxError('Missing @Component decorator');
 
-      const c: BaseComponent = {
-        _classRef: component,
-        children: [],
+      pending.push({
+        _classRef: imported.default,
         priority: metadata.priority,
+        children: [],
         type: 'component',
         name: metadata.name
-      };
-
-      this.emit('debug', `Registered component ${c.name}`);
-      this.#references.set(component.constructor, metadata.name);
-      this.objects.set(c.name, c);
+      });
 
       // Import the children classes if the component has a @FindChildrenIn decorator
       // hacky solution but :shrug:
-      const childPath: string | undefined = Reflect.getMetadata(MetadataKeys.FindChildrenIn, component.constructor);
+      const childPath: string | undefined = Reflect.getMetadata(MetadataKeys.FindChildrenIn, imported.default);
       if (childPath !== undefined)
         await Promise.all(utils.readdirSync(childPath).map(c => import(c)));
     }
 
-    // Loads all services (if any)
     if (this.#servicesDir !== undefined) {
-      const servicesList = utils.readdirSync(this.#servicesDir, { exclude: ['.js.map'] });
-      if (servicesList.length === 0)
-        throw new Error('Missing services to initialize');
+      const serviceList = utils.readdirSync(this.#servicesDir, { exclude: ['.js.map'] });
+      this.emit('debug', `Registering ${serviceList.length} pending components...`);
+      for (let i = 0; i < serviceList.length; i++) {
+        const file = serviceList[i];
+        const imported: utils.Ctor<any> = await import(file);
 
-      const services = servicesList.map((file) => {
-        const ctor: utils.Ctor<any> = require(file);
-        return ctor.default !== undefined ? new ctor.default() : new ctor();
-      }).sort((a, b) => a.priority - b.priority);
-
-      this.emit('debug', `Found ${services.length} servies to register`);
-      for (let i = 0; i < services.length; i++) {
-        const service = services[i];
-        const metadata: ReferredObjectDefinition = Reflect.getMetadata(MetadataKeys.Service, service.constructor);
-
-        if (metadata === undefined)
+        if (imported.default === undefined) {
+          this.emit('debug', `Missing default export -> ${file} (skipping)`);
           continue;
+        }
 
-        if (metadata.type !== 'service')
-          throw new TypeError(`"Service" ${metadata.name} was not a component`);
+        const metadata: ReferredObjectDefinition | undefined = Reflect.getMetadata(MetadataKeys.Service, imported.default);
+        if (metadata === undefined)
+          throw new SyntaxError('Missing @Service decorator');
 
-        const s: BaseService = {
-          _classRef: service,
-          children: [],
+        pending.push({
+          _classRef: imported.default,
           priority: metadata.priority,
+          children: [],
           type: 'service',
           name: metadata.name
-        };
+        });
 
-        this.emit('debug', `Registered service ${s.name}`);
-        this.#references.set(service.constructor, metadata.name);
-        this.objects.set(s.name, s);
-
-        // Import the children classes if the service has a @FindChildrenIn decorator
+        // Import the children classes if the component has a @FindChildrenIn decorator
         // hacky solution but :shrug:
-        const childPath: string | undefined = Reflect.getMetadata(MetadataKeys.FindChildrenIn, service.constructor);
+        const childPath: string | undefined = Reflect.getMetadata(MetadataKeys.FindChildrenIn, imported.default);
         if (childPath !== undefined)
           await Promise.all(utils.readdirSync(childPath).map(c => import(c)));
       }
     }
 
-    this.emit('debug', `Now adding pending injections to ${this.objects.size} objects...`);
+    this.emit('debug', 'Adding injections ahead of time...');
     const injections: PendingInjectDefinition[] = Reflect.getMetadata(MetadataKeys.PendingInjections, global) ?? [];
     for (const injection of injections) this.inject(injection);
 
-    this.emit('debug', `Done! Now initializing ${this.objects.size} objects...`);
-    const objects = this.objects.filter(c => isComponentLike(c) || isServiceLike(c));
-    for (let i = 0; i < objects.length; i++) {
-      const obj: BaseComponent | BaseService = objects[i] as unknown as BaseService | BaseComponent;
-      this.emit('debug', `Found ${obj.type} ${obj.name}`);
+    this.emit('debug', `Received ${pending.length} pending components and services.`);
+    const sorted = pending.sort((a, b) => a.priority - b.priority);
+    for (let i = 0; i < sorted.length; i++) {
+      const cls = sorted[i];
+      cls._classRef = new cls._classRef();
 
-      // Initialize the component/service
-      try {
-        this.emit('onBeforeInit', obj);
-        await obj._classRef.load?.();
-        this.emit('onAfterInit', obj);
-      } catch(ex) {
-        this.emit('initError', obj, ex);
-      }
+      this.#references.set(cls.constructor, cls.name);
+      this.objects.set(cls.name, cls);
+    }
 
-      // Initialize the children
+    this.emit('debug', `Registered ${this.objects.size} objects, now initalizing...`);
+    for (const obj of this.objects.filter(c => isComponentLike(c) || isServiceLike(c)) as (BaseComponent | BaseService)[]) {
+      this.emit('onBeforeInit', obj);
+      await obj._classRef.load?.();
+      this.emit('onAfterInit', obj);
+
       const children = ((Reflect.getMetadata(MetadataKeys.LinkParent, global) ?? []) as ChildrenDefinition[]).filter(child =>
         child.parentCls === obj._classRef.constructor
       );
 
-      this.emit('debug', `${obj.name} -> Found ${children.length} children`);
-      for (const child of children) {
-        const c = new child.childCls();
-        c.parent = obj;
-
-        try {
-          this.emit('onBeforeChildInit', obj, c);
-          await obj._classRef.onChildLoad?.(c);
-          obj.children.push(c);
-
-          this.emit('onAfterChildInit', obj, c);
-        } catch(ex) {
-          this.emit('childInitError', obj, c, ex);
-        }
+      for (let i = 0; i < children.length; i++) {
+        const child = children[i];
+        this.emit('onBeforeChildInit', obj, child);
+        await obj._classRef.onChildLoad?.(child);
+        this.emit('onAfterChildInit', obj, child);
       }
     }
 
@@ -428,12 +387,12 @@ export class Container extends utils.EventBus<ContainerEvents> {
    * @param cls The component to add
    */
   async addComponent(cls: any) {
-    const metadata: ReferredObjectDefinition = Reflect.getMetadata(MetadataKeys.Component, cls.constructor);
+    const metadata: ReferredObjectDefinition | undefined = Reflect.getMetadata(MetadataKeys.Component, cls);
     if (metadata === undefined)
-      throw new TypeError('Unable to find component metadata, did you add the @Component decorator?');
+      throw new TypeError('Missing @Component decorator (did you construct this class? if so, don\'t)');
 
     if (metadata.type !== 'component')
-      throw new TypeError(`"Component" ${metadata.name} was not a component`);
+      throw new TypeError('[cls] provided was not a @Component decorator');
 
     const component: BaseComponent = {
       _classRef: cls,
@@ -443,41 +402,34 @@ export class Container extends utils.EventBus<ContainerEvents> {
       name: metadata.name
     };
 
-    this.emit('debug', `Registered component ${component.name} programmatically`);
-    this.#references.set(cls.constructor, metadata.name);
-    this.objects.set(metadata.name, component as any);
+    // Import the children classes if the component has a @FindChildrenIn decorator
+    // hacky solution but :shrug:
+    const childPath: string | undefined = Reflect.getMetadata(MetadataKeys.FindChildrenIn, cls);
+    if (childPath !== undefined)
+      await Promise.all(utils.readdirSync(childPath).map(c => import(c)));
 
-    const pending: PendingInjectDefinition[] = (Reflect.getMetadata(MetadataKeys.PendingInjections, global) ?? [])
-      .filter((injection: PendingInjectDefinition) => injection.target.constructor !== undefined ? injection.target.constructor === cls.constructor : injection.target === cls);
+    const injections: PendingInjectDefinition[] = Reflect.getMetadata(MetadataKeys.PendingInjections, global) ?? [];
+    for (const injection of injections) this.inject(injection);
 
-    for (const injection of pending) this.inject(injection);
-    try {
-      this.emit('onBeforeInit', component);
-      await component._classRef.load?.();
-      this.emit('onAfterInit', component);
-    } catch(ex) {
-      this.emit('initError', component, ex);
-    }
+    component._classRef = new cls();
+    this.emit('onBeforeInit', component);
+    await component._classRef.load?.();
+    this.emit('onAfterInit', component);
 
-    // Find all children classes
     const children = ((Reflect.getMetadata(MetadataKeys.LinkParent, global) ?? []) as ChildrenDefinition[])
-      .filter(child => child.parentCls.constructor === cls.constructor);
+      .filter(child => child.parentCls.constructor === cls);
 
-    this.emit('debug', `${component.name} -> Found ${children.length} children`);
     for (const child of children) {
       const c = new child.childCls();
-      c.parent = component;
+      c.parent = component._classRef;
 
-      try {
-        this.emit('onBeforeChildInit', component, c);
-        await component._classRef.onChildLoad?.(c);
-        component.children.push(c);
-
-        this.emit('onAfterChildInit', component, c);
-      } catch(ex) {
-        this.emit('childInitError', component, c, ex);
-      }
+      this.emit('onBeforeChildInit', component, c);
+      await component._classRef.onChildLoad?.(c);
+      this.emit('onAfterChildInit', component, c);
     }
+
+    this.#references.set(component._classRef.constructor, component.name);
+    this.objects.set(component.name, component);
   }
 
   /**
@@ -485,55 +437,48 @@ export class Container extends utils.EventBus<ContainerEvents> {
    * @param cls The component to add
    */
   async addService(cls: any) {
-    const metadata: ReferredObjectDefinition = Reflect.getMetadata(MetadataKeys.Service, cls.constructor);
+    const metadata: ReferredObjectDefinition | undefined = Reflect.getMetadata(MetadataKeys.Service, cls);
     if (metadata === undefined)
-      throw new TypeError('Unable to find service metadata, did you add the @Service decorator?');
+      throw new TypeError('Missing @Service decorator (did you construct this class? if so, don\'t)');
 
-    if (metadata.type !== 'service')
-      throw new TypeError(`"Service" ${metadata.name} was not a service`);
+    if (metadata.type !== 'component')
+      throw new TypeError('[cls] provided was not a @Service decorator');
 
     const service: BaseService = {
       _classRef: cls,
       children: [],
       priority: metadata.priority,
-      type: 'service',
+      type: 'component',
       name: metadata.name
     };
 
-    this.emit('debug', `Registered service ${service.name} programmatically`);
-    this.#references.set(cls.constructor, metadata.name);
-    this.objects.set(metadata.name, service as any);
+    // Import the children classes if the component has a @FindChildrenIn decorator
+    // hacky solution but :shrug:
+    const childPath: string | undefined = Reflect.getMetadata(MetadataKeys.FindChildrenIn, cls);
+    if (childPath !== undefined)
+      await Promise.all(utils.readdirSync(childPath).map(c => import(c)));
 
-    const pending: PendingInjectDefinition[] = (Reflect.getMetadata(MetadataKeys.PendingInjections, global) ?? [])
-      .filter((injection: PendingInjectDefinition) => injection.target.constructor !== undefined ? injection.target.constructor === cls.constructor : injection.target === cls);
+    const injections: PendingInjectDefinition[] = Reflect.getMetadata(MetadataKeys.PendingInjections, global) ?? [];
+    for (const injection of injections) this.inject(injection);
 
-    for (const injection of pending) this.inject(injection);
-    try {
-      this.emit('onBeforeInit', service);
-      await service._classRef.load?.();
-      this.emit('onAfterInit', service);
-    } catch(ex) {
-      this.emit('initError', service, ex);
-    }
+    service._classRef = new cls();
+    this.emit('onBeforeInit', service);
+    await service._classRef.load?.();
+    this.emit('onAfterInit', service);
 
-    // Find all children classes
     const children = ((Reflect.getMetadata(MetadataKeys.LinkParent, global) ?? []) as ChildrenDefinition[])
-      .filter(child => child.parentCls.constructor === cls.constructor);
+      .filter(child => child.parentCls.constructor === cls);
 
-    this.emit('debug', `${service.name} -> Found ${children.length} children`);
     for (const child of children) {
       const c = new child.childCls();
-      c.parent = service;
+      c.parent = service._classRef;
 
-      try {
-        this.emit('onBeforeChildInit', service, c);
-        await service._classRef.onChildLoad?.(c);
-        service.children.push(c);
-
-        this.emit('onAfterChildInit', service, c);
-      } catch(ex) {
-        this.emit('childInitError', service, c, ex);
-      }
+      this.emit('onBeforeChildInit', service, c);
+      await service._classRef.onChildLoad?.(c);
+      this.emit('onAfterChildInit', service, c);
     }
+
+    this.#references.set(service._classRef.constructor, service.name);
+    this.objects.set(service.name, service);
   }
 }
