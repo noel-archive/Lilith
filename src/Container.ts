@@ -213,6 +213,8 @@ export class Container extends utils.EventBus<ContainerEvents> {
           name: metadata.name
         });
 
+        this.#references.set(imported.default, metadata.name);
+
         // Import the children classes if the component has a @FindChildrenIn decorator
         // hacky solution but :shrug:
         const childPath: string | undefined = Reflect.getMetadata(MetadataKeys.FindChildrenIn, imported.default);
@@ -368,7 +370,7 @@ export class Container extends utils.EventBus<ContainerEvents> {
     const value = returnFromExport(singleton);
 
     const s: BaseSingleton = {
-      $ref: value.constructor !== undefined ? value.constructor : value,
+      $ref: value,
       type: 'singleton',
       key: id
     };
