@@ -263,6 +263,26 @@ export class Container extends utils.EventBus<ContainerEvents> {
       }
     }
 
+    for (const service of this.services.values()) {
+      this.emit('onBeforeInit', service);
+      await service._classRef.load?.();
+      this.emit('onAfterInit', service);
+
+      const children = ((Reflect.getMetadata(MetadataKeys.LinkParent, global) ?? []) as ChildrenDefinition[]).filter(child =>
+        child.parentCls === service._classRef.constructor
+      );
+
+      for (let i = 0; i < children.length; i++) {
+        const child = children[i];
+        const c = new child.childCls();
+        c.parent = service._classRef;
+
+        this.emit('onBeforeChildInit', service, c);
+        await service._classRef.onChildLoad?.(c);
+        this.emit('onAfterChildInit', service, c);
+      }
+    }
+
     this.emit('debug', 'We are all set. (ㅇㅅㅇ❀) (* ^ ω ^)');
   }
 
