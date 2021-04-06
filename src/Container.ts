@@ -99,9 +99,19 @@ function returnFromExport<T extends object>(value: T): ImportedDefaultExport<T> 
  */
 export class Container extends utils.EventBus<ContainerEvents> {
   /**
-   * The objects that were implemented in this [[Container]]
+   * The component tree for this [[Container]]
    */
-  public objects: Collection<string, BaseService | BaseComponent | BaseSingleton>;
+  public components: Collection<string, BaseComponent> = new Collection();
+
+  /**
+   * The singleton tree for this [[Container]]
+   */
+  public singletons: Collection<string, BaseSingleton> = new Collection();
+
+  /**
+   * The services tree for this [[Container]]
+   */
+  public services: Collection<string, BaseService> = new Collection();
 
   #componentsDir?: string;
   #servicesDir?: string;
@@ -119,31 +129,9 @@ export class Container extends utils.EventBus<ContainerEvents> {
     this.#componentsDir = options?.componentsDir;
     this.#servicesDir = options?.servicesDir;
     this.#references = new Collection();
-    this.objects = new Collection();
 
     if (options?.singletons?.length)
       this.addSingletons(options.singletons!);
-  }
-
-  /**
-   * Returns the component tree
-   */
-  get components() {
-    return this.objects.filter(o => o.type === 'component') as unknown as BaseComponent[];
-  }
-
-  /**
-   * Returns the singleton tree
-   */
-  get singletons() {
-    return this.objects.filter(o => o.type === 'singleton') as unknown as BaseSingleton[];
-  }
-
-  /**
-   * Returns the services tree
-   */
-  get services() {
-    return this.objects.filter(o => o.type === 'service') as unknown as BaseService[];
   }
 
   /**
@@ -233,34 +221,45 @@ export class Container extends utils.EventBus<ContainerEvents> {
       }
     }
 
-    this.emit('debug', 'Adding injections ahead of time...');
-    const injections: PendingInjectDefinition[] = Reflect.getMetadata(MetadataKeys.PendingInjections, global) ?? [];
-    for (const injection of injections) this.inject(injection);
-
     this.emit('debug', `Received ${pending.length} pending components and services.`);
     const sorted = pending.sort((a, b) => a.priority - b.priority);
     for (let i = 0; i < sorted.length; i++) {
       const cls = sorted[i];
       cls._classRef = new cls._classRef();
 
-      this.objects.set(cls.name, cls);
+      switch (cls.type) {
+        case 'component':
+          this.components.set(cls.name, cls);
+          break;
+
+        case 'service':
+          this.services.set(cls.name, cls);
+          break;
+      }
     }
 
-    this.emit('debug', `Registered ${this.objects.size} objects, now initalizing...`);
-    for (const obj of this.objects.filter(c => isComponentLike(c) || isServiceLike(c)) as (BaseComponent | BaseService)[]) {
-      this.emit('onBeforeInit', obj);
-      await obj._classRef.load?.();
-      this.emit('onAfterInit', obj);
+    this.emit('debug', 'Adding injections ahead of time...');
+    const injections: PendingInjectDefinition[] = Reflect.getMetadata(MetadataKeys.PendingInjections, global) ?? [];
+    for (const injection of injections) this.inject(injection);
+
+    this.emit('debug', `Registered ${this.components.size} components and ${this.services.size} services`);
+    for (const component of this.components.values()) {
+      this.emit('onBeforeInit', component);
+      await component._classRef.load?.();
+      this.emit('onAfterInit', component);
 
       const children = ((Reflect.getMetadata(MetadataKeys.LinkParent, global) ?? []) as ChildrenDefinition[]).filter(child =>
-        child.parentCls === obj._classRef.constructor
+        child.parentCls === component._classRef.constructor
       );
 
       for (let i = 0; i < children.length; i++) {
         const child = children[i];
-        this.emit('onBeforeChildInit', obj, child);
-        await obj._classRef.onChildLoad?.(child);
-        this.emit('onAfterChildInit', obj, child);
+        const c = new child.childCls();
+        c.parent = component._classRef;
+
+        this.emit('onBeforeChildInit', component, c);
+        await component._classRef.onChildLoad?.(c);
+        this.emit('onAfterChildInit', component, c);
       }
     }
 
@@ -302,14 +301,14 @@ export class Container extends utils.EventBus<ContainerEvents> {
     if ($ref === undefined)
       throw new TypeError('Reference was not found');
 
-    const obj = this.objects.find(o => isComponentLike(o) || isServiceLike(o) ? o.name === $ref : o.key === $ref);
-    if (isComponentLike(obj) || isServiceLike(obj))
-      return obj._classRef;
-    else if (obj!.type === 'singleton')
-      return obj!.$ref;
+    if (this.components.has($ref))
+      return this.components.get($ref)!._classRef;
+    else if (this.services.has($ref))
+      return this.services.get($ref)!._classRef;
+    else if (this.singletons.has($ref))
+      return this.singletons.get($ref)!.$ref;
     else
-      // Primitives or non-components/services/singletons can be referenced
-      throw new SyntaxError('Reference object was not a component, singleton, or service');
+      throw new SyntaxError(`Referenced object with ${$ref} was not found`);
   }
 
   /**
@@ -355,14 +354,14 @@ export class Container extends utils.EventBus<ContainerEvents> {
     };
 
     this.#references.set(singleton.constructor !== undefined ? singleton.constructor : singleton, id);
-    this.objects.set(id, s);
+    this.singletons.set(id, s);
   }
 
   /**
    * Disposes this [[Container]]
    */
   dispose() {
-    for (const component of this.components) {
+    for (const component of this.components.values()) {
       // Dispose the component itself
       (async() => await component._classRef.dispose?.())();
 
@@ -371,7 +370,7 @@ export class Container extends utils.EventBus<ContainerEvents> {
         (async() => await component._classRef.onChildDispose?.(child))();
     }
 
-    for (const service of this.services) {
+    for (const service of this.services.values()) {
       // Dispose the service itself
       (async() => await service._classRef.dispose?.())();
 
@@ -380,7 +379,9 @@ export class Container extends utils.EventBus<ContainerEvents> {
         (async() => await service._classRef.onChildDispose?.(child))();
     }
 
-    this.objects.clear();
+    this.components.clear();
+    this.singletons.clear();
+    this.services.clear();
   }
 
   /**
@@ -391,9 +392,6 @@ export class Container extends utils.EventBus<ContainerEvents> {
     const metadata: ReferredObjectDefinition | undefined = Reflect.getMetadata(MetadataKeys.Component, cls);
     if (metadata === undefined)
       throw new TypeError('Missing @Component decorator (did you construct this class? if so, don\'t)');
-
-    if (metadata.type !== 'component')
-      throw new TypeError('[cls] provided was not a @Component decorator');
 
     const component: BaseComponent = {
       _classRef: cls,
@@ -430,7 +428,7 @@ export class Container extends utils.EventBus<ContainerEvents> {
     }
 
     this.#references.set(component._classRef.constructor, component.name);
-    this.objects.set(component.name, component);
+    this.components.set(component.name, component);
   }
 
   /**
@@ -442,14 +440,11 @@ export class Container extends utils.EventBus<ContainerEvents> {
     if (metadata === undefined)
       throw new TypeError('Missing @Service decorator (did you construct this class? if so, don\'t)');
 
-    if (metadata.type !== 'component')
-      throw new TypeError('[cls] provided was not a @Service decorator');
-
     const service: BaseService = {
       _classRef: cls,
       children: [],
       priority: metadata.priority,
-      type: 'component',
+      type: 'service',
       name: metadata.name
     };
 
@@ -480,6 +475,6 @@ export class Container extends utils.EventBus<ContainerEvents> {
     }
 
     this.#references.set(service._classRef.constructor, service.name);
-    this.objects.set(service.name, service);
+    this.services.set(service.name, service);
   }
 }

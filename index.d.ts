@@ -46,22 +46,17 @@ declare namespace Lilith {
     /**
      * Returns the component tree
      */
-    public components: Lilith.BaseComponent[];
+    public components: Collection<string, BaseComponent>;
 
     /**
      * Returns the singleton tree
      */
-    public singletons: Lilith.BaseSingleton[];
+    public singletons: Collection<string, BaseSingleton>;
 
     /**
      * Returns the service tree
      */
-    public services: Lilith.BaseService;
-
-    /**
-     * The objects that were implemented in this [[Container]]
-     */
-    public objects: Collection<string, Lilith.BaseComponent | Lilith.BaseSingleton | Lilith.BaseService>;
+    public services: Collection<string, BaseService>;
 
     /**
      * Verifies the current state of this [[Container]], this initializes all components, services, and singletons.
