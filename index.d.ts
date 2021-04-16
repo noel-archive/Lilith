@@ -127,6 +127,11 @@ declare namespace Lilith {
      * @param cls The service to add
      */
     public addService(cls: any): Promise<void>;
+
+    /**
+     * Runs all injections for components/services
+     */
+    public runInjections(): void;
   }
 
   // ~ Decorators ~

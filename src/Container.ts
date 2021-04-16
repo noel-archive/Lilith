@@ -241,8 +241,7 @@ export class Container extends utils.EventBus<ContainerEvents> {
     }
 
     this.emit('debug', 'Adding injections ahead of time...');
-    const injections: PendingInjectDefinition[] = Reflect.getMetadata(MetadataKeys.PendingInjections, global) ?? [];
-    for (const injection of injections) this.inject(injection);
+    this.runInjections();
 
     this.emit('debug', `Registered ${this.components.size} components and ${this.services.size} services`);
     for (const component of this.components.values()) {
@@ -286,6 +285,14 @@ export class Container extends utils.EventBus<ContainerEvents> {
     }
 
     this.emit('debug', 'We are all set. (ㅇㅅㅇ❀) (* ^ ω ^)');
+  }
+
+  /**
+   * Runs all injections for all components and services
+   */
+  runInjections() {
+    const injections: PendingInjectDefinition[] = Reflect.getMetadata(MetadataKeys.PendingInjections, global) ?? [];
+    for (const injection of injections) this.inject(injection);
   }
 
   /**
@@ -429,8 +436,7 @@ export class Container extends utils.EventBus<ContainerEvents> {
     if (childPath !== undefined)
       await Promise.all(utils.readdirSync(childPath).map(c => import(c)));
 
-    const injections: PendingInjectDefinition[] = Reflect.getMetadata(MetadataKeys.PendingInjections, global) ?? [];
-    for (const injection of injections) this.inject(injection);
+    this.runInjections();
 
     component._classRef = new cls();
     this.emit('onBeforeInit', component);
@@ -476,8 +482,7 @@ export class Container extends utils.EventBus<ContainerEvents> {
     if (childPath !== undefined)
       await Promise.all(utils.readdirSync(childPath).map(c => import(c)));
 
-    const injections: PendingInjectDefinition[] = Reflect.getMetadata(MetadataKeys.PendingInjections, global) ?? [];
-    for (const injection of injections) this.inject(injection);
+    this.runInjections();
 
     service._classRef = new cls();
     this.emit('onBeforeInit', service);
