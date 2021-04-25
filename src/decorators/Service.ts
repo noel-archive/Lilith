@@ -22,16 +22,31 @@
 
 import { ReferredObjectDefinition, MetadataKeys } from '../types';
 
-/**
-* Class decorator to mark the target class as a service
-*/
-export function Service({ name, priority }: {
-  name: string;
+export interface ServiceOptions {
+  /**
+   * List of children or an absolute path to load in children
+   */
+  children?: string | any[];
+
+  /**
+   * The priority to load the component
+   */
   priority: number;
-}): ClassDecorator {
+
+  /**
+   * The name of the component
+   */
+  name: string;
+}
+
+/**
+ * Class decorator to mark the target class as a service
+ */
+export function Service({ name, priority, children }: ServiceOptions): ClassDecorator {
   return (target) => {
     Reflect.defineMetadata(MetadataKeys.Service, (<ReferredObjectDefinition> {
       priority,
+      children,
       type: 'service',
       name
     }), target);

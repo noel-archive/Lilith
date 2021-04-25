@@ -26,6 +26,8 @@ import { isAbsolute } from 'path';
 /**
  * Decorator to find all children in
  * @param path The absolute path to use
+ * @deprecated This class decorator is deprecated. Please fill in the
+ * `children` property in the specific Component or Service.
  */
 export function FindChildrenIn(path: string): ClassDecorator {
   return (target) => {

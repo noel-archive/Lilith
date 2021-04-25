@@ -25,7 +25,8 @@ import { ChildrenDefinition, MetadataKeys } from '../types';
 /**
  * Links a parent component or service to this class
  * @param cls The parent component or service
- * @example `@LinkParent(SomeService)`
+ * @deprecated This decorator is deprecated and will be removed in a future release.
+ * Fill in the `children` property in the `@Component` or `@Service` decorator.
  */
 export function LinkParent(cls: any): ClassDecorator {
   return (target) => {

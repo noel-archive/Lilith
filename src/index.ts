@@ -20,9 +20,18 @@
  * SOFTWARE.
  */
 
+import type { SubscriptionDefinition } from './types';
+
 export * from './decorators';
 export * from './Container';
 export * from './types';
+
+/**
+ * Returns a list of pending subscriptions available
+ */
+export function getPendingSubscriptions(): SubscriptionDefinition[] {
+  return Reflect.getMetadata('$lilith::api::subscriptions', global) ?? [];
+}
 
 /**
  * Returns the current version of @augu/lilith

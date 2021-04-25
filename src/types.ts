@@ -172,3 +172,35 @@ export interface ChildrenDefinition {
    */
   childCls: any;
 }
+
+/**
+ * Represents a definition of a subscription, a subscribable
+ * object to reference of an EventEmitter.
+ */
+export interface SubscriptionDefinition {
+  /**
+   * The handler function to run when this [[SubscriptionDefinition.event]] is ran.
+   * @param args Additional arguments from the method
+   */
+  handler(...args: any[]): any;
+
+  /**
+   * The event emitter class to use to reference.
+   *
+   * Why does this exist?
+   * Because, we doesn't have checking on what event emitter
+   * this subscription is for since the container doesn't have
+   * any additional metadata for emittion classes.
+   */
+  emitterCls: any;
+
+  /**
+   * If this subscription should be ran once from this [[SubscriptionDefinition]]'s emitter.
+   */
+  isOnce: boolean;
+
+  /**
+   * The event name to run this [[SubscriptionDefinition]]'s emitter.
+   */
+  event: string;
+}

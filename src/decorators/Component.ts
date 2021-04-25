@@ -23,15 +23,33 @@
 import { ReferredObjectDefinition, MetadataKeys } from '../types';
 
 /**
+ * Represents the options for using a Component
+ */
+export interface ComponentOptions {
+  /**
+   * List of children or an absolute path to load in children
+   */
+  children?: any[] | string;
+
+  /**
+   * The priority to load the component
+   */
+  priority: number;
+
+  /**
+   * The name of the component
+   */
+  name: string;
+}
+
+/**
  * Class decorator to mark the target class as a component
  */
-export function Component({ name, priority }: {
-  name: string;
-  priority: number;
-}): ClassDecorator {
+export function Component({ name, priority, children }: ComponentOptions): ClassDecorator {
   return (target) => {
     Reflect.defineMetadata(MetadataKeys.Component, (<ReferredObjectDefinition> {
       priority,
+      children,
       type: 'component',
       name
     }), target);
