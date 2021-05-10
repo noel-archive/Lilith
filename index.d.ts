@@ -121,17 +121,19 @@ declare namespace Lilith {
 
   /**
    * Decorator to mark this class as a Component
+   * @param children Any children classes to pass in or an absolute path to use
    * @param priority The priority hierarchy
    * @param name The name of the component
    */
-  export function Component({ priority, name }: { priority: number; name: string; }): ClassDecorator;
+  export function Component({ priority, children, name }: ComponentOrServiceOptions): ClassDecorator;
 
   /**
    * Decorator to mark this class as a Service
+   * @param children Any children classes to pass in or an absolute path to use
    * @param priority The priority hierarchy
    * @param name The name of the component
    */
-  export function Service({ priority, name }: { priority: number; name: string; }): ClassDecorator;
+  export function Service({ priority, children, name }: ComponentOrServiceOptions): ClassDecorator;
 
   // ~ Types & Interfaces ~
   /**
@@ -311,6 +313,26 @@ declare namespace Lilith {
      * A list of singletons to bulk add
      */
     singletons?: any[];
+  }
+
+  /**
+   * Represents the options for using a Component
+   */
+  interface ComponentOrServiceOptions {
+    /**
+     * List of children or an absolute path to load in children
+     */
+    children?: any[] | string;
+
+    /**
+     * The priority to load the component
+     */
+    priority: number;
+
+    /**
+     * The name of the component
+     */
+    name: string;
   }
 }
 
