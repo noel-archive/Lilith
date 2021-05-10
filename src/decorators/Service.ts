@@ -46,11 +46,11 @@ export interface ServiceOptions {
 export function Service({ name, priority, children }: ServiceOptions): ClassDecorator {
   return (target) => {
     if (children !== undefined) {
-      if (!Array.isArray(children) || typeof children !== 'string')
-        throw new TypeError('Component children should be an Array of injectables or an absolute path');
-
       if (typeof children === 'string' && !isAbsolute(children))
         throw new TypeError(`Path '${children}' was not an absolute path.`);
+
+      if (!Array.isArray(children) && !(typeof children === 'string'))
+        throw new TypeError('Component children should be an Array of injectables or an absolute path');
     }
 
     Reflect.defineMetadata(MetadataKeys.Service, (<ReferredObjectDefinition> {
