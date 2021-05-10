@@ -50,7 +50,7 @@ export function Service({ name, priority, children }: ServiceOptions): ClassDeco
         throw new TypeError(`Path '${children}' was not an absolute path.`);
 
       if (!Array.isArray(children) && !(typeof children === 'string'))
-        throw new TypeError('Component children should be an Array of injectables or an absolute path');
+        throw new TypeError('Service children should be an Array of injectables or an absolute path');
     }
 
     Reflect.defineMetadata(MetadataKeys.Service, (<ReferredObjectDefinition> {
