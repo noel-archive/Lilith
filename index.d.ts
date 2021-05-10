@@ -59,31 +59,9 @@ declare namespace Lilith {
     public services: Collection<string, BaseService>;
 
     /**
-     * Verifies the current state of this [[Container]], this initializes all components, services, and singletons.
-     * @deprecated This method is deprecated and will be removed in a future release, use [[Container.load]].
-     */
-    public verify(): Promise<void>;
-
-    /**
      * Initializes all components, services, and singletons.
      */
     public load(): Promise<void>;
-
-    /**
-     * Sets the directory to find components in
-     * @deprecated This method is deprecated and will be removed in a future release. Use `componentsDir` when
-     * creating this [[Container]]
-     * @param dir The directory
-     */
-    public findComponentsIn(dir: string): this;
-
-    /**
-     * Sets the directory to find services in
-     * @deprecated This method is deprecated and will be removed in a future release. Use `servicesDir` when
-     * creating this [[Container]]
-     * @param dir The directory
-     */
-    public findServicesIn(dir: string): this;
 
     /**
      * Returns a reference from the component, singleton, or service tree
@@ -154,19 +132,6 @@ declare namespace Lilith {
    * @param name The name of the component
    */
   export function Service({ priority, name }: { priority: number; name: string; }): ClassDecorator;
-
-  /**
-   * Links a parent component or service to this class
-   * @param cls The parent component or service
-   * @example `@LinkParent(SomeService)`
-   */
-  export function LinkParent(cls: any): ClassDecorator;
-
-  /**
-   * Decorator to find all children in
-   * @param path The absolute path to use
-   */
-  export function FindChildrenIn(path: string): ClassDecorator;
 
   // ~ Types & Interfaces ~
   /**

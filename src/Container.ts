@@ -20,7 +20,7 @@
  * SOFTWARE.
  */
 
-import { BaseComponent, BaseService, BaseSingleton, MetadataKeys, PendingInjectDefinition, ReferredObjectDefinition, ImportedDefaultExport, ChildrenDefinition } from './types';
+import { BaseComponent, BaseService, BaseSingleton, MetadataKeys, PendingInjectDefinition, ReferredObjectDefinition, ImportedDefaultExport } from './types';
 import { randomBytes } from 'crypto';
 import { Collection } from '@augu/collections';
 import * as utils from '@augu/utils';
@@ -135,16 +135,6 @@ export class Container extends utils.EventBus<ContainerEvents> {
   }
 
   /**
-   * Verifies the current state of this [[Container]], this initializes all components, services, and singletons.
-   *
-   * @deprecated This method is deprecated and will be removed in a future release, use [[Container.load]].
-   */
-  verify() {
-    this.emit('debug', 'Application.verify is deprecated and will be removed in a future release.');
-    return this.load();
-  }
-
-  /**
    * Initializes all components, services, and singletons.
    */
   async load() {
@@ -175,18 +165,12 @@ export class Container extends utils.EventBus<ContainerEvents> {
       pending.push({
         _classRef: imported.default,
         priority: metadata.priority,
-        children: [],
+        children: metadata.children ?? [],
         type: 'component',
         name: metadata.name
       });
 
       this.#references.set(imported.default, metadata.name);
-
-      // Import the children classes if the component has a @FindChildrenIn decorator
-      // hacky solution but :shrug:
-      const childPath: string | undefined = Reflect.getMetadata(MetadataKeys.FindChildrenIn, imported.default);
-      if (childPath !== undefined)
-        await Promise.all(utils.readdirSync(childPath).map(c => import(c)));
     }
 
     if (this.#servicesDir !== undefined) {
@@ -208,18 +192,12 @@ export class Container extends utils.EventBus<ContainerEvents> {
         pending.push({
           _classRef: imported.default,
           priority: metadata.priority,
-          children: [],
+          children: metadata.children ?? [],
           type: 'service',
           name: metadata.name
         });
 
         this.#references.set(imported.default, metadata.name);
-
-        // Import the children classes if the component has a @FindChildrenIn decorator
-        // hacky solution but :shrug:
-        const childPath: string | undefined = Reflect.getMetadata(MetadataKeys.FindChildrenIn, imported.default);
-        if (childPath !== undefined)
-          await Promise.all(utils.readdirSync(childPath).map(c => import(c)));
       }
     }
 
@@ -249,19 +227,26 @@ export class Container extends utils.EventBus<ContainerEvents> {
       await component._classRef.load?.();
       this.emit('onAfterInit', component);
 
-      const children = ((Reflect.getMetadata(MetadataKeys.LinkParent, global) ?? []) as ChildrenDefinition[]).filter(child =>
-        child.parentCls === component._classRef.constructor
-      );
+      let children: any[] = [];
+      if (typeof component.children === 'string') {
+        const refs = await utils.readdir(component.children);
+        children = await Promise.all(refs.map(ref => import(ref)));
+      } else if (component.children.length > 0) {
+        children = component.children;
+      }
 
+      children = children.map(returnFromExport);
       for (let i = 0; i < children.length; i++) {
         const child = children[i];
-        const c = new child.childCls();
+        const c = new child();
         c.parent = component._classRef;
 
         this.emit('onBeforeChildInit', component, c);
         await component._classRef.onChildLoad?.(c);
         this.emit('onAfterChildInit', component, c);
       }
+
+      component.children = children;
     }
 
     for (const service of this.services.values()) {
@@ -269,19 +254,26 @@ export class Container extends utils.EventBus<ContainerEvents> {
       await service._classRef.load?.();
       this.emit('onAfterInit', service);
 
-      const children = ((Reflect.getMetadata(MetadataKeys.LinkParent, global) ?? []) as ChildrenDefinition[]).filter(child =>
-        child.parentCls === service._classRef.constructor
-      );
+      let children: any[] = [];
+      if (typeof service.children === 'string') {
+        const refs = await utils.readdir(service.children);
+        children = await Promise.all(refs.map(ref => import(ref)));
+      } else if (service.children.length > 0) {
+        children = service.children;
+      }
 
+      children = children.map(returnFromExport);
       for (let i = 0; i < children.length; i++) {
         const child = children[i];
-        const c = new child.childCls();
+        const c = new child();
         c.parent = service._classRef;
 
         this.emit('onBeforeChildInit', service, c);
         await service._classRef.onChildLoad?.(c);
         this.emit('onAfterChildInit', service, c);
       }
+
+      service.children = children;
     }
 
     this.emit('debug', 'We are all set. (ㅇㅅㅇ❀) (* ^ ω ^)');
@@ -293,30 +285,6 @@ export class Container extends utils.EventBus<ContainerEvents> {
   runInjections() {
     const injections: PendingInjectDefinition[] = Reflect.getMetadata(MetadataKeys.PendingInjections, global) ?? [];
     for (const injection of injections) this.inject(injection);
-  }
-
-  /**
-   * Sets the directory to find components in
-   * @deprecated This method is deprecated and will be removed in a future release. Use `componentsDir` when
-   * creating this [[Container]]
-   *
-   * @param dir The directory
-   */
-  findComponentsIn(dir: string) {
-    this.#componentsDir = dir;
-    return this;
-  }
-
-  /**
-   * Sets the directory to find services in
-   * @deprecated This method is deprecated and will be removed in a future release. Use `servicesDir` when
-   * creating this [[Container]]
-   *
-   * @param dir The directory
-   */
-  findServicesIn(dir: string) {
-    this.#servicesDir = dir;
-    return this;
   }
 
   /**
@@ -430,12 +398,6 @@ export class Container extends utils.EventBus<ContainerEvents> {
       name: metadata.name
     };
 
-    // Import the children classes if the component has a @FindChildrenIn decorator
-    // hacky solution but :shrug:
-    const childPath: string | undefined = Reflect.getMetadata(MetadataKeys.FindChildrenIn, cls);
-    if (childPath !== undefined)
-      await Promise.all(utils.readdirSync(childPath).map(c => import(c)));
-
     this.runInjections();
 
     component._classRef = new cls();
@@ -443,9 +405,15 @@ export class Container extends utils.EventBus<ContainerEvents> {
     await component._classRef.load?.();
     this.emit('onAfterInit', component);
 
-    const children = ((Reflect.getMetadata(MetadataKeys.LinkParent, global) ?? []) as ChildrenDefinition[])
-      .filter(child => child.parentCls.constructor === cls);
+    let children: any[] = [];
+    if (typeof component.children === 'string') {
+      const refs = await utils.readdir(component.children);
+      children = await Promise.all(refs.map(ref => import(ref)));
+    } else if (component.children.length > 0) {
+      children = component.children;
+    }
 
+    children = children.map(returnFromExport);
     for (const child of children) {
       const c = new child.childCls();
       c.parent = component._classRef;
@@ -455,6 +423,7 @@ export class Container extends utils.EventBus<ContainerEvents> {
       this.emit('onAfterChildInit', component, c);
     }
 
+    component.children = children;
     this.#references.set(component._classRef.constructor, component.name);
     this.components.set(component.name, component);
   }
@@ -476,12 +445,6 @@ export class Container extends utils.EventBus<ContainerEvents> {
       name: metadata.name
     };
 
-    // Import the children classes if the component has a @FindChildrenIn decorator
-    // hacky solution but :shrug:
-    const childPath: string | undefined = Reflect.getMetadata(MetadataKeys.FindChildrenIn, cls);
-    if (childPath !== undefined)
-      await Promise.all(utils.readdirSync(childPath).map(c => import(c)));
-
     this.runInjections();
 
     service._classRef = new cls();
@@ -489,9 +452,15 @@ export class Container extends utils.EventBus<ContainerEvents> {
     await service._classRef.load?.();
     this.emit('onAfterInit', service);
 
-    const children = ((Reflect.getMetadata(MetadataKeys.LinkParent, global) ?? []) as ChildrenDefinition[])
-      .filter(child => child.parentCls.constructor === cls);
+    let children: any[] = [];
+    if (typeof service.children === 'string') {
+      const refs = await utils.readdir(service.children);
+      children = await Promise.all(refs.map(ref => import(ref)));
+    } else if (service.children.length > 0) {
+      children = service.children;
+    }
 
+    children = children.map(returnFromExport);
     for (const child of children) {
       const c = new child.childCls();
       c.parent = service._classRef;
@@ -501,6 +470,7 @@ export class Container extends utils.EventBus<ContainerEvents> {
       this.emit('onAfterChildInit', service, c);
     }
 
+    service.children = children;
     this.#references.set(service._classRef.constructor, service.name);
     this.services.set(service.name, service);
   }

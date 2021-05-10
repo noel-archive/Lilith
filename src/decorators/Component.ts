@@ -21,6 +21,7 @@
  */
 
 import { ReferredObjectDefinition, MetadataKeys } from '../types';
+import { isAbsolute } from 'path';
 
 /**
  * Represents the options for using a Component
@@ -47,6 +48,14 @@ export interface ComponentOptions {
  */
 export function Component({ name, priority, children }: ComponentOptions): ClassDecorator {
   return (target) => {
+    if (children !== undefined) {
+      if (typeof children === 'string' && !isAbsolute(children))
+        throw new TypeError(`Path '${children}' was not an absolute path.`);
+
+      if (!Array.isArray(children) && !(typeof children === 'string'))
+        throw new TypeError('Component children should be an Array of injectables or an absolute path');
+    }
+
     Reflect.defineMetadata(MetadataKeys.Component, (<ReferredObjectDefinition> {
       priority,
       children,

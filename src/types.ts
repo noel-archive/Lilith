@@ -37,7 +37,7 @@ export interface BaseComponent {
   /**
    * List of children attached to this [[BaseComponent]] as it's parent
    */
-  children: any[];
+  children: any[] | string;
 
   /**
    * Represents the type for this [[BaseComponent]]. It's always
@@ -66,7 +66,7 @@ export interface BaseService {
   /**
    * List of children attached to this [[BaseService]] as it's parent
    */
-  children: any[];
+  children: any[] | string;
 
   /**
    * Represents the type for this [[BaseService]]. It's always
@@ -90,9 +90,6 @@ export interface BaseService {
  */
 export const enum MetadataKeys {
   PendingInjections = '$lilith::api::injections::pending',
-  FindChildrenIn    = '$lilith::api::link-parent::find',
-  Subscriptions     = '$lilith::api::subscriptions',
-  LinkParent        = '$lilith::api::link-parent',
   Component         = '$lilith::api::component',
   Service           = '$lilith::api::service'
 }
@@ -128,6 +125,11 @@ export interface ReferredObjectDefinition {
   priority: number;
 
   /**
+   * List of children or an absolute path to load in children
+   */
+  children?: string | any[];
+
+  /**
    * The type of this [[ReferredObjectDefintion]]
    */
   type: 'component' | 'service' | 'singleton';
@@ -156,51 +158,4 @@ export interface BaseSingleton {
    * The singleton's key, just a random scribble of words.
    */
   key: string;
-}
-
-/**
- * Represents a definition of parent / children of a [[BaseComponent]] or [[BaseService]]
- */
-export interface ChildrenDefinition {
-  /**
-   * The parent class that this [[ChildrenDefinition]] belongs to
-   */
-  parentCls: any;
-
-  /**
-   * The child class that this [[ChildrenDefinition]] belongs to
-   */
-  childCls: any;
-}
-
-/**
- * Represents a definition of a subscription, a subscribable
- * object to reference of an EventEmitter.
- */
-export interface SubscriptionDefinition {
-  /**
-   * The handler function to run when this [[SubscriptionDefinition.event]] is ran.
-   * @param args Additional arguments from the method
-   */
-  handler(...args: any[]): any;
-
-  /**
-   * The event emitter class to use to reference.
-   *
-   * Why does this exist?
-   * Because, we doesn't have checking on what event emitter
-   * this subscription is for since the container doesn't have
-   * any additional metadata for emittion classes.
-   */
-  emitterCls: any;
-
-  /**
-   * If this subscription should be ran once from this [[SubscriptionDefinition]]'s emitter.
-   */
-  isOnce: boolean;
-
-  /**
-   * The event name to run this [[SubscriptionDefinition]]'s emitter.
-   */
-  event: string;
 }

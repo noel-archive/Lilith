@@ -20,9 +20,6 @@
  * SOFTWARE.
  */
 
-export * from './FindChildrenIn';
-export * from './LinkParent';
-export * from './Subscribe';
 export * from './Component';
 export * from './Service';
 export * from './Inject';
