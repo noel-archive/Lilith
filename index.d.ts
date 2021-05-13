@@ -137,6 +137,45 @@ declare namespace Lilith {
 
   // ~ Types & Interfaces ~
   /**
+   * Represents the lifecycle hooks for a [BaseComponent]
+   * or a [BaseService].
+   *
+   * @typeparam C **~** The child object, if any.
+   */
+  export interface ComponentOrServiceHooks<C = {}> {
+    /**
+     * Called when [Container.dispose] is called, this disposes
+     * each child in this component / service.
+     *
+     * @param child The child object that is being disposed
+     */
+    onChildDispose?(child: C): void;
+
+    /**
+     * Called when [Container.load], [Container.addComponent], or [Container.addService] is called.
+     * This function properly adds a child class to this component / service.
+     *
+     * @param child The child object that was received from the parent component / services'
+     * `children` property.
+     */
+    onChildLoad?(child: C): void;
+
+    /**
+     * Called when [Container.dispose] is called. This disposes
+     * any database calls, or whatever for this specific component
+     * or service.
+     */
+    dispose?(): void | Promise<void>;
+
+    /**
+     * Called when [Container.load], [Container.addComponent], or [Container.addService] is called.
+     * This functions acts like the foundation on introducting your component / service
+     * to your application.
+     */
+    load?(): void | Promise<void>;
+  }
+
+  /**
    * Type alias to represented the return value of `require()` or `import()`
    */
   type ImportedDefaultExport<T> = T extends { default: infer P }
