@@ -28,15 +28,15 @@
   },
   "dependencies": {
     "@augu/collections": "1.0.8",
-    "@augu/utils": "1.5.0",
+    "@augu/utils": "1.5.3",
     "reflect-metadata": "0.1.13"
   },
   "devDependencies": {
-    "@augu/eslint-config": "2.0.3",
+    "@augu/eslint-config": "2.1.0",
     "@augu/tsconfig": "1.1.0",
-    "@types/node": "14.14.45",
-    "@typescript-eslint/eslint-plugin": "4.23.0",
-    "@typescript-eslint/parser": "4.23.0",
+    "@types/node": "14.17.0",
+    "@typescript-eslint/eslint-plugin": "4.24.0",
+    "@typescript-eslint/parser": "4.24.0",
     "eledoc": "0.2.1",
     "eslint": "7.26.0",
     "husky": "6.0.0",
