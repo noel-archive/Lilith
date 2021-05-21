@@ -293,7 +293,7 @@ export class Container extends utils.EventBus<ContainerEvents> {
    * @typeparam Ref The reference by class (it'll return `typeof <ref>`, use the second generic to return the class)
    * @typeparam TReturn The return value
    */
-  $ref<Ref extends any, TReturn extends any = any>(ref: Ref): TReturn {
+  $ref<TReturn extends BaseSingleton | BaseService | BaseComponent>(ref: any): TReturn {
     const $ref = this.#references.get(ref);
     if ($ref === undefined)
       throw new TypeError('Reference was not found');
@@ -473,5 +473,29 @@ export class Container extends utils.EventBus<ContainerEvents> {
     service.children = children;
     this.#references.set(service._classRef.constructor, service.name);
     this.services.set(service.name, service);
+  }
+
+  /**
+   * Finds a component, service, or singleton by a specific `predicate` function
+   * @param func The predicate function to find the component, service, or singleton's constructor type or name
+   * @returns The component, service, singleton found or `null` if nothing was found
+   */
+  find<S extends BaseComponent | BaseService | BaseSingleton, ThisArg = Container>(
+    func: (value: BaseComponent | BaseService | BaseSingleton) => boolean,
+    thisArg?: ThisArg
+  ) {
+    const values: (BaseComponent | BaseService | BaseSingleton)[] = ([] as any[]).concat(
+      this.components.toArray(),
+      this.services.toArray(),
+      this.singletons.toArray()
+    );
+
+    for (let i = 0; i < values.length; i++) {
+      const value = values[i];
+      if (func.call(thisArg !== undefined ? thisArg : this, value))
+        return value as S;
+    }
+
+    return null;
   }
 }

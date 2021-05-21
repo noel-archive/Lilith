@@ -66,10 +66,9 @@ declare namespace Lilith {
     /**
      * Returns a reference from the component, singleton, or service tree
      * @param ref The reference to find
-     * @typeparam Ref The reference by class (it'll return `typeof <ref>`, use the second generic to return the class)
      * @typeparam TReturn The return value
      */
-    public $ref<Ref extends any, TReturn extends any = any>(ref: Ref): TReturn;
+    public $ref<TReturn extends BaseSingleton | BaseService | BaseComponent>(ref: any): TReturn;
 
     /**
      * Injects all pending references to the target class
@@ -110,6 +109,16 @@ declare namespace Lilith {
      * Runs all injections for components/services
      */
     public runInjections(): void;
+
+    /**
+     * Finds a component, service, or singleton by a specific `predicate` function
+     * @param func The predicate function to find the component, service, or singleton's constructor type or name
+     * @returns The component, service, singleton found or `null` if nothing was found
+     */
+    public find<S extends BaseComponent | BaseService | BaseSingleton, ThisArg = Container>(
+      func: (value: BaseComponent | BaseService | BaseSingleton) => boolean,
+      thisArg?: ThisArg
+    ): S | null;
   }
 
   // ~ Decorators ~
