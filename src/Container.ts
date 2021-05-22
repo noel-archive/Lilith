@@ -293,7 +293,7 @@ export class Container extends utils.EventBus<ContainerEvents> {
    * @typeparam Ref The reference by class (it'll return `typeof <ref>`, use the second generic to return the class)
    * @typeparam TReturn The return value
    */
-  $ref<TReturn extends BaseSingleton | BaseService | BaseComponent>(ref: any): TReturn {
+  $ref<TReturn = any>(ref: any): TReturn {
     const $ref = this.#references.get(ref);
     if ($ref === undefined)
       throw new TypeError('Reference was not found');

@@ -68,7 +68,7 @@ declare namespace Lilith {
      * @param ref The reference to find
      * @typeparam TReturn The return value
      */
-    public $ref<TReturn extends BaseSingleton | BaseService | BaseComponent>(ref: any): TReturn;
+    public $ref<TReturn = any>(ref: any): TReturn;
 
     /**
      * Injects all pending references to the target class
