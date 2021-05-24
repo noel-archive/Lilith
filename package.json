@@ -27,7 +27,7 @@
     "docs": "typedoc src --out docs --theme node_modules/eledoc/bin/default/"
   },
   "dependencies": {
-    "@augu/collections": "1.0.8",
+    "@augu/collections": "1.0.9",
     "@augu/utils": "1.5.3",
     "reflect-metadata": "0.1.13"
   },
