@@ -1,0 +1,3229 @@
+{
+	"id": 0,
+	"name": "Lilith",
+	"kind": 0,
+	"flags": {},
+	"children": [
+		{
+			"id": 1,
+			"name": "Container",
+			"kind": 1,
+			"kindString": "Module",
+			"flags": {},
+			"children": [
+				{
+					"id": 8,
+					"name": "Container",
+					"kind": 128,
+					"kindString": "Class",
+					"flags": {},
+					"comment": {
+						"shortText": "Represents a \"container\" of components, singletons, and services. This is the main\nentrypoint to Lilith, this is your creation tool to create your application! **(\\*≧∀≦\\*)**"
+					},
+					"children": [
+						{
+							"id": 9,
+							"name": "constructor",
+							"kind": 512,
+							"kindString": "Constructor",
+							"flags": {},
+							"signatures": [
+								{
+									"id": 10,
+									"name": "new Container",
+									"kind": 16384,
+									"kindString": "Constructor signature",
+									"flags": {},
+									"comment": {
+										"shortText": "Represents a \"container\" of components, singletons, and services. This is the main\nentrypoint to Lilith, this is your creation tool to create your application! **(\\*≧∀≦\\*)**"
+									},
+									"parameters": [
+										{
+											"id": 11,
+											"name": "options",
+											"kind": 32768,
+											"kindString": "Parameter",
+											"flags": {
+												"isOptional": true
+											},
+											"comment": {
+												"text": "Any additional options to use\n"
+											},
+											"type": {
+												"type": "reference",
+												"name": "ContainerOptions"
+											}
+										}
+									],
+									"type": {
+										"type": "reference",
+										"id": 8,
+										"name": "Container"
+									},
+									"overwrites": {
+										"type": "reference",
+										"name": "utils.EventBus<ContainerEvents>.constructor"
+									}
+								}
+							],
+							"overwrites": {
+								"type": "reference",
+								"name": "utils.EventBus<ContainerEvents>.constructor"
+							}
+						},
+						{
+							"id": 12,
+							"name": "components",
+							"kind": 1024,
+							"kindString": "Property",
+							"flags": {
+								"isPublic": true
+							},
+							"comment": {
+								"shortText": "The component tree for this [[Container]]"
+							},
+							"sources": [
+								{
+									"fileName": "src/Container.ts",
+									"line": 104,
+									"character": 19
+								}
+							],
+							"type": {
+								"type": "reference",
+								"typeArguments": [
+									{
+										"type": "intrinsic",
+										"name": "string"
+									},
+									{
+										"type": "reference",
+										"id": 116,
+										"name": "BaseComponent"
+									}
+								],
+								"name": "Collection"
+							},
+							"defaultValue": "..."
+						},
+						{
+							"id": 14,
+							"name": "services",
+							"kind": 1024,
+							"kindString": "Property",
+							"flags": {
+								"isPublic": true
+							},
+							"comment": {
+								"shortText": "The services tree for this [[Container]]"
+							},
+							"sources": [
+								{
+									"fileName": "src/Container.ts",
+									"line": 114,
+									"character": 17
+								}
+							],
+							"type": {
+								"type": "reference",
+								"typeArguments": [
+									{
+										"type": "intrinsic",
+										"name": "string"
+									},
+									{
+										"type": "reference",
+										"id": 122,
+										"name": "BaseService"
+									}
+								],
+								"name": "Collection"
+							},
+							"defaultValue": "..."
+						},
+						{
+							"id": 13,
+							"name": "singletons",
+							"kind": 1024,
+							"kindString": "Property",
+							"flags": {
+								"isPublic": true
+							},
+							"comment": {
+								"shortText": "The singleton tree for this [[Container]]"
+							},
+							"sources": [
+								{
+									"fileName": "src/Container.ts",
+									"line": 109,
+									"character": 19
+								}
+							],
+							"type": {
+								"type": "reference",
+								"typeArguments": [
+									{
+										"type": "intrinsic",
+										"name": "string"
+									},
+									{
+										"type": "reference",
+										"id": 141,
+										"name": "BaseSingleton"
+									}
+								],
+								"name": "Collection"
+							},
+							"defaultValue": "..."
+						},
+						{
+							"id": 22,
+							"name": "$ref",
+							"kind": 2048,
+							"kindString": "Method",
+							"flags": {},
+							"sources": [
+								{
+									"fileName": "src/Container.ts",
+									"line": 296,
+									"character": 6
+								}
+							],
+							"signatures": [
+								{
+									"id": 23,
+									"name": "$ref",
+									"kind": 4096,
+									"kindString": "Call signature",
+									"flags": {},
+									"comment": {
+										"shortText": "Returns a reference from the component, singleton, or service tree",
+										"tags": [
+											{
+												"tag": "typeparam",
+												"text": "The reference by class (it'll return `typeof <ref>`, use the second generic to return the class)",
+												"param": "Ref"
+											}
+										]
+									},
+									"typeParameter": [
+										{
+											"id": 24,
+											"name": "TReturn",
+											"kind": 131072,
+											"kindString": "Type parameter",
+											"flags": {},
+											"comment": {
+												"text": "The return value\n"
+											},
+											"default": {
+												"type": "intrinsic",
+												"name": "any"
+											}
+										}
+									],
+									"parameters": [
+										{
+											"id": 25,
+											"name": "ref",
+											"kind": 32768,
+											"kindString": "Parameter",
+											"flags": {},
+											"comment": {
+												"text": "The reference to find"
+											},
+											"type": {
+												"type": "intrinsic",
+												"name": "any"
+											}
+										}
+									],
+									"type": {
+										"type": "reference",
+										"name": "TReturn"
+									}
+								}
+							]
+						},
+						{
+							"id": 37,
+							"name": "addComponent",
+							"kind": 2048,
+							"kindString": "Method",
+							"flags": {},
+							"sources": [
+								{
+									"fileName": "src/Container.ts",
+									"line": 388,
+									"character": 20
+								}
+							],
+							"signatures": [
+								{
+									"id": 38,
+									"name": "addComponent",
+									"kind": 4096,
+									"kindString": "Call signature",
+									"flags": {},
+									"comment": {
+										"shortText": "Applies a component to this [[Container]]"
+									},
+									"parameters": [
+										{
+											"id": 39,
+											"name": "cls",
+											"kind": 32768,
+											"kindString": "Parameter",
+											"flags": {},
+											"comment": {
+												"text": "The component to add\n"
+											},
+											"type": {
+												"type": "intrinsic",
+												"name": "any"
+											}
+										}
+									],
+									"type": {
+										"type": "reference",
+										"typeArguments": [
+											{
+												"type": "intrinsic",
+												"name": "void"
+											}
+										],
+										"name": "Promise"
+									}
+								}
+							]
+						},
+						{
+							"id": 82,
+							"name": "addListener",
+							"kind": 2048,
+							"kindString": "Method",
+							"flags": {
+								"isExternal": true
+							},
+							"sources": [
+								{
+									"fileName": "node_modules/@augu/utils/index.d.ts",
+									"line": 423,
+									"character": 15
+								}
+							],
+							"signatures": [
+								{
+									"id": 83,
+									"name": "addListener",
+									"kind": 4096,
+									"kindString": "Call signature",
+									"flags": {
+										"isExternal": true
+									},
+									"comment": {
+										"tags": [
+											{
+												"tag": "inheritdoc",
+												"text": "\n"
+											}
+										]
+									},
+									"typeParameter": [
+										{
+											"id": 84,
+											"name": "K",
+											"kind": 131072,
+											"kindString": "Type parameter",
+											"flags": {
+												"isExternal": true
+											},
+											"type": {
+												"type": "typeOperator",
+												"operator": "keyof",
+												"target": {
+													"type": "reference",
+													"name": "ContainerEvents"
+												}
+											}
+										}
+									],
+									"parameters": [
+										{
+											"id": 85,
+											"name": "event",
+											"kind": 32768,
+											"kindString": "Parameter",
+											"flags": {
+												"isExternal": true
+											},
+											"type": {
+												"type": "reference",
+												"name": "K"
+											}
+										},
+										{
+											"id": 86,
+											"name": "listener",
+											"kind": 32768,
+											"kindString": "Parameter",
+											"flags": {
+												"isExternal": true
+											},
+											"type": {
+												"type": "indexedAccess",
+												"indexType": {
+													"type": "reference",
+													"name": "K"
+												},
+												"objectType": {
+													"type": "reference",
+													"name": "ContainerEvents"
+												}
+											}
+										}
+									],
+									"type": {
+										"type": "reference",
+										"id": 8,
+										"name": "Container"
+									},
+									"inheritedFrom": {
+										"type": "reference",
+										"name": "utils.EventBus.addListener"
+									}
+								}
+							],
+							"inheritedFrom": {
+								"type": "reference",
+								"name": "utils.EventBus.addListener"
+							}
+						},
+						{
+							"id": 40,
+							"name": "addService",
+							"kind": 2048,
+							"kindString": "Method",
+							"flags": {},
+							"sources": [
+								{
+									"fileName": "src/Container.ts",
+									"line": 435,
+									"character": 18
+								}
+							],
+							"signatures": [
+								{
+									"id": 41,
+									"name": "addService",
+									"kind": 4096,
+									"kindString": "Call signature",
+									"flags": {},
+									"comment": {
+										"shortText": "Applies a service to this [[Container]]"
+									},
+									"parameters": [
+										{
+											"id": 42,
+											"name": "cls",
+											"kind": 32768,
+											"kindString": "Parameter",
+											"flags": {},
+											"comment": {
+												"text": "The component to add\n"
+											},
+											"type": {
+												"type": "intrinsic",
+												"name": "any"
+											}
+										}
+									],
+									"type": {
+										"type": "reference",
+										"typeArguments": [
+											{
+												"type": "intrinsic",
+												"name": "void"
+											}
+										],
+										"name": "Promise"
+									}
+								}
+							]
+						},
+						{
+							"id": 32,
+							"name": "addSingleton",
+							"kind": 2048,
+							"kindString": "Method",
+							"flags": {},
+							"sources": [
+								{
+									"fileName": "src/Container.ts",
+									"line": 343,
+									"character": 14
+								}
+							],
+							"signatures": [
+								{
+									"id": 33,
+									"name": "addSingleton",
+									"kind": 4096,
+									"kindString": "Call signature",
+									"flags": {},
+									"comment": {
+										"shortText": "Registers a singleton to this [[Container]]"
+									},
+									"parameters": [
+										{
+											"id": 34,
+											"name": "singleton",
+											"kind": 32768,
+											"kindString": "Parameter",
+											"flags": {},
+											"comment": {
+												"text": "The singleton to register\n"
+											},
+											"type": {
+												"type": "intrinsic",
+												"name": "any"
+											}
+										}
+									],
+									"type": {
+										"type": "intrinsic",
+										"name": "void"
+									}
+								}
+							]
+						},
+						{
+							"id": 29,
+							"name": "addSingletons",
+							"kind": 2048,
+							"kindString": "Method",
+							"flags": {},
+							"sources": [
+								{
+									"fileName": "src/Container.ts",
+									"line": 334,
+									"character": 15
+								}
+							],
+							"signatures": [
+								{
+									"id": 30,
+									"name": "addSingletons",
+									"kind": 4096,
+									"kindString": "Call signature",
+									"flags": {},
+									"comment": {
+										"shortText": "Bulk-add a list of singletons"
+									},
+									"parameters": [
+										{
+											"id": 31,
+											"name": "singletons",
+											"kind": 32768,
+											"kindString": "Parameter",
+											"flags": {},
+											"comment": {
+												"text": "The singletons to add\n"
+											},
+											"type": {
+												"type": "array",
+												"elementType": {
+													"type": "intrinsic",
+													"name": "any"
+												}
+											}
+										}
+									],
+									"type": {
+										"type": "intrinsic",
+										"name": "void"
+									}
+								}
+							]
+						},
+						{
+							"id": 35,
+							"name": "dispose",
+							"kind": 2048,
+							"kindString": "Method",
+							"flags": {},
+							"sources": [
+								{
+									"fileName": "src/Container.ts",
+									"line": 360,
+									"character": 9
+								}
+							],
+							"signatures": [
+								{
+									"id": 36,
+									"name": "dispose",
+									"kind": 4096,
+									"kindString": "Call signature",
+									"flags": {},
+									"comment": {
+										"shortText": "Disposes this [[Container]]"
+									},
+									"type": {
+										"type": "intrinsic",
+										"name": "void"
+									}
+								}
+							]
+						},
+						{
+							"id": 52,
+							"name": "emit",
+							"kind": 2048,
+							"kindString": "Method",
+							"flags": {
+								"isExternal": true
+							},
+							"sources": [
+								{
+									"fileName": "node_modules/@augu/utils/index.d.ts",
+									"line": 364,
+									"character": 8
+								}
+							],
+							"signatures": [
+								{
+									"id": 53,
+									"name": "emit",
+									"kind": 4096,
+									"kindString": "Call signature",
+									"flags": {
+										"isExternal": true
+									},
+									"comment": {
+										"shortText": "Emits a new event from the callstack",
+										"returns": "A boolean value if it exists or not\n"
+									},
+									"typeParameter": [
+										{
+											"id": 54,
+											"name": "K",
+											"kind": 131072,
+											"kindString": "Type parameter",
+											"flags": {
+												"isExternal": true
+											},
+											"type": {
+												"type": "typeOperator",
+												"operator": "keyof",
+												"target": {
+													"type": "reference",
+													"name": "ContainerEvents"
+												}
+											}
+										}
+									],
+									"parameters": [
+										{
+											"id": 55,
+											"name": "event",
+											"kind": 32768,
+											"kindString": "Parameter",
+											"flags": {
+												"isExternal": true
+											},
+											"comment": {
+												"text": "The event to emit"
+											},
+											"type": {
+												"type": "reference",
+												"name": "K"
+											}
+										},
+										{
+											"id": 56,
+											"name": "args",
+											"kind": 32768,
+											"kindString": "Parameter",
+											"flags": {
+												"isExternal": true,
+												"isRest": true
+											},
+											"comment": {
+												"text": "Any additional arguments to push"
+											},
+											"type": {
+												"type": "reference",
+												"typeArguments": [
+													{
+														"type": "indexedAccess",
+														"indexType": {
+															"type": "reference",
+															"name": "K"
+														},
+														"objectType": {
+															"type": "reference",
+															"name": "ContainerEvents"
+														}
+													}
+												],
+												"name": "ListenerArgs"
+											}
+										}
+									],
+									"type": {
+										"type": "intrinsic",
+										"name": "boolean"
+									},
+									"inheritedFrom": {
+										"type": "reference",
+										"name": "utils.EventBus.emit"
+									}
+								}
+							],
+							"inheritedFrom": {
+								"type": "reference",
+								"name": "utils.EventBus.emit"
+							}
+						},
+						{
+							"id": 43,
+							"name": "find",
+							"kind": 2048,
+							"kindString": "Method",
+							"flags": {},
+							"sources": [
+								{
+									"fileName": "src/Container.ts",
+									"line": 483,
+									"character": 6
+								}
+							],
+							"signatures": [
+								{
+									"id": 44,
+									"name": "find",
+									"kind": 4096,
+									"kindString": "Call signature",
+									"flags": {},
+									"comment": {
+										"shortText": "Finds a component, service, or singleton by a specific `predicate` function",
+										"returns": "The component, service, singleton found or `null` if nothing was found\n"
+									},
+									"typeParameter": [
+										{
+											"id": 45,
+											"name": "S",
+											"kind": 131072,
+											"kindString": "Type parameter",
+											"flags": {},
+											"type": {
+												"type": "union",
+												"types": [
+													{
+														"type": "reference",
+														"id": 116,
+														"name": "BaseComponent"
+													},
+													{
+														"type": "reference",
+														"id": 122,
+														"name": "BaseService"
+													},
+													{
+														"type": "reference",
+														"id": 141,
+														"name": "BaseSingleton"
+													}
+												]
+											}
+										},
+										{
+											"id": 46,
+											"name": "ThisArg",
+											"kind": 131072,
+											"kindString": "Type parameter",
+											"flags": {},
+											"default": {
+												"type": "reference",
+												"id": 8,
+												"name": "Container"
+											}
+										}
+									],
+									"parameters": [
+										{
+											"id": 47,
+											"name": "func",
+											"kind": 32768,
+											"kindString": "Parameter",
+											"flags": {},
+											"comment": {
+												"text": "The predicate function to find the component, service, or singleton's constructor type or name"
+											},
+											"type": {
+												"type": "reflection",
+												"declaration": {
+													"id": 48,
+													"name": "__type",
+													"kind": 65536,
+													"kindString": "Type literal",
+													"flags": {},
+													"signatures": [
+														{
+															"id": 49,
+															"name": "__type",
+															"kind": 4096,
+															"kindString": "Call signature",
+															"flags": {},
+															"parameters": [
+																{
+																	"id": 50,
+																	"name": "value",
+																	"kind": 32768,
+																	"kindString": "Parameter",
+																	"flags": {},
+																	"type": {
+																		"type": "union",
+																		"types": [
+																			{
+																				"type": "reference",
+																				"id": 116,
+																				"name": "BaseComponent"
+																			},
+																			{
+																				"type": "reference",
+																				"id": 122,
+																				"name": "BaseService"
+																			},
+																			{
+																				"type": "reference",
+																				"id": 141,
+																				"name": "BaseSingleton"
+																			}
+																		]
+																	}
+																}
+															],
+															"type": {
+																"type": "intrinsic",
+																"name": "boolean"
+															}
+														}
+													]
+												}
+											}
+										},
+										{
+											"id": 51,
+											"name": "thisArg",
+											"kind": 32768,
+											"kindString": "Parameter",
+											"flags": {
+												"isOptional": true
+											},
+											"type": {
+												"type": "reference",
+												"name": "ThisArg"
+											}
+										}
+									],
+									"type": {
+										"type": "union",
+										"types": [
+											{
+												"type": "literal",
+												"value": null
+											},
+											{
+												"type": "reference",
+												"name": "S"
+											}
+										]
+									}
+								}
+							]
+						},
+						{
+							"id": 26,
+							"name": "inject",
+							"kind": 2048,
+							"kindString": "Method",
+							"flags": {},
+							"sources": [
+								{
+									"fileName": "src/Container.ts",
+									"line": 315,
+									"character": 8
+								}
+							],
+							"signatures": [
+								{
+									"id": 27,
+									"name": "inject",
+									"kind": 4096,
+									"kindString": "Call signature",
+									"flags": {},
+									"comment": {
+										"shortText": "Injects all pending references to the target class"
+									},
+									"parameters": [
+										{
+											"id": 28,
+											"name": "pending",
+											"kind": 32768,
+											"kindString": "Parameter",
+											"flags": {},
+											"comment": {
+												"text": "The pending injections\n"
+											},
+											"type": {
+												"type": "reference",
+												"id": 132,
+												"name": "PendingInjectDefinition"
+											}
+										}
+									],
+									"type": {
+										"type": "intrinsic",
+										"name": "void"
+									}
+								}
+							]
+						},
+						{
+							"id": 18,
+							"name": "load",
+							"kind": 2048,
+							"kindString": "Method",
+							"flags": {},
+							"sources": [
+								{
+									"fileName": "src/Container.ts",
+									"line": 140,
+									"character": 12
+								}
+							],
+							"signatures": [
+								{
+									"id": 19,
+									"name": "load",
+									"kind": 4096,
+									"kindString": "Call signature",
+									"flags": {},
+									"comment": {
+										"shortText": "Initializes all components, services, and singletons."
+									},
+									"type": {
+										"type": "reference",
+										"typeArguments": [
+											{
+												"type": "intrinsic",
+												"name": "void"
+											}
+										],
+										"name": "Promise"
+									}
+								}
+							]
+						},
+						{
+							"id": 60,
+							"name": "on",
+							"kind": 2048,
+							"kindString": "Method",
+							"flags": {
+								"isExternal": true
+							},
+							"sources": [
+								{
+									"fileName": "node_modules/@augu/utils/index.d.ts",
+									"line": 383,
+									"character": 6
+								}
+							],
+							"signatures": [
+								{
+									"id": 61,
+									"name": "on",
+									"kind": 4096,
+									"kindString": "Call signature",
+									"flags": {
+										"isExternal": true
+									},
+									"comment": {
+										"shortText": "Pushes a new event to the callstack",
+										"returns": "This instance to chain methods\n"
+									},
+									"typeParameter": [
+										{
+											"id": 62,
+											"name": "K",
+											"kind": 131072,
+											"kindString": "Type parameter",
+											"flags": {
+												"isExternal": true
+											},
+											"type": {
+												"type": "typeOperator",
+												"operator": "keyof",
+												"target": {
+													"type": "reference",
+													"name": "ContainerEvents"
+												}
+											}
+										}
+									],
+									"parameters": [
+										{
+											"id": 63,
+											"name": "event",
+											"kind": 32768,
+											"kindString": "Parameter",
+											"flags": {
+												"isExternal": true
+											},
+											"comment": {
+												"text": "The event to push"
+											},
+											"type": {
+												"type": "reference",
+												"name": "K"
+											}
+										},
+										{
+											"id": 64,
+											"name": "listener",
+											"kind": 32768,
+											"kindString": "Parameter",
+											"flags": {
+												"isExternal": true
+											},
+											"comment": {
+												"text": "The listener function"
+											},
+											"type": {
+												"type": "indexedAccess",
+												"indexType": {
+													"type": "reference",
+													"name": "K"
+												},
+												"objectType": {
+													"type": "reference",
+													"name": "ContainerEvents"
+												}
+											}
+										}
+									],
+									"type": {
+										"type": "reference",
+										"id": 8,
+										"name": "Container"
+									},
+									"inheritedFrom": {
+										"type": "reference",
+										"name": "utils.EventBus.on"
+									}
+								}
+							],
+							"inheritedFrom": {
+								"type": "reference",
+								"name": "utils.EventBus.on"
+							}
+						},
+						{
+							"id": 65,
+							"name": "once",
+							"kind": 2048,
+							"kindString": "Method",
+							"flags": {
+								"isExternal": true
+							},
+							"sources": [
+								{
+									"fileName": "node_modules/@augu/utils/index.d.ts",
+									"line": 393,
+									"character": 8
+								}
+							],
+							"signatures": [
+								{
+									"id": 66,
+									"name": "once",
+									"kind": 4096,
+									"kindString": "Call signature",
+									"flags": {
+										"isExternal": true
+									},
+									"comment": {
+										"shortText": "Pushes a new event to the callstack and removes it after\nit has been emitted from the parent component.",
+										"returns": "This instance to chain methods\n"
+									},
+									"typeParameter": [
+										{
+											"id": 67,
+											"name": "K",
+											"kind": 131072,
+											"kindString": "Type parameter",
+											"flags": {
+												"isExternal": true
+											},
+											"type": {
+												"type": "typeOperator",
+												"operator": "keyof",
+												"target": {
+													"type": "reference",
+													"name": "ContainerEvents"
+												}
+											}
+										}
+									],
+									"parameters": [
+										{
+											"id": 68,
+											"name": "event",
+											"kind": 32768,
+											"kindString": "Parameter",
+											"flags": {
+												"isExternal": true
+											},
+											"comment": {
+												"text": "The event to push"
+											},
+											"type": {
+												"type": "reference",
+												"name": "K"
+											}
+										},
+										{
+											"id": 69,
+											"name": "listener",
+											"kind": 32768,
+											"kindString": "Parameter",
+											"flags": {
+												"isExternal": true
+											},
+											"comment": {
+												"text": "The listener function"
+											},
+											"type": {
+												"type": "indexedAccess",
+												"indexType": {
+													"type": "reference",
+													"name": "K"
+												},
+												"objectType": {
+													"type": "reference",
+													"name": "ContainerEvents"
+												}
+											}
+										}
+									],
+									"type": {
+										"type": "reference",
+										"id": 8,
+										"name": "Container"
+									},
+									"inheritedFrom": {
+										"type": "reference",
+										"name": "utils.EventBus.once"
+									}
+								}
+							],
+							"inheritedFrom": {
+								"type": "reference",
+								"name": "utils.EventBus.once"
+							}
+						},
+						{
+							"id": 80,
+							"name": "removeAllListeners",
+							"kind": 2048,
+							"kindString": "Method",
+							"flags": {
+								"isExternal": true
+							},
+							"sources": [
+								{
+									"fileName": "node_modules/@augu/utils/index.d.ts",
+									"line": 418,
+									"character": 22
+								}
+							],
+							"signatures": [
+								{
+									"id": 81,
+									"name": "removeAllListeners",
+									"kind": 4096,
+									"kindString": "Call signature",
+									"flags": {
+										"isExternal": true
+									},
+									"comment": {
+										"shortText": "Removes all listeners from this EventBus component"
+									},
+									"type": {
+										"type": "reference",
+										"id": 8,
+										"name": "Container"
+									},
+									"inheritedFrom": {
+										"type": "reference",
+										"name": "utils.EventBus.removeAllListeners"
+									}
+								}
+							],
+							"inheritedFrom": {
+								"type": "reference",
+								"name": "utils.EventBus.removeAllListeners"
+							}
+						},
+						{
+							"id": 70,
+							"name": "removeListener",
+							"kind": 2048,
+							"kindString": "Method",
+							"flags": {
+								"isExternal": true
+							},
+							"sources": [
+								{
+									"fileName": "node_modules/@augu/utils/index.d.ts",
+									"line": 401,
+									"character": 18
+								}
+							],
+							"signatures": [
+								{
+									"id": 71,
+									"name": "removeListener",
+									"kind": 4096,
+									"kindString": "Call signature",
+									"flags": {
+										"isExternal": true
+									},
+									"comment": {
+										"shortText": "Pushes a event's specific listener from the callstack.",
+										"returns": "This instance to chain methods\n"
+									},
+									"typeParameter": [
+										{
+											"id": 72,
+											"name": "K",
+											"kind": 131072,
+											"kindString": "Type parameter",
+											"flags": {
+												"isExternal": true
+											},
+											"type": {
+												"type": "typeOperator",
+												"operator": "keyof",
+												"target": {
+													"type": "reference",
+													"name": "ContainerEvents"
+												}
+											}
+										}
+									],
+									"parameters": [
+										{
+											"id": 73,
+											"name": "event",
+											"kind": 32768,
+											"kindString": "Parameter",
+											"flags": {
+												"isExternal": true
+											},
+											"comment": {
+												"text": "The event to remove"
+											},
+											"type": {
+												"type": "reference",
+												"name": "K"
+											}
+										},
+										{
+											"id": 74,
+											"name": "listener",
+											"kind": 32768,
+											"kindString": "Parameter",
+											"flags": {
+												"isExternal": true
+											},
+											"comment": {
+												"text": "The listener callback function"
+											},
+											"type": {
+												"type": "indexedAccess",
+												"indexType": {
+													"type": "reference",
+													"name": "K"
+												},
+												"objectType": {
+													"type": "reference",
+													"name": "ContainerEvents"
+												}
+											}
+										}
+									],
+									"type": {
+										"type": "intrinsic",
+										"name": "boolean"
+									},
+									"inheritedFrom": {
+										"type": "reference",
+										"name": "utils.EventBus.removeListener"
+									}
+								}
+							],
+							"inheritedFrom": {
+								"type": "reference",
+								"name": "utils.EventBus.removeListener"
+							}
+						},
+						{
+							"id": 20,
+							"name": "runInjections",
+							"kind": 2048,
+							"kindString": "Method",
+							"flags": {},
+							"sources": [
+								{
+									"fileName": "src/Container.ts",
+									"line": 285,
+									"character": 15
+								}
+							],
+							"signatures": [
+								{
+									"id": 21,
+									"name": "runInjections",
+									"kind": 4096,
+									"kindString": "Call signature",
+									"flags": {},
+									"comment": {
+										"shortText": "Runs all injections for all components and services"
+									},
+									"type": {
+										"type": "intrinsic",
+										"name": "void"
+									}
+								}
+							]
+						},
+						{
+							"id": 57,
+							"name": "setMaxListeners",
+							"kind": 2048,
+							"kindString": "Method",
+							"flags": {
+								"isExternal": true
+							},
+							"sources": [
+								{
+									"fileName": "node_modules/@augu/utils/index.d.ts",
+									"line": 374,
+									"character": 19
+								}
+							],
+							"signatures": [
+								{
+									"id": 58,
+									"name": "setMaxListeners",
+									"kind": 4096,
+									"kindString": "Call signature",
+									"flags": {
+										"isExternal": true
+									},
+									"comment": {
+										"shortText": "Sets the maximum amount of listeners to append",
+										"returns": "This instance to chain methods\n"
+									},
+									"parameters": [
+										{
+											"id": 59,
+											"name": "count",
+											"kind": 32768,
+											"kindString": "Parameter",
+											"flags": {
+												"isExternal": true
+											},
+											"comment": {
+												"text": "The max size to use, If value `-1` is used, it'll\nbe infinite and might lead to callstack errors.\n"
+											},
+											"type": {
+												"type": "intrinsic",
+												"name": "number"
+											}
+										}
+									],
+									"type": {
+										"type": "reference",
+										"id": 8,
+										"name": "Container"
+									},
+									"inheritedFrom": {
+										"type": "reference",
+										"name": "utils.EventBus.setMaxListeners"
+									}
+								}
+							],
+							"inheritedFrom": {
+								"type": "reference",
+								"name": "utils.EventBus.setMaxListeners"
+							}
+						},
+						{
+							"id": 75,
+							"name": "size",
+							"kind": 2048,
+							"kindString": "Method",
+							"flags": {
+								"isExternal": true
+							},
+							"sources": [
+								{
+									"fileName": "node_modules/@augu/utils/index.d.ts",
+									"line": 408,
+									"character": 8
+								}
+							],
+							"signatures": [
+								{
+									"id": 76,
+									"name": "size",
+									"kind": 4096,
+									"kindString": "Call signature",
+									"flags": {
+										"isExternal": true
+									},
+									"comment": {
+										"shortText": "Returns how many listeners a event has",
+										"returns": "A number of how many concurrent listeners are in\n"
+									},
+									"typeParameter": [
+										{
+											"id": 77,
+											"name": "K",
+											"kind": 131072,
+											"kindString": "Type parameter",
+											"flags": {
+												"isExternal": true
+											},
+											"type": {
+												"type": "typeOperator",
+												"operator": "keyof",
+												"target": {
+													"type": "reference",
+													"name": "ContainerEvents"
+												}
+											}
+										}
+									],
+									"parameters": [
+										{
+											"id": 78,
+											"name": "event",
+											"kind": 32768,
+											"kindString": "Parameter",
+											"flags": {
+												"isExternal": true
+											},
+											"comment": {
+												"text": "The event to lookup"
+											},
+											"type": {
+												"type": "reference",
+												"name": "K"
+											}
+										}
+									],
+									"type": {
+										"type": "intrinsic",
+										"name": "number"
+									},
+									"inheritedFrom": {
+										"type": "reference",
+										"name": "utils.EventBus.size"
+									}
+								},
+								{
+									"id": 79,
+									"name": "size",
+									"kind": 4096,
+									"kindString": "Call signature",
+									"flags": {
+										"isExternal": true
+									},
+									"comment": {
+										"shortText": "Returns how many events are in this EventBus component"
+									},
+									"type": {
+										"type": "intrinsic",
+										"name": "number"
+									},
+									"inheritedFrom": {
+										"type": "reference",
+										"name": "utils.EventBus.size"
+									}
+								}
+							],
+							"inheritedFrom": {
+								"type": "reference",
+								"name": "utils.EventBus.size"
+							}
+						}
+					],
+					"groups": [
+						{
+							"title": "Constructors",
+							"kind": 512,
+							"children": [
+								9
+							]
+						},
+						{
+							"title": "Properties",
+							"kind": 1024,
+							"children": [
+								12,
+								14,
+								13
+							]
+						},
+						{
+							"title": "Methods",
+							"kind": 2048,
+							"children": [
+								22,
+								37,
+								82,
+								40,
+								32,
+								29,
+								35,
+								52,
+								43,
+								26,
+								18,
+								60,
+								65,
+								80,
+								70,
+								20,
+								57,
+								75
+							]
+						}
+					],
+					"sources": [
+						{
+							"fileName": "src/Container.ts",
+							"line": 100,
+							"character": 22
+						}
+					],
+					"extendedTypes": [
+						{
+							"type": "reference",
+							"typeArguments": [
+								{
+									"type": "reference",
+									"name": "ContainerEvents"
+								}
+							],
+							"name": "EventBus"
+						}
+					]
+				},
+				{
+					"id": 2,
+					"name": "isComponentLike",
+					"kind": 64,
+					"kindString": "Function",
+					"flags": {
+						"isConst": true
+					},
+					"sources": [
+						{
+							"fileName": "src/Container.ts",
+							"line": 89,
+							"character": 28
+						}
+					],
+					"signatures": [
+						{
+							"id": 3,
+							"name": "isComponentLike",
+							"kind": 4096,
+							"kindString": "Call signature",
+							"flags": {},
+							"parameters": [
+								{
+									"id": 4,
+									"name": "value",
+									"kind": 32768,
+									"kindString": "Parameter",
+									"flags": {},
+									"type": {
+										"type": "intrinsic",
+										"name": "unknown"
+									}
+								}
+							],
+							"type": {
+								"type": "predicate",
+								"name": "value",
+								"asserts": false,
+								"targetType": {
+									"type": "reference",
+									"id": 116,
+									"name": "BaseComponent"
+								}
+							}
+						}
+					]
+				},
+				{
+					"id": 5,
+					"name": "isServiceLike",
+					"kind": 64,
+					"kindString": "Function",
+					"flags": {
+						"isConst": true
+					},
+					"sources": [
+						{
+							"fileName": "src/Container.ts",
+							"line": 90,
+							"character": 26
+						}
+					],
+					"signatures": [
+						{
+							"id": 6,
+							"name": "isServiceLike",
+							"kind": 4096,
+							"kindString": "Call signature",
+							"flags": {},
+							"parameters": [
+								{
+									"id": 7,
+									"name": "value",
+									"kind": 32768,
+									"kindString": "Parameter",
+									"flags": {},
+									"type": {
+										"type": "intrinsic",
+										"name": "unknown"
+									}
+								}
+							],
+							"type": {
+								"type": "predicate",
+								"name": "value",
+								"asserts": false,
+								"targetType": {
+									"type": "reference",
+									"id": 122,
+									"name": "BaseService"
+								}
+							}
+						}
+					]
+				}
+			],
+			"groups": [
+				{
+					"title": "Classes",
+					"kind": 128,
+					"children": [
+						8
+					]
+				},
+				{
+					"title": "Functions",
+					"kind": 64,
+					"children": [
+						2,
+						5
+					]
+				}
+			],
+			"sources": [
+				{
+					"fileName": "src/Container.ts",
+					"line": 1,
+					"character": 0
+				}
+			]
+		},
+		{
+			"id": 95,
+			"name": "decorators",
+			"kind": 1,
+			"kindString": "Module",
+			"flags": {},
+			"children": [
+				{
+					"id": 145,
+					"name": "Component",
+					"kind": 16777216,
+					"kindString": "Reference",
+					"flags": {},
+					"target": 88
+				},
+				{
+					"id": 146,
+					"name": "ComponentOptions",
+					"kind": 16777216,
+					"kindString": "Reference",
+					"flags": {},
+					"target": 91
+				},
+				{
+					"id": 149,
+					"name": "Inject",
+					"kind": 16777216,
+					"kindString": "Reference",
+					"flags": {},
+					"target": 97
+				},
+				{
+					"id": 147,
+					"name": "Service",
+					"kind": 16777216,
+					"kindString": "Reference",
+					"flags": {},
+					"target": 102
+				},
+				{
+					"id": 148,
+					"name": "ServiceOptions",
+					"kind": 16777216,
+					"kindString": "Reference",
+					"flags": {},
+					"target": 105
+				}
+			],
+			"groups": [
+				{
+					"title": "References",
+					"kind": 16777216,
+					"children": [
+						145,
+						146,
+						149,
+						147,
+						148
+					]
+				}
+			],
+			"sources": [
+				{
+					"fileName": "src/decorators/index.ts",
+					"line": 1,
+					"character": 0
+				}
+			]
+		},
+		{
+			"id": 87,
+			"name": "decorators/Component",
+			"kind": 1,
+			"kindString": "Module",
+			"flags": {},
+			"children": [
+				{
+					"id": 91,
+					"name": "ComponentOptions",
+					"kind": 256,
+					"kindString": "Interface",
+					"flags": {},
+					"comment": {
+						"shortText": "Represents the options for using a Component"
+					},
+					"children": [
+						{
+							"id": 92,
+							"name": "children",
+							"kind": 1024,
+							"kindString": "Property",
+							"flags": {
+								"isOptional": true
+							},
+							"comment": {
+								"shortText": "List of children or an absolute path to load in children"
+							},
+							"sources": [
+								{
+									"fileName": "src/decorators/Component.ts",
+									"line": 33,
+									"character": 10
+								}
+							],
+							"type": {
+								"type": "union",
+								"types": [
+									{
+										"type": "intrinsic",
+										"name": "string"
+									},
+									{
+										"type": "array",
+										"elementType": {
+											"type": "intrinsic",
+											"name": "any"
+										}
+									}
+								]
+							}
+						},
+						{
+							"id": 94,
+							"name": "name",
+							"kind": 1024,
+							"kindString": "Property",
+							"flags": {},
+							"comment": {
+								"shortText": "The name of the component"
+							},
+							"sources": [
+								{
+									"fileName": "src/decorators/Component.ts",
+									"line": 43,
+									"character": 6
+								}
+							],
+							"type": {
+								"type": "intrinsic",
+								"name": "string"
+							}
+						},
+						{
+							"id": 93,
+							"name": "priority",
+							"kind": 1024,
+							"kindString": "Property",
+							"flags": {},
+							"comment": {
+								"shortText": "The priority to load the component"
+							},
+							"sources": [
+								{
+									"fileName": "src/decorators/Component.ts",
+									"line": 38,
+									"character": 10
+								}
+							],
+							"type": {
+								"type": "intrinsic",
+								"name": "number"
+							}
+						}
+					],
+					"groups": [
+						{
+							"title": "Properties",
+							"kind": 1024,
+							"children": [
+								92,
+								94,
+								93
+							]
+						}
+					],
+					"sources": [
+						{
+							"fileName": "src/decorators/Component.ts",
+							"line": 29,
+							"character": 33
+						}
+					]
+				},
+				{
+					"id": 88,
+					"name": "Component",
+					"kind": 64,
+					"kindString": "Function",
+					"flags": {},
+					"sources": [
+						{
+							"fileName": "src/decorators/Component.ts",
+							"line": 49,
+							"character": 25
+						}
+					],
+					"signatures": [
+						{
+							"id": 89,
+							"name": "Component",
+							"kind": 4096,
+							"kindString": "Call signature",
+							"flags": {},
+							"comment": {
+								"shortText": "Class decorator to mark the target class as a component"
+							},
+							"parameters": [
+								{
+									"id": 90,
+									"name": "__namedParameters",
+									"kind": 32768,
+									"kindString": "Parameter",
+									"flags": {},
+									"type": {
+										"type": "reference",
+										"id": 91,
+										"name": "ComponentOptions"
+									}
+								}
+							],
+							"type": {
+								"type": "reference",
+								"name": "ClassDecorator"
+							}
+						}
+					]
+				}
+			],
+			"groups": [
+				{
+					"title": "Interfaces",
+					"kind": 256,
+					"children": [
+						91
+					]
+				},
+				{
+					"title": "Functions",
+					"kind": 64,
+					"children": [
+						88
+					]
+				}
+			],
+			"sources": [
+				{
+					"fileName": "src/decorators/Component.ts",
+					"line": 1,
+					"character": 0
+				}
+			]
+		},
+		{
+			"id": 96,
+			"name": "decorators/Inject",
+			"kind": 1,
+			"kindString": "Module",
+			"flags": {},
+			"children": [
+				{
+					"id": 97,
+					"name": "Inject",
+					"kind": 64,
+					"kindString": "Function",
+					"flags": {
+						"isConst": true
+					},
+					"sources": [
+						{
+							"fileName": "src/decorators/Inject.ts",
+							"line": 28,
+							"character": 19
+						}
+					],
+					"signatures": [
+						{
+							"id": 98,
+							"name": "Inject",
+							"kind": 4096,
+							"kindString": "Call signature",
+							"flags": {},
+							"comment": {
+								"shortText": "Decorator to inject a component, service, or singleton into"
+							},
+							"parameters": [
+								{
+									"id": 99,
+									"name": "target",
+									"kind": 32768,
+									"kindString": "Parameter",
+									"flags": {},
+									"type": {
+										"type": "reference",
+										"name": "Object"
+									}
+								},
+								{
+									"id": 100,
+									"name": "propertyKey",
+									"kind": 32768,
+									"kindString": "Parameter",
+									"flags": {},
+									"type": {
+										"type": "union",
+										"types": [
+											{
+												"type": "intrinsic",
+												"name": "string"
+											},
+											{
+												"type": "intrinsic",
+												"name": "symbol"
+											}
+										]
+									}
+								}
+							],
+							"type": {
+								"type": "intrinsic",
+								"name": "void"
+							}
+						}
+					]
+				}
+			],
+			"groups": [
+				{
+					"title": "Functions",
+					"kind": 64,
+					"children": [
+						97
+					]
+				}
+			],
+			"sources": [
+				{
+					"fileName": "src/decorators/Inject.ts",
+					"line": 1,
+					"character": 0
+				}
+			]
+		},
+		{
+			"id": 101,
+			"name": "decorators/Service",
+			"kind": 1,
+			"kindString": "Module",
+			"flags": {},
+			"children": [
+				{
+					"id": 105,
+					"name": "ServiceOptions",
+					"kind": 256,
+					"kindString": "Interface",
+					"flags": {},
+					"children": [
+						{
+							"id": 106,
+							"name": "children",
+							"kind": 1024,
+							"kindString": "Property",
+							"flags": {
+								"isOptional": true
+							},
+							"comment": {
+								"shortText": "List of children or an absolute path to load in children"
+							},
+							"sources": [
+								{
+									"fileName": "src/decorators/Service.ts",
+									"line": 30,
+									"character": 10
+								}
+							],
+							"type": {
+								"type": "union",
+								"types": [
+									{
+										"type": "intrinsic",
+										"name": "string"
+									},
+									{
+										"type": "array",
+										"elementType": {
+											"type": "intrinsic",
+											"name": "any"
+										}
+									}
+								]
+							}
+						},
+						{
+							"id": 108,
+							"name": "name",
+							"kind": 1024,
+							"kindString": "Property",
+							"flags": {},
+							"comment": {
+								"shortText": "The name of the component"
+							},
+							"sources": [
+								{
+									"fileName": "src/decorators/Service.ts",
+									"line": 40,
+									"character": 6
+								}
+							],
+							"type": {
+								"type": "intrinsic",
+								"name": "string"
+							}
+						},
+						{
+							"id": 107,
+							"name": "priority",
+							"kind": 1024,
+							"kindString": "Property",
+							"flags": {},
+							"comment": {
+								"shortText": "The priority to load the component"
+							},
+							"sources": [
+								{
+									"fileName": "src/decorators/Service.ts",
+									"line": 35,
+									"character": 10
+								}
+							],
+							"type": {
+								"type": "intrinsic",
+								"name": "number"
+							}
+						}
+					],
+					"groups": [
+						{
+							"title": "Properties",
+							"kind": 1024,
+							"children": [
+								106,
+								108,
+								107
+							]
+						}
+					],
+					"sources": [
+						{
+							"fileName": "src/decorators/Service.ts",
+							"line": 26,
+							"character": 31
+						}
+					]
+				},
+				{
+					"id": 102,
+					"name": "Service",
+					"kind": 64,
+					"kindString": "Function",
+					"flags": {},
+					"sources": [
+						{
+							"fileName": "src/decorators/Service.ts",
+							"line": 46,
+							"character": 23
+						}
+					],
+					"signatures": [
+						{
+							"id": 103,
+							"name": "Service",
+							"kind": 4096,
+							"kindString": "Call signature",
+							"flags": {},
+							"comment": {
+								"shortText": "Class decorator to mark the target class as a service"
+							},
+							"parameters": [
+								{
+									"id": 104,
+									"name": "__namedParameters",
+									"kind": 32768,
+									"kindString": "Parameter",
+									"flags": {},
+									"type": {
+										"type": "reference",
+										"id": 105,
+										"name": "ServiceOptions"
+									}
+								}
+							],
+							"type": {
+								"type": "reference",
+								"name": "ClassDecorator"
+							}
+						}
+					]
+				}
+			],
+			"groups": [
+				{
+					"title": "Interfaces",
+					"kind": 256,
+					"children": [
+						105
+					]
+				},
+				{
+					"title": "Functions",
+					"kind": 64,
+					"children": [
+						102
+					]
+				}
+			],
+			"sources": [
+				{
+					"fileName": "src/decorators/Service.ts",
+					"line": 1,
+					"character": 0
+				}
+			]
+		},
+		{
+			"id": 109,
+			"name": "index",
+			"kind": 1,
+			"kindString": "Module",
+			"flags": {},
+			"children": [
+				{
+					"id": 159,
+					"name": "BaseComponent",
+					"kind": 16777216,
+					"kindString": "Reference",
+					"flags": {},
+					"target": 116
+				},
+				{
+					"id": 160,
+					"name": "BaseService",
+					"kind": 16777216,
+					"kindString": "Reference",
+					"flags": {},
+					"target": 122
+				},
+				{
+					"id": 164,
+					"name": "BaseSingleton",
+					"kind": 16777216,
+					"kindString": "Reference",
+					"flags": {},
+					"target": 141
+				},
+				{
+					"id": 150,
+					"name": "Component",
+					"kind": 16777216,
+					"kindString": "Reference",
+					"flags": {},
+					"target": 88
+				},
+				{
+					"id": 151,
+					"name": "ComponentOptions",
+					"kind": 16777216,
+					"kindString": "Reference",
+					"flags": {},
+					"target": 91
+				},
+				{
+					"id": 157,
+					"name": "Container",
+					"kind": 16777216,
+					"kindString": "Reference",
+					"flags": {},
+					"target": 8
+				},
+				{
+					"id": 158,
+					"name": "ImportedDefaultExport",
+					"kind": 16777216,
+					"kindString": "Reference",
+					"flags": {},
+					"target": 112
+				},
+				{
+					"id": 154,
+					"name": "Inject",
+					"kind": 16777216,
+					"kindString": "Reference",
+					"flags": {},
+					"target": 97
+				},
+				{
+					"id": 161,
+					"name": "MetadataKeys",
+					"kind": 16777216,
+					"kindString": "Reference",
+					"flags": {},
+					"target": 128
+				},
+				{
+					"id": 162,
+					"name": "PendingInjectDefinition",
+					"kind": 16777216,
+					"kindString": "Reference",
+					"flags": {},
+					"target": 132
+				},
+				{
+					"id": 163,
+					"name": "ReferredObjectDefinition",
+					"kind": 16777216,
+					"kindString": "Reference",
+					"flags": {},
+					"target": 136
+				},
+				{
+					"id": 152,
+					"name": "Service",
+					"kind": 16777216,
+					"kindString": "Reference",
+					"flags": {},
+					"target": 102
+				},
+				{
+					"id": 153,
+					"name": "ServiceOptions",
+					"kind": 16777216,
+					"kindString": "Reference",
+					"flags": {},
+					"target": 105
+				},
+				{
+					"id": 155,
+					"name": "isComponentLike",
+					"kind": 16777216,
+					"kindString": "Reference",
+					"flags": {},
+					"target": 2
+				},
+				{
+					"id": 156,
+					"name": "isServiceLike",
+					"kind": 16777216,
+					"kindString": "Reference",
+					"flags": {},
+					"target": 5
+				},
+				{
+					"id": 110,
+					"name": "version",
+					"kind": 32,
+					"kindString": "Variable",
+					"flags": {
+						"isConst": true
+					},
+					"comment": {
+						"shortText": "Returns the current version of @augu/lilith"
+					},
+					"sources": [
+						{
+							"fileName": "src/index.ts",
+							"line": 30,
+							"character": 20
+						}
+					],
+					"type": {
+						"type": "intrinsic",
+						"name": "string"
+					},
+					"defaultValue": "..."
+				}
+			],
+			"groups": [
+				{
+					"title": "References",
+					"kind": 16777216,
+					"children": [
+						159,
+						160,
+						164,
+						150,
+						151,
+						157,
+						158,
+						154,
+						161,
+						162,
+						163,
+						152,
+						153,
+						155,
+						156
+					]
+				},
+				{
+					"title": "Variables",
+					"kind": 32,
+					"children": [
+						110
+					]
+				}
+			],
+			"sources": [
+				{
+					"fileName": "src/index.ts",
+					"line": 1,
+					"character": 0
+				}
+			]
+		},
+		{
+			"id": 111,
+			"name": "types",
+			"kind": 1,
+			"kindString": "Module",
+			"flags": {},
+			"comment": {
+				"shortText": "Copyright (c) 2021 August",
+				"text": "Permission is hereby granted, free of charge, to any person obtaining a copy\nof this software and associated documentation files (the \"Software\"), to deal\nin the Software without restriction, including without limitation the rights\nto use, copy, modify, merge, publish, distribute, sublicense, and/or sell\ncopies of the Software, and to permit persons to whom the Software is\nfurnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in all\ncopies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR\nIMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,\nFITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE\nAUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER\nLIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,\nOUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE\nSOFTWARE.\n"
+			},
+			"children": [
+				{
+					"id": 128,
+					"name": "MetadataKeys",
+					"kind": 4,
+					"kindString": "Enumeration",
+					"flags": {
+						"isConst": true
+					},
+					"comment": {
+						"shortText": "List of metadata keys available, this is not exported in Lilith itself."
+					},
+					"children": [
+						{
+							"id": 130,
+							"name": "Component",
+							"kind": 16,
+							"kindString": "Enumeration member",
+							"flags": {},
+							"sources": [
+								{
+									"fileName": "src/types.ts",
+									"line": 93,
+									"character": 11
+								}
+							],
+							"defaultValue": "\"$lilith::api::component\""
+						},
+						{
+							"id": 129,
+							"name": "PendingInjections",
+							"kind": 16,
+							"kindString": "Enumeration member",
+							"flags": {},
+							"sources": [
+								{
+									"fileName": "src/types.ts",
+									"line": 92,
+									"character": 19
+								}
+							],
+							"defaultValue": "\"$lilith::api::injections::pending\""
+						},
+						{
+							"id": 131,
+							"name": "Service",
+							"kind": 16,
+							"kindString": "Enumeration member",
+							"flags": {},
+							"sources": [
+								{
+									"fileName": "src/types.ts",
+									"line": 94,
+									"character": 9
+								}
+							],
+							"defaultValue": "\"$lilith::api::service\""
+						}
+					],
+					"groups": [
+						{
+							"title": "Enumeration members",
+							"kind": 16,
+							"children": [
+								130,
+								129,
+								131
+							]
+						}
+					],
+					"sources": [
+						{
+							"fileName": "src/types.ts",
+							"line": 91,
+							"character": 30
+						}
+					]
+				},
+				{
+					"id": 116,
+					"name": "BaseComponent",
+					"kind": 256,
+					"kindString": "Interface",
+					"flags": {},
+					"comment": {
+						"shortText": "Represents a base component; typed for [[Application.components]].\nYou can inject singletons, services, and components."
+					},
+					"children": [
+						{
+							"id": 117,
+							"name": "_classRef",
+							"kind": 1024,
+							"kindString": "Property",
+							"flags": {},
+							"sources": [
+								{
+									"fileName": "src/types.ts",
+									"line": 35,
+									"character": 11
+								}
+							],
+							"type": {
+								"type": "intrinsic",
+								"name": "any"
+							}
+						},
+						{
+							"id": 118,
+							"name": "children",
+							"kind": 1024,
+							"kindString": "Property",
+							"flags": {},
+							"comment": {
+								"shortText": "List of children attached to this [[BaseComponent]] as it's parent"
+							},
+							"sources": [
+								{
+									"fileName": "src/types.ts",
+									"line": 40,
+									"character": 10
+								}
+							],
+							"type": {
+								"type": "union",
+								"types": [
+									{
+										"type": "intrinsic",
+										"name": "string"
+									},
+									{
+										"type": "array",
+										"elementType": {
+											"type": "intrinsic",
+											"name": "any"
+										}
+									}
+								]
+							}
+						},
+						{
+							"id": 120,
+							"name": "name",
+							"kind": 1024,
+							"kindString": "Property",
+							"flags": {},
+							"comment": {
+								"shortText": "The name of the component"
+							},
+							"sources": [
+								{
+									"fileName": "src/types.ts",
+									"line": 51,
+									"character": 6
+								}
+							],
+							"type": {
+								"type": "intrinsic",
+								"name": "string"
+							}
+						},
+						{
+							"id": 121,
+							"name": "priority",
+							"kind": 1024,
+							"kindString": "Property",
+							"flags": {},
+							"comment": {
+								"shortText": "The priority of this [[BaseComponent]]"
+							},
+							"sources": [
+								{
+									"fileName": "src/types.ts",
+									"line": 56,
+									"character": 10
+								}
+							],
+							"type": {
+								"type": "intrinsic",
+								"name": "number"
+							}
+						},
+						{
+							"id": 119,
+							"name": "type",
+							"kind": 1024,
+							"kindString": "Property",
+							"flags": {},
+							"comment": {
+								"shortText": "Represents the type for this [[BaseComponent]]. It's always\ngonna be `component`, just here for simplicity"
+							},
+							"sources": [
+								{
+									"fileName": "src/types.ts",
+									"line": 46,
+									"character": 6
+								}
+							],
+							"type": {
+								"type": "intrinsic",
+								"name": "string"
+							}
+						}
+					],
+					"groups": [
+						{
+							"title": "Properties",
+							"kind": 1024,
+							"children": [
+								117,
+								118,
+								120,
+								121,
+								119
+							]
+						}
+					],
+					"sources": [
+						{
+							"fileName": "src/types.ts",
+							"line": 34,
+							"character": 30
+						}
+					]
+				},
+				{
+					"id": 122,
+					"name": "BaseService",
+					"kind": 256,
+					"kindString": "Interface",
+					"flags": {},
+					"comment": {
+						"shortText": "Represents a base service; typed for [[Application.services]].\nYou can inject singletons, services, and components."
+					},
+					"children": [
+						{
+							"id": 123,
+							"name": "_classRef",
+							"kind": 1024,
+							"kindString": "Property",
+							"flags": {},
+							"sources": [
+								{
+									"fileName": "src/types.ts",
+									"line": 64,
+									"character": 11
+								}
+							],
+							"type": {
+								"type": "intrinsic",
+								"name": "any"
+							}
+						},
+						{
+							"id": 124,
+							"name": "children",
+							"kind": 1024,
+							"kindString": "Property",
+							"flags": {},
+							"comment": {
+								"shortText": "List of children attached to this [[BaseService]] as it's parent"
+							},
+							"sources": [
+								{
+									"fileName": "src/types.ts",
+									"line": 69,
+									"character": 10
+								}
+							],
+							"type": {
+								"type": "union",
+								"types": [
+									{
+										"type": "intrinsic",
+										"name": "string"
+									},
+									{
+										"type": "array",
+										"elementType": {
+											"type": "intrinsic",
+											"name": "any"
+										}
+									}
+								]
+							}
+						},
+						{
+							"id": 126,
+							"name": "name",
+							"kind": 1024,
+							"kindString": "Property",
+							"flags": {},
+							"comment": {
+								"shortText": "The name of the service"
+							},
+							"sources": [
+								{
+									"fileName": "src/types.ts",
+									"line": 80,
+									"character": 6
+								}
+							],
+							"type": {
+								"type": "intrinsic",
+								"name": "string"
+							}
+						},
+						{
+							"id": 127,
+							"name": "priority",
+							"kind": 1024,
+							"kindString": "Property",
+							"flags": {},
+							"comment": {
+								"shortText": "The priority of this [[BaseService]]"
+							},
+							"sources": [
+								{
+									"fileName": "src/types.ts",
+									"line": 85,
+									"character": 10
+								}
+							],
+							"type": {
+								"type": "intrinsic",
+								"name": "number"
+							}
+						},
+						{
+							"id": 125,
+							"name": "type",
+							"kind": 1024,
+							"kindString": "Property",
+							"flags": {},
+							"comment": {
+								"shortText": "Represents the type for this [[BaseService]]. It's always\ngonna be `service`, just here for simplicity"
+							},
+							"sources": [
+								{
+									"fileName": "src/types.ts",
+									"line": 75,
+									"character": 6
+								}
+							],
+							"type": {
+								"type": "intrinsic",
+								"name": "string"
+							}
+						}
+					],
+					"groups": [
+						{
+							"title": "Properties",
+							"kind": 1024,
+							"children": [
+								123,
+								124,
+								126,
+								127,
+								125
+							]
+						}
+					],
+					"sources": [
+						{
+							"fileName": "src/types.ts",
+							"line": 63,
+							"character": 28
+						}
+					]
+				},
+				{
+					"id": 141,
+					"name": "BaseSingleton",
+					"kind": 256,
+					"kindString": "Interface",
+					"flags": {},
+					"comment": {
+						"shortText": "Represents a singleton that is registered into Lilith"
+					},
+					"children": [
+						{
+							"id": 142,
+							"name": "$ref",
+							"kind": 1024,
+							"kindString": "Property",
+							"flags": {},
+							"comment": {
+								"shortText": "The reference to the singleton itself"
+							},
+							"sources": [
+								{
+									"fileName": "src/types.ts",
+									"line": 150,
+									"character": 6
+								}
+							],
+							"type": {
+								"type": "intrinsic",
+								"name": "any"
+							}
+						},
+						{
+							"id": 144,
+							"name": "key",
+							"kind": 1024,
+							"kindString": "Property",
+							"flags": {},
+							"comment": {
+								"shortText": "The singleton's key, just a random scribble of words."
+							},
+							"sources": [
+								{
+									"fileName": "src/types.ts",
+									"line": 160,
+									"character": 5
+								}
+							],
+							"type": {
+								"type": "intrinsic",
+								"name": "string"
+							}
+						},
+						{
+							"id": 143,
+							"name": "type",
+							"kind": 1024,
+							"kindString": "Property",
+							"flags": {},
+							"comment": {
+								"shortText": "The type for this [[BaseSingleton]]. It'll always default to `'singleton'`."
+							},
+							"sources": [
+								{
+									"fileName": "src/types.ts",
+									"line": 155,
+									"character": 6
+								}
+							],
+							"type": {
+								"type": "intrinsic",
+								"name": "string"
+							}
+						}
+					],
+					"groups": [
+						{
+							"title": "Properties",
+							"kind": 1024,
+							"children": [
+								142,
+								144,
+								143
+							]
+						}
+					],
+					"sources": [
+						{
+							"fileName": "src/types.ts",
+							"line": 146,
+							"character": 30
+						}
+					]
+				},
+				{
+					"id": 132,
+					"name": "PendingInjectDefinition",
+					"kind": 256,
+					"kindString": "Interface",
+					"flags": {},
+					"comment": {
+						"shortText": "Represents the pending injections from all classes"
+					},
+					"children": [
+						{
+							"id": 135,
+							"name": "$ref",
+							"kind": 1024,
+							"kindString": "Property",
+							"flags": {},
+							"comment": {
+								"shortText": "The inferred reference to inject"
+							},
+							"sources": [
+								{
+									"fileName": "src/types.ts",
+									"line": 114,
+									"character": 6
+								}
+							],
+							"type": {
+								"type": "intrinsic",
+								"name": "any"
+							}
+						},
+						{
+							"id": 134,
+							"name": "prop",
+							"kind": 1024,
+							"kindString": "Property",
+							"flags": {},
+							"comment": {
+								"shortText": "The property key"
+							},
+							"sources": [
+								{
+									"fileName": "src/types.ts",
+									"line": 109,
+									"character": 6
+								}
+							],
+							"type": {
+								"type": "union",
+								"types": [
+									{
+										"type": "intrinsic",
+										"name": "string"
+									},
+									{
+										"type": "intrinsic",
+										"name": "symbol"
+									}
+								]
+							}
+						},
+						{
+							"id": 133,
+							"name": "target",
+							"kind": 1024,
+							"kindString": "Property",
+							"flags": {},
+							"comment": {
+								"shortText": "The target class"
+							},
+							"sources": [
+								{
+									"fileName": "src/types.ts",
+									"line": 104,
+									"character": 8
+								}
+							],
+							"type": {
+								"type": "intrinsic",
+								"name": "any"
+							}
+						}
+					],
+					"groups": [
+						{
+							"title": "Properties",
+							"kind": 1024,
+							"children": [
+								135,
+								134,
+								133
+							]
+						}
+					],
+					"sources": [
+						{
+							"fileName": "src/types.ts",
+							"line": 100,
+							"character": 40
+						}
+					]
+				},
+				{
+					"id": 136,
+					"name": "ReferredObjectDefinition",
+					"kind": 256,
+					"kindString": "Interface",
+					"flags": {},
+					"comment": {
+						"shortText": "Represents the definition of a referred object"
+					},
+					"children": [
+						{
+							"id": 138,
+							"name": "children",
+							"kind": 1024,
+							"kindString": "Property",
+							"flags": {
+								"isOptional": true
+							},
+							"comment": {
+								"shortText": "List of children or an absolute path to load in children"
+							},
+							"sources": [
+								{
+									"fileName": "src/types.ts",
+									"line": 130,
+									"character": 10
+								}
+							],
+							"type": {
+								"type": "union",
+								"types": [
+									{
+										"type": "intrinsic",
+										"name": "string"
+									},
+									{
+										"type": "array",
+										"elementType": {
+											"type": "intrinsic",
+											"name": "any"
+										}
+									}
+								]
+							}
+						},
+						{
+							"id": 140,
+							"name": "name",
+							"kind": 1024,
+							"kindString": "Property",
+							"flags": {},
+							"comment": {
+								"shortText": "The name of this [[ReferredObjectDefinition]]"
+							},
+							"sources": [
+								{
+									"fileName": "src/types.ts",
+									"line": 140,
+									"character": 6
+								}
+							],
+							"type": {
+								"type": "intrinsic",
+								"name": "string"
+							}
+						},
+						{
+							"id": 137,
+							"name": "priority",
+							"kind": 1024,
+							"kindString": "Property",
+							"flags": {},
+							"comment": {
+								"shortText": "A number to show if this referred object should be initialized\nfirst or list, like a priority tree"
+							},
+							"sources": [
+								{
+									"fileName": "src/types.ts",
+									"line": 125,
+									"character": 10
+								}
+							],
+							"type": {
+								"type": "intrinsic",
+								"name": "number"
+							}
+						},
+						{
+							"id": 139,
+							"name": "type",
+							"kind": 1024,
+							"kindString": "Property",
+							"flags": {},
+							"comment": {
+								"shortText": "The type of this [[ReferredObjectDefintion]]"
+							},
+							"sources": [
+								{
+									"fileName": "src/types.ts",
+									"line": 135,
+									"character": 6
+								}
+							],
+							"type": {
+								"type": "union",
+								"types": [
+									{
+										"type": "literal",
+										"value": "component"
+									},
+									{
+										"type": "literal",
+										"value": "service"
+									},
+									{
+										"type": "literal",
+										"value": "singleton"
+									}
+								]
+							}
+						}
+					],
+					"groups": [
+						{
+							"title": "Properties",
+							"kind": 1024,
+							"children": [
+								138,
+								140,
+								137,
+								139
+							]
+						}
+					],
+					"sources": [
+						{
+							"fileName": "src/types.ts",
+							"line": 120,
+							"character": 41
+						}
+					]
+				},
+				{
+					"id": 112,
+					"name": "ImportedDefaultExport",
+					"kind": 4194304,
+					"kindString": "Type alias",
+					"flags": {},
+					"comment": {
+						"shortText": "Type alias to represented the return value of `require()` or `import()`"
+					},
+					"sources": [
+						{
+							"fileName": "src/types.ts",
+							"line": 26,
+							"character": 33
+						}
+					],
+					"typeParameter": [
+						{
+							"id": 115,
+							"name": "T",
+							"kind": 131072,
+							"kindString": "Type parameter",
+							"flags": {}
+						}
+					],
+					"type": {
+						"type": "conditional",
+						"checkType": {
+							"type": "reference",
+							"name": "T"
+						},
+						"extendsType": {
+							"type": "reflection",
+							"declaration": {
+								"id": 113,
+								"name": "__type",
+								"kind": 65536,
+								"kindString": "Type literal",
+								"flags": {},
+								"children": [
+									{
+										"id": 114,
+										"name": "default",
+										"kind": 1024,
+										"kindString": "Property",
+										"flags": {},
+										"sources": [
+											{
+												"fileName": "src/types.ts",
+												"line": 26,
+												"character": 58
+											}
+										],
+										"type": {
+											"type": "inferred",
+											"name": "P"
+										}
+									}
+								],
+								"groups": [
+									{
+										"title": "Properties",
+										"kind": 1024,
+										"children": [
+											114
+										]
+									}
+								],
+								"sources": [
+									{
+										"fileName": "src/types.ts",
+										"line": 26,
+										"character": 48
+									}
+								]
+							}
+						},
+						"trueType": {
+							"type": "reference",
+							"name": "P"
+						},
+						"falseType": {
+							"type": "reference",
+							"name": "T"
+						}
+					}
+				}
+			],
+			"groups": [
+				{
+					"title": "Enumerations",
+					"kind": 4,
+					"children": [
+						128
+					]
+				},
+				{
+					"title": "Interfaces",
+					"kind": 256,
+					"children": [
+						116,
+						122,
+						141,
+						132,
+						136
+					]
+				},
+				{
+					"title": "Type aliases",
+					"kind": 4194304,
+					"children": [
+						112
+					]
+				}
+			],
+			"sources": [
+				{
+					"fileName": "src/types.ts",
+					"line": 1,
+					"character": 0
+				}
+			]
+		}
+	],
+	"groups": [
+		{
+			"title": "Modules",
+			"kind": 1,
+			"children": [
+				1,
+				95,
+				87,
+				96,
+				101,
+				109,
+				111
+			]
+		}
+	]
+}

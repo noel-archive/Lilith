@@ -170,6 +170,7 @@ export class Container extends utils.EventBus<ContainerEvents> {
         name: metadata.name
       });
 
+      this.emit('debug', `Added reference of component "${metadata.name}" linked to ${imported.default!.name}`);
       this.#references.set(imported.default, metadata.name);
     }
 
@@ -197,6 +198,7 @@ export class Container extends utils.EventBus<ContainerEvents> {
           name: metadata.name
         });
 
+        this.emit('debug', `Added reference of service "${metadata.name}" linked to ${imported.default!.name}`);
         this.#references.set(imported.default, metadata.name);
       }
     }
@@ -290,7 +292,6 @@ export class Container extends utils.EventBus<ContainerEvents> {
   /**
    * Returns a reference from the component, singleton, or service tree
    * @param ref The reference to find
-   * @typeparam Ref The reference by class (it'll return `typeof <ref>`, use the second generic to return the class)
    * @typeparam TReturn The return value
    */
   $ref<TReturn = any>(ref: any): TReturn {
@@ -480,7 +481,7 @@ export class Container extends utils.EventBus<ContainerEvents> {
    * @param func The predicate function to find the component, service, or singleton's constructor type or name
    * @returns The component, service, singleton found or `null` if nothing was found
    */
-  find<S extends BaseComponent | BaseService | BaseSingleton, ThisArg = Container>(
+  find<S extends any = any, ThisArg = Container>(
     func: (value: BaseComponent | BaseService | BaseSingleton) => boolean,
     thisArg?: ThisArg
   ) {
@@ -490,10 +491,16 @@ export class Container extends utils.EventBus<ContainerEvents> {
       this.singletons.toArray()
     );
 
+    const predicate = func.bind(thisArg !== undefined ? thisArg : this);
     for (let i = 0; i < values.length; i++) {
       const value = values[i];
-      if (func.call(thisArg !== undefined ? thisArg : this, value))
-        return value as S;
+      if (predicate(value)) {
+        if (value.type === 'singleton') {
+          return (value as BaseSingleton).$ref as S;
+        } else {
+          return (value as BaseComponent | BaseService)._classRef as S;
+        }
+      }
     }
 
     return null;

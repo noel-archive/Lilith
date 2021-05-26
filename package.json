@@ -24,7 +24,7 @@
     "prepare": "npm run build",
     "build": "npm run lint && rm -rf build && tsc",
     "lint": "eslint src --ext .ts --fix",
-    "docs": "typedoc src --out docs --theme node_modules/eledoc/bin/default/"
+    "docs": "typedoc src --json ./docs/out.json"
   },
   "dependencies": {
     "@augu/collections": "1.0.9",
@@ -37,7 +37,6 @@
     "@types/node": "14.17.1",
     "@typescript-eslint/eslint-plugin": "4.25.0",
     "@typescript-eslint/parser": "4.25.0",
-    "eledoc": "0.2.1",
     "eslint": "7.27.0",
     "husky": "6.0.0",
     "typedoc": "0.20.36",
