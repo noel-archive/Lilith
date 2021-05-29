@@ -12,7 +12,7 @@
 			"flags": {},
 			"children": [
 				{
-					"id": 8,
+					"id": 11,
 					"name": "Container",
 					"kind": 128,
 					"kindString": "Class",
@@ -22,14 +22,14 @@
 					},
 					"children": [
 						{
-							"id": 9,
+							"id": 12,
 							"name": "constructor",
 							"kind": 512,
 							"kindString": "Constructor",
 							"flags": {},
 							"signatures": [
 								{
-									"id": 10,
+									"id": 13,
 									"name": "new Container",
 									"kind": 16384,
 									"kindString": "Constructor signature",
@@ -39,7 +39,7 @@
 									},
 									"parameters": [
 										{
-											"id": 11,
+											"id": 14,
 											"name": "options",
 											"kind": 32768,
 											"kindString": "Parameter",
@@ -57,7 +57,7 @@
 									],
 									"type": {
 										"type": "reference",
-										"id": 8,
+										"id": 11,
 										"name": "Container"
 									},
 									"overwrites": {
@@ -72,7 +72,7 @@
 							}
 						},
 						{
-							"id": 12,
+							"id": 15,
 							"name": "components",
 							"kind": 1024,
 							"kindString": "Property",
@@ -85,7 +85,7 @@
 							"sources": [
 								{
 									"fileName": "src/Container.ts",
-									"line": 104,
+									"line": 141,
 									"character": 19
 								}
 							],
@@ -98,7 +98,7 @@
 									},
 									{
 										"type": "reference",
-										"id": 116,
+										"id": 121,
 										"name": "BaseComponent"
 									}
 								],
@@ -107,7 +107,7 @@
 							"defaultValue": "..."
 						},
 						{
-							"id": 14,
+							"id": 17,
 							"name": "services",
 							"kind": 1024,
 							"kindString": "Property",
@@ -120,7 +120,7 @@
 							"sources": [
 								{
 									"fileName": "src/Container.ts",
-									"line": 114,
+									"line": 151,
 									"character": 17
 								}
 							],
@@ -133,7 +133,7 @@
 									},
 									{
 										"type": "reference",
-										"id": 122,
+										"id": 127,
 										"name": "BaseService"
 									}
 								],
@@ -142,7 +142,7 @@
 							"defaultValue": "..."
 						},
 						{
-							"id": 13,
+							"id": 16,
 							"name": "singletons",
 							"kind": 1024,
 							"kindString": "Property",
@@ -155,7 +155,7 @@
 							"sources": [
 								{
 									"fileName": "src/Container.ts",
-									"line": 109,
+									"line": 146,
 									"character": 19
 								}
 							],
@@ -168,7 +168,7 @@
 									},
 									{
 										"type": "reference",
-										"id": 141,
+										"id": 146,
 										"name": "BaseSingleton"
 									}
 								],
@@ -177,7 +177,50 @@
 							"defaultValue": "..."
 						},
 						{
-							"id": 22,
+							"id": 21,
+							"name": "references",
+							"kind": 262144,
+							"kindString": "Accessor",
+							"flags": {},
+							"comment": {
+								"shortText": "Returns the list of references available to this [[Container]]."
+							},
+							"sources": [
+								{
+									"fileName": "src/Container.ts",
+									"line": 182,
+									"character": 16
+								}
+							],
+							"getSignature": [
+								{
+									"id": 22,
+									"name": "references",
+									"kind": 524288,
+									"kindString": "Get signature",
+									"flags": {},
+									"comment": {
+										"shortText": "Returns the list of references available to this [[Container]]."
+									},
+									"type": {
+										"type": "reference",
+										"typeArguments": [
+											{
+												"type": "intrinsic",
+												"name": "any"
+											},
+											{
+												"type": "intrinsic",
+												"name": "string"
+											}
+										],
+										"name": "Collection"
+									}
+								}
+							]
+						},
+						{
+							"id": 27,
 							"name": "$ref",
 							"kind": 2048,
 							"kindString": "Method",
@@ -185,30 +228,23 @@
 							"sources": [
 								{
 									"fileName": "src/Container.ts",
-									"line": 296,
+									"line": 349,
 									"character": 6
 								}
 							],
 							"signatures": [
 								{
-									"id": 23,
+									"id": 28,
 									"name": "$ref",
 									"kind": 4096,
 									"kindString": "Call signature",
 									"flags": {},
 									"comment": {
-										"shortText": "Returns a reference from the component, singleton, or service tree",
-										"tags": [
-											{
-												"tag": "typeparam",
-												"text": "The reference by class (it'll return `typeof <ref>`, use the second generic to return the class)",
-												"param": "Ref"
-											}
-										]
+										"shortText": "Returns a reference from the component, singleton, or service tree"
 									},
 									"typeParameter": [
 										{
-											"id": 24,
+											"id": 29,
 											"name": "TReturn",
 											"kind": 131072,
 											"kindString": "Type parameter",
@@ -224,7 +260,7 @@
 									],
 									"parameters": [
 										{
-											"id": 25,
+											"id": 30,
 											"name": "ref",
 											"kind": 32768,
 											"kindString": "Parameter",
@@ -246,7 +282,7 @@
 							]
 						},
 						{
-							"id": 37,
+							"id": 42,
 							"name": "addComponent",
 							"kind": 2048,
 							"kindString": "Method",
@@ -254,13 +290,13 @@
 							"sources": [
 								{
 									"fileName": "src/Container.ts",
-									"line": 388,
+									"line": 447,
 									"character": 20
 								}
 							],
 							"signatures": [
 								{
-									"id": 38,
+									"id": 43,
 									"name": "addComponent",
 									"kind": 4096,
 									"kindString": "Call signature",
@@ -270,7 +306,7 @@
 									},
 									"parameters": [
 										{
-											"id": 39,
+											"id": 44,
 											"name": "cls",
 											"kind": 32768,
 											"kindString": "Parameter",
@@ -298,7 +334,7 @@
 							]
 						},
 						{
-							"id": 82,
+							"id": 87,
 							"name": "addListener",
 							"kind": 2048,
 							"kindString": "Method",
@@ -314,7 +350,7 @@
 							],
 							"signatures": [
 								{
-									"id": 83,
+									"id": 88,
 									"name": "addListener",
 									"kind": 4096,
 									"kindString": "Call signature",
@@ -331,7 +367,7 @@
 									},
 									"typeParameter": [
 										{
-											"id": 84,
+											"id": 89,
 											"name": "K",
 											"kind": 131072,
 											"kindString": "Type parameter",
@@ -350,7 +386,7 @@
 									],
 									"parameters": [
 										{
-											"id": 85,
+											"id": 90,
 											"name": "event",
 											"kind": 32768,
 											"kindString": "Parameter",
@@ -363,7 +399,7 @@
 											}
 										},
 										{
-											"id": 86,
+											"id": 91,
 											"name": "listener",
 											"kind": 32768,
 											"kindString": "Parameter",
@@ -385,7 +421,7 @@
 									],
 									"type": {
 										"type": "reference",
-										"id": 8,
+										"id": 11,
 										"name": "Container"
 									},
 									"inheritedFrom": {
@@ -400,7 +436,7 @@
 							}
 						},
 						{
-							"id": 40,
+							"id": 45,
 							"name": "addService",
 							"kind": 2048,
 							"kindString": "Method",
@@ -408,13 +444,13 @@
 							"sources": [
 								{
 									"fileName": "src/Container.ts",
-									"line": 435,
+									"line": 494,
 									"character": 18
 								}
 							],
 							"signatures": [
 								{
-									"id": 41,
+									"id": 46,
 									"name": "addService",
 									"kind": 4096,
 									"kindString": "Call signature",
@@ -424,7 +460,7 @@
 									},
 									"parameters": [
 										{
-											"id": 42,
+											"id": 47,
 											"name": "cls",
 											"kind": 32768,
 											"kindString": "Parameter",
@@ -452,7 +488,7 @@
 							]
 						},
 						{
-							"id": 32,
+							"id": 37,
 							"name": "addSingleton",
 							"kind": 2048,
 							"kindString": "Method",
@@ -460,13 +496,13 @@
 							"sources": [
 								{
 									"fileName": "src/Container.ts",
-									"line": 343,
+									"line": 397,
 									"character": 14
 								}
 							],
 							"signatures": [
 								{
-									"id": 33,
+									"id": 38,
 									"name": "addSingleton",
 									"kind": 4096,
 									"kindString": "Call signature",
@@ -476,7 +512,7 @@
 									},
 									"parameters": [
 										{
-											"id": 34,
+											"id": 39,
 											"name": "singleton",
 											"kind": 32768,
 											"kindString": "Parameter",
@@ -498,7 +534,7 @@
 							]
 						},
 						{
-							"id": 29,
+							"id": 34,
 							"name": "addSingletons",
 							"kind": 2048,
 							"kindString": "Method",
@@ -506,29 +542,35 @@
 							"sources": [
 								{
 									"fileName": "src/Container.ts",
-									"line": 334,
+									"line": 388,
 									"character": 15
 								}
 							],
 							"signatures": [
 								{
-									"id": 30,
+									"id": 35,
 									"name": "addSingletons",
 									"kind": 4096,
 									"kindString": "Call signature",
 									"flags": {},
 									"comment": {
-										"shortText": "Bulk-add a list of singletons"
+										"shortText": "Bulk-add a list of singletons",
+										"tags": [
+											{
+												"tag": "deprecated",
+												"text": "This method will be deprecated in the future.\n"
+											}
+										]
 									},
 									"parameters": [
 										{
-											"id": 31,
+											"id": 36,
 											"name": "singletons",
 											"kind": 32768,
 											"kindString": "Parameter",
 											"flags": {},
 											"comment": {
-												"text": "The singletons to add\n"
+												"text": "The singletons to add"
 											},
 											"type": {
 												"type": "array",
@@ -547,7 +589,7 @@
 							]
 						},
 						{
-							"id": 35,
+							"id": 40,
 							"name": "dispose",
 							"kind": 2048,
 							"kindString": "Method",
@@ -555,13 +597,13 @@
 							"sources": [
 								{
 									"fileName": "src/Container.ts",
-									"line": 360,
+									"line": 419,
 									"character": 9
 								}
 							],
 							"signatures": [
 								{
-									"id": 36,
+									"id": 41,
 									"name": "dispose",
 									"kind": 4096,
 									"kindString": "Call signature",
@@ -577,7 +619,7 @@
 							]
 						},
 						{
-							"id": 52,
+							"id": 57,
 							"name": "emit",
 							"kind": 2048,
 							"kindString": "Method",
@@ -593,7 +635,7 @@
 							],
 							"signatures": [
 								{
-									"id": 53,
+									"id": 58,
 									"name": "emit",
 									"kind": 4096,
 									"kindString": "Call signature",
@@ -606,7 +648,7 @@
 									},
 									"typeParameter": [
 										{
-											"id": 54,
+											"id": 59,
 											"name": "K",
 											"kind": 131072,
 											"kindString": "Type parameter",
@@ -625,7 +667,7 @@
 									],
 									"parameters": [
 										{
-											"id": 55,
+											"id": 60,
 											"name": "event",
 											"kind": 32768,
 											"kindString": "Parameter",
@@ -641,7 +683,7 @@
 											}
 										},
 										{
-											"id": 56,
+											"id": 61,
 											"name": "args",
 											"kind": 32768,
 											"kindString": "Parameter",
@@ -687,7 +729,7 @@
 							}
 						},
 						{
-							"id": 43,
+							"id": 48,
 							"name": "find",
 							"kind": 2048,
 							"kindString": "Method",
@@ -695,13 +737,13 @@
 							"sources": [
 								{
 									"fileName": "src/Container.ts",
-									"line": 483,
+									"line": 542,
 									"character": 6
 								}
 							],
 							"signatures": [
 								{
-									"id": 44,
+									"id": 49,
 									"name": "find",
 									"kind": 4096,
 									"kindString": "Call signature",
@@ -712,48 +754,36 @@
 									},
 									"typeParameter": [
 										{
-											"id": 45,
+											"id": 50,
 											"name": "S",
 											"kind": 131072,
 											"kindString": "Type parameter",
 											"flags": {},
 											"type": {
-												"type": "union",
-												"types": [
-													{
-														"type": "reference",
-														"id": 116,
-														"name": "BaseComponent"
-													},
-													{
-														"type": "reference",
-														"id": 122,
-														"name": "BaseService"
-													},
-													{
-														"type": "reference",
-														"id": 141,
-														"name": "BaseSingleton"
-													}
-												]
+												"type": "intrinsic",
+												"name": "unknown"
+											},
+											"default": {
+												"type": "intrinsic",
+												"name": "any"
 											}
 										},
 										{
-											"id": 46,
+											"id": 51,
 											"name": "ThisArg",
 											"kind": 131072,
 											"kindString": "Type parameter",
 											"flags": {},
 											"default": {
 												"type": "reference",
-												"id": 8,
+												"id": 11,
 												"name": "Container"
 											}
 										}
 									],
 									"parameters": [
 										{
-											"id": 47,
+											"id": 52,
 											"name": "func",
 											"kind": 32768,
 											"kindString": "Parameter",
@@ -764,21 +794,21 @@
 											"type": {
 												"type": "reflection",
 												"declaration": {
-													"id": 48,
+													"id": 53,
 													"name": "__type",
 													"kind": 65536,
 													"kindString": "Type literal",
 													"flags": {},
 													"signatures": [
 														{
-															"id": 49,
+															"id": 54,
 															"name": "__type",
 															"kind": 4096,
 															"kindString": "Call signature",
 															"flags": {},
 															"parameters": [
 																{
-																	"id": 50,
+																	"id": 55,
 																	"name": "value",
 																	"kind": 32768,
 																	"kindString": "Parameter",
@@ -788,17 +818,17 @@
 																		"types": [
 																			{
 																				"type": "reference",
-																				"id": 116,
+																				"id": 121,
 																				"name": "BaseComponent"
 																			},
 																			{
 																				"type": "reference",
-																				"id": 122,
+																				"id": 127,
 																				"name": "BaseService"
 																			},
 																			{
 																				"type": "reference",
-																				"id": 141,
+																				"id": 146,
 																				"name": "BaseSingleton"
 																			}
 																		]
@@ -815,7 +845,7 @@
 											}
 										},
 										{
-											"id": 51,
+											"id": 56,
 											"name": "thisArg",
 											"kind": 32768,
 											"kindString": "Parameter",
@@ -845,7 +875,7 @@
 							]
 						},
 						{
-							"id": 26,
+							"id": 31,
 							"name": "inject",
 							"kind": 2048,
 							"kindString": "Method",
@@ -853,13 +883,13 @@
 							"sources": [
 								{
 									"fileName": "src/Container.ts",
-									"line": 315,
+									"line": 368,
 									"character": 8
 								}
 							],
 							"signatures": [
 								{
-									"id": 27,
+									"id": 32,
 									"name": "inject",
 									"kind": 4096,
 									"kindString": "Call signature",
@@ -869,7 +899,7 @@
 									},
 									"parameters": [
 										{
-											"id": 28,
+											"id": 33,
 											"name": "pending",
 											"kind": 32768,
 											"kindString": "Parameter",
@@ -879,7 +909,7 @@
 											},
 											"type": {
 												"type": "reference",
-												"id": 132,
+												"id": 137,
 												"name": "PendingInjectDefinition"
 											}
 										}
@@ -892,7 +922,7 @@
 							]
 						},
 						{
-							"id": 18,
+							"id": 23,
 							"name": "load",
 							"kind": 2048,
 							"kindString": "Method",
@@ -900,13 +930,13 @@
 							"sources": [
 								{
 									"fileName": "src/Container.ts",
-									"line": 140,
+									"line": 189,
 									"character": 12
 								}
 							],
 							"signatures": [
 								{
-									"id": 19,
+									"id": 24,
 									"name": "load",
 									"kind": 4096,
 									"kindString": "Call signature",
@@ -928,7 +958,7 @@
 							]
 						},
 						{
-							"id": 60,
+							"id": 65,
 							"name": "on",
 							"kind": 2048,
 							"kindString": "Method",
@@ -944,7 +974,7 @@
 							],
 							"signatures": [
 								{
-									"id": 61,
+									"id": 66,
 									"name": "on",
 									"kind": 4096,
 									"kindString": "Call signature",
@@ -953,110 +983,6 @@
 									},
 									"comment": {
 										"shortText": "Pushes a new event to the callstack",
-										"returns": "This instance to chain methods\n"
-									},
-									"typeParameter": [
-										{
-											"id": 62,
-											"name": "K",
-											"kind": 131072,
-											"kindString": "Type parameter",
-											"flags": {
-												"isExternal": true
-											},
-											"type": {
-												"type": "typeOperator",
-												"operator": "keyof",
-												"target": {
-													"type": "reference",
-													"name": "ContainerEvents"
-												}
-											}
-										}
-									],
-									"parameters": [
-										{
-											"id": 63,
-											"name": "event",
-											"kind": 32768,
-											"kindString": "Parameter",
-											"flags": {
-												"isExternal": true
-											},
-											"comment": {
-												"text": "The event to push"
-											},
-											"type": {
-												"type": "reference",
-												"name": "K"
-											}
-										},
-										{
-											"id": 64,
-											"name": "listener",
-											"kind": 32768,
-											"kindString": "Parameter",
-											"flags": {
-												"isExternal": true
-											},
-											"comment": {
-												"text": "The listener function"
-											},
-											"type": {
-												"type": "indexedAccess",
-												"indexType": {
-													"type": "reference",
-													"name": "K"
-												},
-												"objectType": {
-													"type": "reference",
-													"name": "ContainerEvents"
-												}
-											}
-										}
-									],
-									"type": {
-										"type": "reference",
-										"id": 8,
-										"name": "Container"
-									},
-									"inheritedFrom": {
-										"type": "reference",
-										"name": "utils.EventBus.on"
-									}
-								}
-							],
-							"inheritedFrom": {
-								"type": "reference",
-								"name": "utils.EventBus.on"
-							}
-						},
-						{
-							"id": 65,
-							"name": "once",
-							"kind": 2048,
-							"kindString": "Method",
-							"flags": {
-								"isExternal": true
-							},
-							"sources": [
-								{
-									"fileName": "node_modules/@augu/utils/index.d.ts",
-									"line": 393,
-									"character": 8
-								}
-							],
-							"signatures": [
-								{
-									"id": 66,
-									"name": "once",
-									"kind": 4096,
-									"kindString": "Call signature",
-									"flags": {
-										"isExternal": true
-									},
-									"comment": {
-										"shortText": "Pushes a new event to the callstack and removes it after\nit has been emitted from the parent component.",
 										"returns": "This instance to chain methods\n"
 									},
 									"typeParameter": [
@@ -1121,66 +1047,23 @@
 									],
 									"type": {
 										"type": "reference",
-										"id": 8,
+										"id": 11,
 										"name": "Container"
 									},
 									"inheritedFrom": {
 										"type": "reference",
-										"name": "utils.EventBus.once"
+										"name": "utils.EventBus.on"
 									}
 								}
 							],
 							"inheritedFrom": {
 								"type": "reference",
-								"name": "utils.EventBus.once"
-							}
-						},
-						{
-							"id": 80,
-							"name": "removeAllListeners",
-							"kind": 2048,
-							"kindString": "Method",
-							"flags": {
-								"isExternal": true
-							},
-							"sources": [
-								{
-									"fileName": "node_modules/@augu/utils/index.d.ts",
-									"line": 418,
-									"character": 22
-								}
-							],
-							"signatures": [
-								{
-									"id": 81,
-									"name": "removeAllListeners",
-									"kind": 4096,
-									"kindString": "Call signature",
-									"flags": {
-										"isExternal": true
-									},
-									"comment": {
-										"shortText": "Removes all listeners from this EventBus component"
-									},
-									"type": {
-										"type": "reference",
-										"id": 8,
-										"name": "Container"
-									},
-									"inheritedFrom": {
-										"type": "reference",
-										"name": "utils.EventBus.removeAllListeners"
-									}
-								}
-							],
-							"inheritedFrom": {
-								"type": "reference",
-								"name": "utils.EventBus.removeAllListeners"
+								"name": "utils.EventBus.on"
 							}
 						},
 						{
 							"id": 70,
-							"name": "removeListener",
+							"name": "once",
 							"kind": 2048,
 							"kindString": "Method",
 							"flags": {
@@ -1189,21 +1072,21 @@
 							"sources": [
 								{
 									"fileName": "node_modules/@augu/utils/index.d.ts",
-									"line": 401,
-									"character": 18
+									"line": 393,
+									"character": 8
 								}
 							],
 							"signatures": [
 								{
 									"id": 71,
-									"name": "removeListener",
+									"name": "once",
 									"kind": 4096,
 									"kindString": "Call signature",
 									"flags": {
 										"isExternal": true
 									},
 									"comment": {
-										"shortText": "Pushes a event's specific listener from the callstack.",
+										"shortText": "Pushes a new event to the callstack and removes it after\nit has been emitted from the parent component.",
 										"returns": "This instance to chain methods\n"
 									},
 									"typeParameter": [
@@ -1235,7 +1118,7 @@
 												"isExternal": true
 											},
 											"comment": {
-												"text": "The event to remove"
+												"text": "The event to push"
 											},
 											"type": {
 												"type": "reference",
@@ -1244,6 +1127,153 @@
 										},
 										{
 											"id": 74,
+											"name": "listener",
+											"kind": 32768,
+											"kindString": "Parameter",
+											"flags": {
+												"isExternal": true
+											},
+											"comment": {
+												"text": "The listener function"
+											},
+											"type": {
+												"type": "indexedAccess",
+												"indexType": {
+													"type": "reference",
+													"name": "K"
+												},
+												"objectType": {
+													"type": "reference",
+													"name": "ContainerEvents"
+												}
+											}
+										}
+									],
+									"type": {
+										"type": "reference",
+										"id": 11,
+										"name": "Container"
+									},
+									"inheritedFrom": {
+										"type": "reference",
+										"name": "utils.EventBus.once"
+									}
+								}
+							],
+							"inheritedFrom": {
+								"type": "reference",
+								"name": "utils.EventBus.once"
+							}
+						},
+						{
+							"id": 85,
+							"name": "removeAllListeners",
+							"kind": 2048,
+							"kindString": "Method",
+							"flags": {
+								"isExternal": true
+							},
+							"sources": [
+								{
+									"fileName": "node_modules/@augu/utils/index.d.ts",
+									"line": 418,
+									"character": 22
+								}
+							],
+							"signatures": [
+								{
+									"id": 86,
+									"name": "removeAllListeners",
+									"kind": 4096,
+									"kindString": "Call signature",
+									"flags": {
+										"isExternal": true
+									},
+									"comment": {
+										"shortText": "Removes all listeners from this EventBus component"
+									},
+									"type": {
+										"type": "reference",
+										"id": 11,
+										"name": "Container"
+									},
+									"inheritedFrom": {
+										"type": "reference",
+										"name": "utils.EventBus.removeAllListeners"
+									}
+								}
+							],
+							"inheritedFrom": {
+								"type": "reference",
+								"name": "utils.EventBus.removeAllListeners"
+							}
+						},
+						{
+							"id": 75,
+							"name": "removeListener",
+							"kind": 2048,
+							"kindString": "Method",
+							"flags": {
+								"isExternal": true
+							},
+							"sources": [
+								{
+									"fileName": "node_modules/@augu/utils/index.d.ts",
+									"line": 401,
+									"character": 18
+								}
+							],
+							"signatures": [
+								{
+									"id": 76,
+									"name": "removeListener",
+									"kind": 4096,
+									"kindString": "Call signature",
+									"flags": {
+										"isExternal": true
+									},
+									"comment": {
+										"shortText": "Pushes a event's specific listener from the callstack.",
+										"returns": "This instance to chain methods\n"
+									},
+									"typeParameter": [
+										{
+											"id": 77,
+											"name": "K",
+											"kind": 131072,
+											"kindString": "Type parameter",
+											"flags": {
+												"isExternal": true
+											},
+											"type": {
+												"type": "typeOperator",
+												"operator": "keyof",
+												"target": {
+													"type": "reference",
+													"name": "ContainerEvents"
+												}
+											}
+										}
+									],
+									"parameters": [
+										{
+											"id": 78,
+											"name": "event",
+											"kind": 32768,
+											"kindString": "Parameter",
+											"flags": {
+												"isExternal": true
+											},
+											"comment": {
+												"text": "The event to remove"
+											},
+											"type": {
+												"type": "reference",
+												"name": "K"
+											}
+										},
+										{
+											"id": 79,
 											"name": "listener",
 											"kind": 32768,
 											"kindString": "Parameter",
@@ -1282,7 +1312,7 @@
 							}
 						},
 						{
-							"id": 20,
+							"id": 25,
 							"name": "runInjections",
 							"kind": 2048,
 							"kindString": "Method",
@@ -1290,13 +1320,13 @@
 							"sources": [
 								{
 									"fileName": "src/Container.ts",
-									"line": 285,
+									"line": 338,
 									"character": 15
 								}
 							],
 							"signatures": [
 								{
-									"id": 21,
+									"id": 26,
 									"name": "runInjections",
 									"kind": 4096,
 									"kindString": "Call signature",
@@ -1312,7 +1342,7 @@
 							]
 						},
 						{
-							"id": 57,
+							"id": 62,
 							"name": "setMaxListeners",
 							"kind": 2048,
 							"kindString": "Method",
@@ -1328,7 +1358,7 @@
 							],
 							"signatures": [
 								{
-									"id": 58,
+									"id": 63,
 									"name": "setMaxListeners",
 									"kind": 4096,
 									"kindString": "Call signature",
@@ -1341,7 +1371,7 @@
 									},
 									"parameters": [
 										{
-											"id": 59,
+											"id": 64,
 											"name": "count",
 											"kind": 32768,
 											"kindString": "Parameter",
@@ -1359,7 +1389,7 @@
 									],
 									"type": {
 										"type": "reference",
-										"id": 8,
+										"id": 11,
 										"name": "Container"
 									},
 									"inheritedFrom": {
@@ -1374,7 +1404,7 @@
 							}
 						},
 						{
-							"id": 75,
+							"id": 80,
 							"name": "size",
 							"kind": 2048,
 							"kindString": "Method",
@@ -1390,7 +1420,7 @@
 							],
 							"signatures": [
 								{
-									"id": 76,
+									"id": 81,
 									"name": "size",
 									"kind": 4096,
 									"kindString": "Call signature",
@@ -1403,7 +1433,7 @@
 									},
 									"typeParameter": [
 										{
-											"id": 77,
+											"id": 82,
 											"name": "K",
 											"kind": 131072,
 											"kindString": "Type parameter",
@@ -1422,7 +1452,7 @@
 									],
 									"parameters": [
 										{
-											"id": 78,
+											"id": 83,
 											"name": "event",
 											"kind": 32768,
 											"kindString": "Parameter",
@@ -1448,7 +1478,7 @@
 									}
 								},
 								{
-									"id": 79,
+									"id": 84,
 									"name": "size",
 									"kind": 4096,
 									"kindString": "Call signature",
@@ -1479,47 +1509,54 @@
 							"title": "Constructors",
 							"kind": 512,
 							"children": [
-								9
+								12
 							]
 						},
 						{
 							"title": "Properties",
 							"kind": 1024,
 							"children": [
-								12,
-								14,
-								13
+								15,
+								17,
+								16
+							]
+						},
+						{
+							"title": "Accessors",
+							"kind": 262144,
+							"children": [
+								21
 							]
 						},
 						{
 							"title": "Methods",
 							"kind": 2048,
 							"children": [
-								22,
+								27,
+								42,
+								87,
+								45,
 								37,
-								82,
+								34,
 								40,
-								32,
-								29,
-								35,
-								52,
-								43,
-								26,
-								18,
-								60,
-								65,
-								80,
-								70,
-								20,
 								57,
-								75
+								48,
+								31,
+								23,
+								65,
+								70,
+								85,
+								75,
+								25,
+								62,
+								80
 							]
 						}
 					],
 					"sources": [
 						{
 							"fileName": "src/Container.ts",
-							"line": 100,
+							"line": 137,
 							"character": 22
 						}
 					],
@@ -1537,7 +1574,7 @@
 					]
 				},
 				{
-					"id": 2,
+					"id": 5,
 					"name": "isComponentLike",
 					"kind": 64,
 					"kindString": "Function",
@@ -1547,62 +1584,14 @@
 					"sources": [
 						{
 							"fileName": "src/Container.ts",
-							"line": 89,
+							"line": 110,
 							"character": 28
 						}
 					],
 					"signatures": [
 						{
-							"id": 3,
-							"name": "isComponentLike",
-							"kind": 4096,
-							"kindString": "Call signature",
-							"flags": {},
-							"parameters": [
-								{
-									"id": 4,
-									"name": "value",
-									"kind": 32768,
-									"kindString": "Parameter",
-									"flags": {},
-									"type": {
-										"type": "intrinsic",
-										"name": "unknown"
-									}
-								}
-							],
-							"type": {
-								"type": "predicate",
-								"name": "value",
-								"asserts": false,
-								"targetType": {
-									"type": "reference",
-									"id": 116,
-									"name": "BaseComponent"
-								}
-							}
-						}
-					]
-				},
-				{
-					"id": 5,
-					"name": "isServiceLike",
-					"kind": 64,
-					"kindString": "Function",
-					"flags": {
-						"isConst": true
-					},
-					"sources": [
-						{
-							"fileName": "src/Container.ts",
-							"line": 90,
-							"character": 26
-						}
-					],
-					"signatures": [
-						{
 							"id": 6,
-							"name": "isServiceLike",
+							"name": "isComponentLike",
 							"kind": 4096,
 							"kindString": "Call signature",
 							"flags": {},
@@ -1625,7 +1614,101 @@
 								"asserts": false,
 								"targetType": {
 									"type": "reference",
-									"id": 122,
+									"id": 121,
+									"name": "BaseComponent"
+								}
+							}
+						}
+					]
+				},
+				{
+					"id": 2,
+					"name": "isPrimitive",
+					"kind": 64,
+					"kindString": "Function",
+					"flags": {},
+					"sources": [
+						{
+							"fileName": "src/Container.ts",
+							"line": 121,
+							"character": 27
+						}
+					],
+					"signatures": [
+						{
+							"id": 3,
+							"name": "isPrimitive",
+							"kind": 4096,
+							"kindString": "Call signature",
+							"flags": {},
+							"comment": {
+								"shortText": "Returns a boolean value if `value` is not a primitive."
+							},
+							"parameters": [
+								{
+									"id": 4,
+									"name": "value",
+									"kind": 32768,
+									"kindString": "Parameter",
+									"flags": {},
+									"comment": {
+										"text": "The value to check\n"
+									},
+									"type": {
+										"type": "intrinsic",
+										"name": "unknown"
+									}
+								}
+							],
+							"type": {
+								"type": "intrinsic",
+								"name": "boolean"
+							}
+						}
+					]
+				},
+				{
+					"id": 8,
+					"name": "isServiceLike",
+					"kind": 64,
+					"kindString": "Function",
+					"flags": {
+						"isConst": true
+					},
+					"sources": [
+						{
+							"fileName": "src/Container.ts",
+							"line": 111,
+							"character": 26
+						}
+					],
+					"signatures": [
+						{
+							"id": 9,
+							"name": "isServiceLike",
+							"kind": 4096,
+							"kindString": "Call signature",
+							"flags": {},
+							"parameters": [
+								{
+									"id": 10,
+									"name": "value",
+									"kind": 32768,
+									"kindString": "Parameter",
+									"flags": {},
+									"type": {
+										"type": "intrinsic",
+										"name": "unknown"
+									}
+								}
+							],
+							"type": {
+								"type": "predicate",
+								"name": "value",
+								"asserts": false,
+								"targetType": {
+									"type": "reference",
+									"id": 127,
 									"name": "BaseService"
 								}
 							}
@@ -1638,15 +1721,16 @@
 					"title": "Classes",
 					"kind": 128,
 					"children": [
-						8
+						11
 					]
 				},
 				{
 					"title": "Functions",
 					"kind": 64,
 					"children": [
+						5,
 						2,
-						5
+						8
 					]
 				}
 			],
@@ -1659,51 +1743,51 @@
 			]
 		},
 		{
-			"id": 95,
+			"id": 100,
 			"name": "decorators",
 			"kind": 1,
 			"kindString": "Module",
 			"flags": {},
 			"children": [
 				{
-					"id": 145,
+					"id": 150,
 					"name": "Component",
 					"kind": 16777216,
 					"kindString": "Reference",
 					"flags": {},
-					"target": 88
+					"target": 93
 				},
 				{
-					"id": 146,
+					"id": 151,
 					"name": "ComponentOptions",
 					"kind": 16777216,
 					"kindString": "Reference",
 					"flags": {},
-					"target": 91
+					"target": 96
 				},
 				{
-					"id": 149,
+					"id": 154,
 					"name": "Inject",
-					"kind": 16777216,
-					"kindString": "Reference",
-					"flags": {},
-					"target": 97
-				},
-				{
-					"id": 147,
-					"name": "Service",
 					"kind": 16777216,
 					"kindString": "Reference",
 					"flags": {},
 					"target": 102
 				},
 				{
-					"id": 148,
+					"id": 152,
+					"name": "Service",
+					"kind": 16777216,
+					"kindString": "Reference",
+					"flags": {},
+					"target": 107
+				},
+				{
+					"id": 153,
 					"name": "ServiceOptions",
 					"kind": 16777216,
 					"kindString": "Reference",
 					"flags": {},
-					"target": 105
+					"target": 110
 				}
 			],
 			"groups": [
@@ -1711,11 +1795,11 @@
 					"title": "References",
 					"kind": 16777216,
 					"children": [
-						145,
-						146,
-						149,
-						147,
-						148
+						150,
+						151,
+						154,
+						152,
+						153
 					]
 				}
 			],
@@ -1728,14 +1812,14 @@
 			]
 		},
 		{
-			"id": 87,
+			"id": 92,
 			"name": "decorators/Component",
 			"kind": 1,
 			"kindString": "Module",
 			"flags": {},
 			"children": [
 				{
-					"id": 91,
+					"id": 96,
 					"name": "ComponentOptions",
 					"kind": 256,
 					"kindString": "Interface",
@@ -1745,7 +1829,7 @@
 					},
 					"children": [
 						{
-							"id": 92,
+							"id": 97,
 							"name": "children",
 							"kind": 1024,
 							"kindString": "Property",
@@ -1780,7 +1864,7 @@
 							}
 						},
 						{
-							"id": 94,
+							"id": 99,
 							"name": "name",
 							"kind": 1024,
 							"kindString": "Property",
@@ -1801,7 +1885,7 @@
 							}
 						},
 						{
-							"id": 93,
+							"id": 98,
 							"name": "priority",
 							"kind": 1024,
 							"kindString": "Property",
@@ -1827,9 +1911,9 @@
 							"title": "Properties",
 							"kind": 1024,
 							"children": [
-								92,
-								94,
-								93
+								97,
+								99,
+								98
 							]
 						}
 					],
@@ -1842,7 +1926,7 @@
 					]
 				},
 				{
-					"id": 88,
+					"id": 93,
 					"name": "Component",
 					"kind": 64,
 					"kindString": "Function",
@@ -1856,7 +1940,7 @@
 					],
 					"signatures": [
 						{
-							"id": 89,
+							"id": 94,
 							"name": "Component",
 							"kind": 4096,
 							"kindString": "Call signature",
@@ -1866,14 +1950,14 @@
 							},
 							"parameters": [
 								{
-									"id": 90,
+									"id": 95,
 									"name": "__namedParameters",
 									"kind": 32768,
 									"kindString": "Parameter",
 									"flags": {},
 									"type": {
 										"type": "reference",
-										"id": 91,
+										"id": 96,
 										"name": "ComponentOptions"
 									}
 								}
@@ -1891,14 +1975,14 @@
 					"title": "Interfaces",
 					"kind": 256,
 					"children": [
-						91
+						96
 					]
 				},
 				{
 					"title": "Functions",
 					"kind": 64,
 					"children": [
-						88
+						93
 					]
 				}
 			],
@@ -1911,14 +1995,14 @@
 			]
 		},
 		{
-			"id": 96,
+			"id": 101,
 			"name": "decorators/Inject",
 			"kind": 1,
 			"kindString": "Module",
 			"flags": {},
 			"children": [
 				{
-					"id": 97,
+					"id": 102,
 					"name": "Inject",
 					"kind": 64,
 					"kindString": "Function",
@@ -1934,7 +2018,7 @@
 					],
 					"signatures": [
 						{
-							"id": 98,
+							"id": 103,
 							"name": "Inject",
 							"kind": 4096,
 							"kindString": "Call signature",
@@ -1944,7 +2028,7 @@
 							},
 							"parameters": [
 								{
-									"id": 99,
+									"id": 104,
 									"name": "target",
 									"kind": 32768,
 									"kindString": "Parameter",
@@ -1955,7 +2039,7 @@
 									}
 								},
 								{
-									"id": 100,
+									"id": 105,
 									"name": "propertyKey",
 									"kind": 32768,
 									"kindString": "Parameter",
@@ -1988,7 +2072,7 @@
 					"title": "Functions",
 					"kind": 64,
 					"children": [
-						97
+						102
 					]
 				}
 			],
@@ -2001,21 +2085,21 @@
 			]
 		},
 		{
-			"id": 101,
+			"id": 106,
 			"name": "decorators/Service",
 			"kind": 1,
 			"kindString": "Module",
 			"flags": {},
 			"children": [
 				{
-					"id": 105,
+					"id": 110,
 					"name": "ServiceOptions",
 					"kind": 256,
 					"kindString": "Interface",
 					"flags": {},
 					"children": [
 						{
-							"id": 106,
+							"id": 111,
 							"name": "children",
 							"kind": 1024,
 							"kindString": "Property",
@@ -2050,7 +2134,7 @@
 							}
 						},
 						{
-							"id": 108,
+							"id": 113,
 							"name": "name",
 							"kind": 1024,
 							"kindString": "Property",
@@ -2071,7 +2155,7 @@
 							}
 						},
 						{
-							"id": 107,
+							"id": 112,
 							"name": "priority",
 							"kind": 1024,
 							"kindString": "Property",
@@ -2097,9 +2181,9 @@
 							"title": "Properties",
 							"kind": 1024,
 							"children": [
-								106,
-								108,
-								107
+								111,
+								113,
+								112
 							]
 						}
 					],
@@ -2112,7 +2196,7 @@
 					]
 				},
 				{
-					"id": 102,
+					"id": 107,
 					"name": "Service",
 					"kind": 64,
 					"kindString": "Function",
@@ -2126,7 +2210,7 @@
 					],
 					"signatures": [
 						{
-							"id": 103,
+							"id": 108,
 							"name": "Service",
 							"kind": 4096,
 							"kindString": "Call signature",
@@ -2136,14 +2220,14 @@
 							},
 							"parameters": [
 								{
-									"id": 104,
+									"id": 109,
 									"name": "__namedParameters",
 									"kind": 32768,
 									"kindString": "Parameter",
 									"flags": {},
 									"type": {
 										"type": "reference",
-										"id": 105,
+										"id": 110,
 										"name": "ServiceOptions"
 									}
 								}
@@ -2161,14 +2245,14 @@
 					"title": "Interfaces",
 					"kind": 256,
 					"children": [
-						105
+						110
 					]
 				},
 				{
 					"title": "Functions",
 					"kind": 64,
 					"children": [
-						102
+						107
 					]
 				}
 			],
@@ -2181,134 +2265,142 @@
 			]
 		},
 		{
-			"id": 109,
+			"id": 114,
 			"name": "index",
 			"kind": 1,
 			"kindString": "Module",
 			"flags": {},
 			"children": [
 				{
-					"id": 159,
+					"id": 165,
 					"name": "BaseComponent",
 					"kind": 16777216,
 					"kindString": "Reference",
 					"flags": {},
-					"target": 116
+					"target": 121
 				},
 				{
-					"id": 160,
+					"id": 166,
 					"name": "BaseService",
 					"kind": 16777216,
 					"kindString": "Reference",
 					"flags": {},
-					"target": 122
+					"target": 127
 				},
 				{
-					"id": 164,
+					"id": 170,
 					"name": "BaseSingleton",
 					"kind": 16777216,
 					"kindString": "Reference",
 					"flags": {},
-					"target": 141
+					"target": 146
 				},
 				{
-					"id": 150,
+					"id": 155,
 					"name": "Component",
 					"kind": 16777216,
 					"kindString": "Reference",
 					"flags": {},
-					"target": 88
+					"target": 93
 				},
 				{
-					"id": 151,
+					"id": 156,
 					"name": "ComponentOptions",
 					"kind": 16777216,
 					"kindString": "Reference",
 					"flags": {},
-					"target": 91
+					"target": 96
 				},
 				{
-					"id": 157,
+					"id": 163,
 					"name": "Container",
 					"kind": 16777216,
 					"kindString": "Reference",
 					"flags": {},
-					"target": 8
+					"target": 11
 				},
 				{
-					"id": 158,
+					"id": 164,
 					"name": "ImportedDefaultExport",
 					"kind": 16777216,
 					"kindString": "Reference",
 					"flags": {},
-					"target": 112
+					"target": 117
 				},
 				{
-					"id": 154,
+					"id": 159,
 					"name": "Inject",
-					"kind": 16777216,
-					"kindString": "Reference",
-					"flags": {},
-					"target": 97
-				},
-				{
-					"id": 161,
-					"name": "MetadataKeys",
-					"kind": 16777216,
-					"kindString": "Reference",
-					"flags": {},
-					"target": 128
-				},
-				{
-					"id": 162,
-					"name": "PendingInjectDefinition",
-					"kind": 16777216,
-					"kindString": "Reference",
-					"flags": {},
-					"target": 132
-				},
-				{
-					"id": 163,
-					"name": "ReferredObjectDefinition",
-					"kind": 16777216,
-					"kindString": "Reference",
-					"flags": {},
-					"target": 136
-				},
-				{
-					"id": 152,
-					"name": "Service",
 					"kind": 16777216,
 					"kindString": "Reference",
 					"flags": {},
 					"target": 102
 				},
 				{
-					"id": 153,
+					"id": 167,
+					"name": "MetadataKeys",
+					"kind": 16777216,
+					"kindString": "Reference",
+					"flags": {},
+					"target": 133
+				},
+				{
+					"id": 168,
+					"name": "PendingInjectDefinition",
+					"kind": 16777216,
+					"kindString": "Reference",
+					"flags": {},
+					"target": 137
+				},
+				{
+					"id": 169,
+					"name": "ReferredObjectDefinition",
+					"kind": 16777216,
+					"kindString": "Reference",
+					"flags": {},
+					"target": 141
+				},
+				{
+					"id": 157,
+					"name": "Service",
+					"kind": 16777216,
+					"kindString": "Reference",
+					"flags": {},
+					"target": 107
+				},
+				{
+					"id": 158,
 					"name": "ServiceOptions",
 					"kind": 16777216,
 					"kindString": "Reference",
 					"flags": {},
-					"target": 105
+					"target": 110
 				},
 				{
-					"id": 155,
+					"id": 161,
 					"name": "isComponentLike",
-					"kind": 16777216,
-					"kindString": "Reference",
-					"flags": {},
-					"target": 2
-				},
-				{
-					"id": 156,
-					"name": "isServiceLike",
 					"kind": 16777216,
 					"kindString": "Reference",
 					"flags": {},
 					"target": 5
 				},
 				{
-					"id": 110,
+					"id": 160,
+					"name": "isPrimitive",
+					"kind": 16777216,
+					"kindString": "Reference",
+					"flags": {},
+					"target": 2
+				},
+				{
+					"id": 162,
+					"name": "isServiceLike",
+					"kind": 16777216,
+					"kindString": "Reference",
+					"flags": {},
+					"target": 8
+				},
+				{
+					"id": 115,
 					"name": "version",
 					"kind": 32,
 					"kindString": "Variable",
@@ -2337,28 +2429,29 @@
 					"title": "References",
 					"kind": 16777216,
 					"children": [
-						159,
-						160,
+						165,
+						166,
+						170,
+						155,
+						156,
+						163,
 						164,
-						150,
-						151,
+						159,
+						167,
+						168,
+						169,
 						157,
 						158,
-						154,
 						161,
-						162,
-						163,
-						152,
-						153,
-						155,
-						156
+						160,
+						162
 					]
 				},
 				{
 					"title": "Variables",
 					"kind": 32,
 					"children": [
-						110
+						115
 					]
 				}
 			],
@@ -2371,7 +2464,7 @@
 			]
 		},
 		{
-			"id": 111,
+			"id": 116,
 			"name": "types",
 			"kind": 1,
 			"kindString": "Module",
@@ -2382,7 +2475,7 @@
 			},
 			"children": [
 				{
-					"id": 128,
+					"id": 133,
 					"name": "MetadataKeys",
 					"kind": 4,
 					"kindString": "Enumeration",
@@ -2394,7 +2487,7 @@
 					},
 					"children": [
 						{
-							"id": 130,
+							"id": 135,
 							"name": "Component",
 							"kind": 16,
 							"kindString": "Enumeration member",
@@ -2409,7 +2502,7 @@
 							"defaultValue": "\"$lilith::api::component\""
 						},
 						{
-							"id": 129,
+							"id": 134,
 							"name": "PendingInjections",
 							"kind": 16,
 							"kindString": "Enumeration member",
@@ -2424,7 +2517,7 @@
 							"defaultValue": "\"$lilith::api::injections::pending\""
 						},
 						{
-							"id": 131,
+							"id": 136,
 							"name": "Service",
 							"kind": 16,
 							"kindString": "Enumeration member",
@@ -2444,9 +2537,9 @@
 							"title": "Enumeration members",
 							"kind": 16,
 							"children": [
-								130,
-								129,
-								131
+								135,
+								134,
+								136
 							]
 						}
 					],
@@ -2459,7 +2552,7 @@
 					]
 				},
 				{
-					"id": 116,
+					"id": 121,
 					"name": "BaseComponent",
 					"kind": 256,
 					"kindString": "Interface",
@@ -2469,7 +2562,7 @@
 					},
 					"children": [
 						{
-							"id": 117,
+							"id": 122,
 							"name": "_classRef",
 							"kind": 1024,
 							"kindString": "Property",
@@ -2487,7 +2580,7 @@
 							}
 						},
 						{
-							"id": 118,
+							"id": 123,
 							"name": "children",
 							"kind": 1024,
 							"kindString": "Property",
@@ -2520,7 +2613,7 @@
 							}
 						},
 						{
-							"id": 120,
+							"id": 125,
 							"name": "name",
 							"kind": 1024,
 							"kindString": "Property",
@@ -2541,7 +2634,7 @@
 							}
 						},
 						{
-							"id": 121,
+							"id": 126,
 							"name": "priority",
 							"kind": 1024,
 							"kindString": "Property",
@@ -2562,7 +2655,7 @@
 							}
 						},
 						{
-							"id": 119,
+							"id": 124,
 							"name": "type",
 							"kind": 1024,
 							"kindString": "Property",
@@ -2588,11 +2681,11 @@
 							"title": "Properties",
 							"kind": 1024,
 							"children": [
-								117,
-								118,
-								120,
-								121,
-								119
+								122,
+								123,
+								125,
+								126,
+								124
 							]
 						}
 					],
@@ -2605,7 +2698,7 @@
 					]
 				},
 				{
-					"id": 122,
+					"id": 127,
 					"name": "BaseService",
 					"kind": 256,
 					"kindString": "Interface",
@@ -2615,7 +2708,7 @@
 					},
 					"children": [
 						{
-							"id": 123,
+							"id": 128,
 							"name": "_classRef",
 							"kind": 1024,
 							"kindString": "Property",
@@ -2633,7 +2726,7 @@
 							}
 						},
 						{
-							"id": 124,
+							"id": 129,
 							"name": "children",
 							"kind": 1024,
 							"kindString": "Property",
@@ -2666,7 +2759,7 @@
 							}
 						},
 						{
-							"id": 126,
+							"id": 131,
 							"name": "name",
 							"kind": 1024,
 							"kindString": "Property",
@@ -2687,7 +2780,7 @@
 							}
 						},
 						{
-							"id": 127,
+							"id": 132,
 							"name": "priority",
 							"kind": 1024,
 							"kindString": "Property",
@@ -2708,7 +2801,7 @@
 							}
 						},
 						{
-							"id": 125,
+							"id": 130,
 							"name": "type",
 							"kind": 1024,
 							"kindString": "Property",
@@ -2734,11 +2827,11 @@
 							"title": "Properties",
 							"kind": 1024,
 							"children": [
-								123,
-								124,
-								126,
-								127,
-								125
+								128,
+								129,
+								131,
+								132,
+								130
 							]
 						}
 					],
@@ -2751,7 +2844,7 @@
 					]
 				},
 				{
-					"id": 141,
+					"id": 146,
 					"name": "BaseSingleton",
 					"kind": 256,
 					"kindString": "Interface",
@@ -2761,7 +2854,7 @@
 					},
 					"children": [
 						{
-							"id": 142,
+							"id": 147,
 							"name": "$ref",
 							"kind": 1024,
 							"kindString": "Property",
@@ -2782,7 +2875,7 @@
 							}
 						},
 						{
-							"id": 144,
+							"id": 149,
 							"name": "key",
 							"kind": 1024,
 							"kindString": "Property",
@@ -2803,7 +2896,7 @@
 							}
 						},
 						{
-							"id": 143,
+							"id": 148,
 							"name": "type",
 							"kind": 1024,
 							"kindString": "Property",
@@ -2829,9 +2922,9 @@
 							"title": "Properties",
 							"kind": 1024,
 							"children": [
-								142,
-								144,
-								143
+								147,
+								149,
+								148
 							]
 						}
 					],
@@ -2844,7 +2937,7 @@
 					]
 				},
 				{
-					"id": 132,
+					"id": 137,
 					"name": "PendingInjectDefinition",
 					"kind": 256,
 					"kindString": "Interface",
@@ -2854,7 +2947,7 @@
 					},
 					"children": [
 						{
-							"id": 135,
+							"id": 140,
 							"name": "$ref",
 							"kind": 1024,
 							"kindString": "Property",
@@ -2875,7 +2968,7 @@
 							}
 						},
 						{
-							"id": 134,
+							"id": 139,
 							"name": "prop",
 							"kind": 1024,
 							"kindString": "Property",
@@ -2905,7 +2998,7 @@
 							}
 						},
 						{
-							"id": 133,
+							"id": 138,
 							"name": "target",
 							"kind": 1024,
 							"kindString": "Property",
@@ -2931,9 +3024,9 @@
 							"title": "Properties",
 							"kind": 1024,
 							"children": [
-								135,
-								134,
-								133
+								140,
+								139,
+								138
 							]
 						}
 					],
@@ -2946,7 +3039,7 @@
 					]
 				},
 				{
-					"id": 136,
+					"id": 141,
 					"name": "ReferredObjectDefinition",
 					"kind": 256,
 					"kindString": "Interface",
@@ -2956,7 +3049,7 @@
 					},
 					"children": [
 						{
-							"id": 138,
+							"id": 143,
 							"name": "children",
 							"kind": 1024,
 							"kindString": "Property",
@@ -2991,7 +3084,7 @@
 							}
 						},
 						{
-							"id": 140,
+							"id": 145,
 							"name": "name",
 							"kind": 1024,
 							"kindString": "Property",
@@ -3012,7 +3105,7 @@
 							}
 						},
 						{
-							"id": 137,
+							"id": 142,
 							"name": "priority",
 							"kind": 1024,
 							"kindString": "Property",
@@ -3033,7 +3126,7 @@
 							}
 						},
 						{
-							"id": 139,
+							"id": 144,
 							"name": "type",
 							"kind": 1024,
 							"kindString": "Property",
@@ -3058,10 +3151,6 @@
 									{
 										"type": "literal",
 										"value": "service"
-									},
-									{
-										"type": "literal",
-										"value": "singleton"
 									}
 								]
 							}
@@ -3072,10 +3161,10 @@
 							"title": "Properties",
 							"kind": 1024,
 							"children": [
-								138,
-								140,
-								137,
-								139
+								143,
+								145,
+								142,
+								144
 							]
 						}
 					],
@@ -3088,7 +3177,7 @@
 					]
 				},
 				{
-					"id": 112,
+					"id": 117,
 					"name": "ImportedDefaultExport",
 					"kind": 4194304,
 					"kindString": "Type alias",
@@ -3105,7 +3194,7 @@
 					],
 					"typeParameter": [
 						{
-							"id": 115,
+							"id": 120,
 							"name": "T",
 							"kind": 131072,
 							"kindString": "Type parameter",
@@ -3121,14 +3210,14 @@
 						"extendsType": {
 							"type": "reflection",
 							"declaration": {
-								"id": 113,
+								"id": 118,
 								"name": "__type",
 								"kind": 65536,
 								"kindString": "Type literal",
 								"flags": {},
 								"children": [
 									{
-										"id": 114,
+										"id": 119,
 										"name": "default",
 										"kind": 1024,
 										"kindString": "Property",
@@ -3151,7 +3240,7 @@
 										"title": "Properties",
 										"kind": 1024,
 										"children": [
-											114
+											119
 										]
 									}
 								],
@@ -3180,25 +3269,25 @@
 					"title": "Enumerations",
 					"kind": 4,
 					"children": [
-						128
+						133
 					]
 				},
 				{
 					"title": "Interfaces",
 					"kind": 256,
 					"children": [
-						116,
-						122,
-						141,
-						132,
-						136
+						121,
+						127,
+						146,
+						137,
+						141
 					]
 				},
 				{
 					"title": "Type aliases",
 					"kind": 4194304,
 					"children": [
-						112
+						117
 					]
 				}
 			],
@@ -3217,12 +3306,12 @@
 			"kind": 1,
 			"children": [
 				1,
-				95,
-				87,
-				96,
+				100,
+				92,
 				101,
-				109,
-				111
+				106,
+				114,
+				116
 			]
 		}
 	]

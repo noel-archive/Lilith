@@ -30,6 +30,27 @@ import * as utils from '@augu/utils';
  */
 interface ContainerEvents {
   /**
+   * Emitted when a singleton has been registered in this container.
+   *
+   * @param singleton The singleton class that has been registered
+   */
+  registerSingleton(singleton: any): void;
+
+  /**
+   * Emitted when a component has been registered in this container.
+   *
+   * @param component The component class that has been registered.
+   */
+  registerComponent(component: any): void;
+
+  /**
+   * Emitted when a service has been registered in this container.
+   *
+   * @param service The service class that has been registered
+   */
+  registerService(service: any): void;
+
+  /**
    * Emitted before we initialize a child to the parent component or service
    *
    * @param cls The component or service
@@ -94,6 +115,22 @@ function returnFromExport<T extends object>(value: T): ImportedDefaultExport<T> 
 }
 
 /**
+ * Returns a boolean value if `value` is not a primitive.
+ * @param value The value to check
+ */
+export function isPrimitive(value: unknown) {
+  return (
+    typeof value === 'string' ||
+    typeof value === 'boolean' ||
+    typeof value === 'function' ||
+    typeof value === 'number' ||
+    typeof value === 'symbol' ||
+    typeof value === 'bigint' &&
+    utils.isObject(value)
+  );
+}
+
+/**
  * Represents a "container" of components, singletons, and services. This is the main
  * entrypoint to Lilith, this is your creation tool to create your application! **(\*≧∀≦\*)**
  */
@@ -130,8 +167,20 @@ export class Container extends utils.EventBus<ContainerEvents> {
     this.#servicesDir = options?.servicesDir;
     this.#references = new Collection();
 
-    if (options?.singletons?.length)
-      this.addSingletons(options.singletons!);
+    const singletons = options?.singletons ?? [];
+    for (let i = 0; i < singletons.length; i++) {
+      if (isPrimitive(singletons[i]))
+        throw new TypeError(`Cannot register singleton ${singletons[i]}. It is a primitive value.`);
+
+      this.addSingleton(singletons[i]);
+    }
+  }
+
+  /**
+   * Returns the list of references available to this [[Container]].
+   */
+  get references() {
+    return this.#references;
   }
 
   /**
@@ -211,10 +260,12 @@ export class Container extends utils.EventBus<ContainerEvents> {
 
       switch (cls.type) {
         case 'component':
+          this.emit('registerComponent', cls._classRef);
           this.components.set(cls.name, cls);
           break;
 
         case 'service':
+          this.emit('registerService', cls._classRef);
           this.services.set(cls.name, cls);
           break;
       }
@@ -286,7 +337,8 @@ export class Container extends utils.EventBus<ContainerEvents> {
    */
   runInjections() {
     const injections: PendingInjectDefinition[] = Reflect.getMetadata(MetadataKeys.PendingInjections, global) ?? [];
-    for (const injection of injections) this.inject(injection);
+    for (const injection of injections)
+      this.inject(injection);
   }
 
   /**
@@ -331,6 +383,7 @@ export class Container extends utils.EventBus<ContainerEvents> {
   /**
    * Bulk-add a list of singletons
    * @param singletons The singletons to add
+   * @deprecated This method will be deprecated in the future.
    */
   addSingletons(singletons: any[]) {
     for (let i = 0; i < singletons.length; i++)
@@ -342,6 +395,9 @@ export class Container extends utils.EventBus<ContainerEvents> {
    * @param singleton The singleton to register
    */
   addSingleton(singleton: any) {
+    if (isPrimitive(singleton))
+      throw new TypeError('Unable to register primitives.');
+
     const id = randomBytes(4).toString('hex');
     const value = returnFromExport(singleton);
 
@@ -351,8 +407,10 @@ export class Container extends utils.EventBus<ContainerEvents> {
       key: id
     };
 
+    this.emit('debug', `Registered singleton ${singleton.name}`);
     this.#references.set(singleton.constructor !== undefined ? singleton.constructor : singleton, id);
     this.singletons.set(id, s);
+    this.emit('registerSingleton', value);
   }
 
   /**
@@ -484,7 +542,7 @@ export class Container extends utils.EventBus<ContainerEvents> {
   find<S extends any = any, ThisArg = Container>(
     func: (value: BaseComponent | BaseService | BaseSingleton) => boolean,
     thisArg?: ThisArg
-  ) {
+  ): S | null {
     const values: (BaseComponent | BaseService | BaseSingleton)[] = ([] as any[]).concat(
       this.components.toArray(),
       this.services.toArray(),
@@ -495,10 +553,17 @@ export class Container extends utils.EventBus<ContainerEvents> {
     for (let i = 0; i < values.length; i++) {
       const value = values[i];
       if (predicate(value)) {
-        if (value.type === 'singleton') {
-          return (value as BaseSingleton).$ref as S;
-        } else {
-          return (value as BaseComponent | BaseService)._classRef as S;
+        switch (value.type) {
+          case 'component':
+          case 'service':
+            return (value as BaseComponent | BaseService)._classRef;
+
+          case 'singleton':
+            return (value as BaseSingleton).$ref;
+
+          // this shouldn't happen but whatever
+          default:
+            return null;
         }
       }
     }

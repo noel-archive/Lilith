@@ -49,6 +49,12 @@ declare namespace Lilith {
     public components: Collection<string, BaseComponent>;
 
     /**
+     * References scoped to any singleton, service, or component
+     * to the name of the component/singleton/service.
+     */
+    public references: Collection<any, string>;
+
+    /**
      * Returns the singleton tree
      */
     public singletons: Collection<string, BaseSingleton>;
@@ -289,6 +295,27 @@ declare namespace Lilith {
    * The container events used for the [[Container]].
    */
   interface ContainerEvents {
+    /**
+     * Emitted when a singleton has been registered in this container.
+     *
+     * @param singleton The singleton class that has been registered
+     */
+    registerSingleton(singleton: any): void;
+
+    /**
+     * Emitted when a component has been registered in this container.
+     *
+     * @param component The component class that has been registered.
+     */
+    registerComponent(component: any): void;
+
+    /**
+     * Emitted when a service has been registered in this container.
+     *
+     * @param service The service class that has been registered
+     */
+    registerService(service: any): void;
+
     /**
      * Emitted before we initialize a child to the parent component or service
      *

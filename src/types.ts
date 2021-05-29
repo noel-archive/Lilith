@@ -132,7 +132,7 @@ export interface ReferredObjectDefinition {
   /**
    * The type of this [[ReferredObjectDefintion]]
    */
-  type: 'component' | 'service' | 'singleton';
+  type: 'component' | 'service';
 
   /**
    * The name of this [[ReferredObjectDefinition]]

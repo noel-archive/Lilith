@@ -1,7 +1,7 @@
 {
   "name": "@augu/lilith",
   "description": "🧵 Simple application framework made in TypeScript (made for personal usage)",
-  "version": "3.0.4",
+  "version": "3.1.0",
   "main": "build/index.js",
   "license": "MIT",
   "author": "Chris \"August\" Hernandez <cutie@floofy.dev>",
@@ -29,7 +29,8 @@
   "dependencies": {
     "@augu/collections": "1.0.9",
     "@augu/utils": "1.5.3",
-    "reflect-metadata": "0.1.13"
+    "reflect-metadata": "0.1.13",
+    "tslog": "^3.2.0"
   },
   "devDependencies": {
     "@augu/eslint-config": "2.1.0",
