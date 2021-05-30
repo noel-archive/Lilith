@@ -22,6 +22,7 @@
 
 import { BaseComponent, BaseService, BaseSingleton, MetadataKeys, PendingInjectDefinition, ReferredObjectDefinition, ImportedDefaultExport } from './types';
 import { randomBytes } from 'crypto';
+import { Deprecated } from './decorators/Deprecated';
 import { Collection } from '@augu/collections';
 import * as utils from '@augu/utils';
 
@@ -271,11 +272,11 @@ export class Container extends utils.EventBus<ContainerEvents> {
       }
     }
 
-    this.emit('debug', 'Adding injections ahead of time...');
-    this.runInjections();
-
     this.emit('debug', `Registered ${this.components.size} components and ${this.services.size} services`);
     for (const component of this.components.values()) {
+      this.emit('debug', `Adding injections for component ${component.name}`);
+      this.runInjections(component);
+
       this.emit('onBeforeInit', component);
       await component._classRef.load?.();
       this.emit('onAfterInit', component);
@@ -294,6 +295,9 @@ export class Container extends utils.EventBus<ContainerEvents> {
         const c = new child();
         c.parent = component._classRef;
 
+        this.emit('debug', `Adding injections into child ${child.constructor.name} from parent ${component.name}`);
+        this.runInjections(child);
+
         this.emit('onBeforeChildInit', component, c);
         await component._classRef.onChildLoad?.(c);
         this.emit('onAfterChildInit', component, c);
@@ -303,6 +307,9 @@ export class Container extends utils.EventBus<ContainerEvents> {
     }
 
     for (const service of this.services.values()) {
+      this.emit('debug', `Adding injections into service ${service.name}`);
+      this.runInjections(service);
+
       this.emit('onBeforeInit', service);
       await service._classRef.load?.();
       this.emit('onAfterInit', service);
@@ -321,6 +328,9 @@ export class Container extends utils.EventBus<ContainerEvents> {
         const c = new child();
         c.parent = service._classRef;
 
+        this.emit('debug', `Adding injections into child ${child.constructor.name} from parent ${service.name}`);
+        this.runInjections(child);
+
         this.emit('onBeforeChildInit', service, c);
         await service._classRef.onChildLoad?.(c);
         this.emit('onAfterChildInit', service, c);
@@ -335,10 +345,11 @@ export class Container extends utils.EventBus<ContainerEvents> {
   /**
    * Runs all injections for all components and services
    */
-  runInjections() {
+  runInjections(target: any) {
     const injections: PendingInjectDefinition[] = Reflect.getMetadata(MetadataKeys.PendingInjections, global) ?? [];
-    for (const injection of injections)
-      this.inject(injection);
+    const shouldInject = injections.filter(inject => target._classRef.constructor === inject.target.constructor);
+
+    for (const inject of shouldInject) this.inject(target._classRef !== undefined ? target._classRef : target, inject);
   }
 
   /**
@@ -365,14 +376,14 @@ export class Container extends utils.EventBus<ContainerEvents> {
    * Injects all pending references to the target class
    * @param pending The pending injections
    */
-  inject(pending: PendingInjectDefinition) {
+  inject(target: any, pending: PendingInjectDefinition) {
     const reference = this.$ref(pending.$ref);
-    Object.defineProperty(pending.target, pending.prop, {
+    Object.defineProperty(target, pending.prop, {
       get() {
         return reference;
       },
       set() {
-        throw new SyntaxError('References cannot mutate new state');
+        throw new SyntaxError('References cannot mutate state.');
       },
 
       enumerable: true,
@@ -383,8 +394,8 @@ export class Container extends utils.EventBus<ContainerEvents> {
   /**
    * Bulk-add a list of singletons
    * @param singletons The singletons to add
-   * @deprecated This method will be deprecated in the future.
    */
+  @Deprecated
   addSingletons(singletons: any[]) {
     for (let i = 0; i < singletons.length; i++)
       this.addSingleton(singletons[i]);
@@ -457,7 +468,7 @@ export class Container extends utils.EventBus<ContainerEvents> {
       name: metadata.name
     };
 
-    this.runInjections();
+    this.runInjections(component);
 
     component._classRef = new cls();
     this.emit('onBeforeInit', component);
@@ -504,7 +515,7 @@ export class Container extends utils.EventBus<ContainerEvents> {
       name: metadata.name
     };
 
-    this.runInjections();
+    this.runInjections(service);
 
     service._classRef = new cls();
     this.emit('onBeforeInit', service);

@@ -78,13 +78,15 @@ declare namespace Lilith {
 
     /**
      * Injects all pending references to the target class
+     * @param target The target to inject the value.
      * @param pending The pending injections
      */
-    public inject(pending: Lilith.PendingInjectDefinition): void;
+    public inject(target: any, pending: Lilith.PendingInjectDefinition): void;
 
     /**
      * Bulk-add a list of singletons
      * @param singletons The singletons to add
+     * @deprecated
      */
     public addSingletons(singletons: any[]): void;
 
@@ -113,8 +115,9 @@ declare namespace Lilith {
 
     /**
      * Runs all injections for components/services
+     * @param target The target to inject
      */
-    public runInjections(): void;
+    public runInjections(target: any): void;
 
     /**
      * Finds a component, service, or singleton by a specific `predicate` function
