@@ -347,9 +347,13 @@ export class Container extends utils.EventBus<ContainerEvents> {
    */
   runInjections(target: any) {
     const injections: PendingInjectDefinition[] = Reflect.getMetadata(MetadataKeys.PendingInjections, global) ?? [];
-    const shouldInject = injections.filter(inject => target._classRef.constructor === inject.target.constructor);
+    const targetCls = target._classRef !== undefined ? target._classRef : target;
 
-    for (const inject of shouldInject) this.inject(target._classRef !== undefined ? target._classRef : target, inject);
+    const shouldInject = injections.filter(inject =>
+      targetCls.constructor === inject.target.constructor
+    );
+
+    for (const inject of shouldInject) this.inject(targetCls, inject);
   }
 
   /**
