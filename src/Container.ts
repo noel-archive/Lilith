@@ -295,8 +295,8 @@ export class Container extends utils.EventBus<ContainerEvents> {
         const c = new child();
         c.parent = component._classRef;
 
-        this.emit('debug', `Adding injections into child ${child.constructor.name} from parent ${component.name}`);
-        this.runInjections(child);
+        this.emit('debug', `Adding injections into child ${child.name} from parent ${component.name}`);
+        this.runInjections(c);
 
         this.emit('onBeforeChildInit', component, c);
         await component._classRef.onChildLoad?.(c);
@@ -326,10 +326,11 @@ export class Container extends utils.EventBus<ContainerEvents> {
       for (let i = 0; i < children.length; i++) {
         const child = children[i];
         const c = new child();
+        this.runInjections(c);
         c.parent = service._classRef;
 
-        this.emit('debug', `Adding injections into child ${child.constructor.name} from parent ${service.name}`);
-        this.runInjections(child);
+        this.emit('debug', `Adding injections into child ${child.name} from parent ${service.name}`);
+        this.runInjections(c);
 
         this.emit('onBeforeChildInit', service, c);
         await service._classRef.onChildLoad?.(c);
@@ -472,10 +473,11 @@ export class Container extends utils.EventBus<ContainerEvents> {
       name: metadata.name
     };
 
-    this.runInjections(component);
-
     component._classRef = new cls();
     this.emit('onBeforeInit', component);
+    this.emit('debug', `Adding injections into component ${component.name}`);
+    this.runInjections(component);
+
     await component._classRef.load?.();
     this.emit('onAfterInit', component);
 
@@ -491,6 +493,9 @@ export class Container extends utils.EventBus<ContainerEvents> {
     for (const child of children) {
       const c = new child.childCls();
       c.parent = component._classRef;
+
+      this.emit('debug', `Adding injections into child ${child.name} from parent ${component.name}`);
+      this.runInjections(c);
 
       this.emit('onBeforeChildInit', component, c);
       await component._classRef.onChildLoad?.(c);
@@ -519,10 +524,11 @@ export class Container extends utils.EventBus<ContainerEvents> {
       name: metadata.name
     };
 
-    this.runInjections(service);
-
     service._classRef = new cls();
     this.emit('onBeforeInit', service);
+    this.emit('debug', `Adding injections into service ${service.name}`);
+    this.runInjections(service);
+
     await service._classRef.load?.();
     this.emit('onAfterInit', service);
 
@@ -538,6 +544,9 @@ export class Container extends utils.EventBus<ContainerEvents> {
     for (const child of children) {
       const c = new child.childCls();
       c.parent = service._classRef;
+
+      this.emit('debug', `Adding injections into child ${child.name} from parent ${service.name}`);
+      this.runInjections(c);
 
       this.emit('onBeforeChildInit', service, c);
       await service._classRef.onChildLoad?.(c);
