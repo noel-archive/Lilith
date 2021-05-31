@@ -382,8 +382,11 @@ export class Container extends utils.EventBus<ContainerEvents> {
    * @param pending The pending injections
    */
   inject(target: any, pending: PendingInjectDefinition) {
+    if (!target.constructor)
+      throw new TypeError('class didn\'t include a `constructor` prop.');
+
     const reference = this.$ref(pending.$ref);
-    Object.defineProperty(target, pending.prop, {
+    Object.defineProperty(target.constructor, pending.prop, {
       get() {
         return reference;
       },
