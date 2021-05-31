@@ -386,7 +386,7 @@ export class Container extends utils.EventBus<ContainerEvents> {
       throw new TypeError('class didn\'t include a `constructor` prop.');
 
     const reference = this.$ref(pending.$ref);
-    Object.defineProperty(target.constructor, pending.prop, {
+    Object.defineProperty(target, pending.prop, {
       get() {
         return reference;
       },
