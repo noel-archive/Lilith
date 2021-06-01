@@ -27,7 +27,7 @@
     "docs": "typedoc src --json ./docs/out.json"
   },
   "dependencies": {
-    "@augu/collections": "1.0.11",
+    "@augu/collections": "1.0.12",
     "@augu/utils": "1.5.3",
     "reflect-metadata": "0.1.13"
   },

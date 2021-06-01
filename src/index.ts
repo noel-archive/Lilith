@@ -20,6 +20,10 @@
  * SOFTWARE.
  */
 
+import 'reflect-metadata';
+
+export * from './api/ComponentAPI';
+export * from './api/ServiceAPI';
 export * as utils from './utils';
 export * from './decorators';
 export * from './Container';

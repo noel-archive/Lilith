@@ -29,12 +29,12 @@ export class ComponentAPI extends SharedAPI {
   declare public entity: BaseComponent;
 
   /** {@inheritdoc SharedAPI.type} */
-  declare public type: EntityType.Service;
+  declare public type: EntityType.Component;
 
   constructor(container: Container, entity: BaseComponent) {
     super(container);
 
     this.entity = entity;
-    this.type   = EntityType.Service;
+    this.type   = EntityType.Component;
   }
 }

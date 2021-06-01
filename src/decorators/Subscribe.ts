@@ -32,9 +32,8 @@ import { EventEmitterLike } from '../api/SharedAPI';
  */
 export function Subscribe<
   T extends Record<string, unknown>,
-  K extends keyof T = keyof T,
-  E extends EventEmitterLike = EventEmitterLike
->(event: K, emitter?: E, once?: boolean): MethodDecorator;
+  K extends keyof T = keyof T
+>(event: K, emitter?: string, once?: boolean): MethodDecorator;
 
 /**
  * Adds a subscription to this method without type-safety included
@@ -43,7 +42,7 @@ export function Subscribe<
  * @param once If this subscription should be pushed to the callstack
  * and popped off after emittion.
  */
-export function Subscribe<E extends EventEmitterLike = EventEmitterLike>(event: string, emitter?: E, once?: boolean): MethodDecorator;
+export function Subscribe(event: string, emitter?: string, once?: boolean): MethodDecorator;
 export function Subscribe(event: string, emitterCls?: any, once: boolean = false): MethodDecorator {
   return (target, prop, descriptor: TypedPropertyDescriptor<any>) => {
     const subscriptions: PendingSubscription[] = Reflect.getMetadata(MetadataKeys.Subscription, target) ?? [];
@@ -56,5 +55,7 @@ export function Subscribe(event: string, emitterCls?: any, once: boolean = false
       target,
       prop
     });
+
+    Reflect.defineMetadata(MetadataKeys.Subscription, subscriptions, target);
   };
 }

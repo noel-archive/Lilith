@@ -53,7 +53,11 @@ function isEventEmitterLike(value: unknown): value is EventEmitterLike {
  */
 export class SharedAPI {
   private static _instance: SharedAPI;
-  #container: Container;
+
+  /**
+   * The container instance for this [[SharedAPI]].
+   */
+  public container: Container;
 
   /**
    * Represents the entity itself
@@ -66,7 +70,7 @@ export class SharedAPI {
   public type!: EntityType;
 
   constructor(container: Container) {
-    this.#container = container;
+    this.container = container;
 
     if (!SharedAPI._instance)
       SharedAPI._instance = this;
@@ -97,7 +101,7 @@ export class SharedAPI {
    * @param ref The reference class to use
    */
   getReference<TReturn = any>(ref: any) {
-    return this.#container.$ref<TReturn>(ref);
+    return this.container.$ref<TReturn>(ref);
   }
 
   /**
@@ -106,10 +110,10 @@ export class SharedAPI {
    * @throws {TypeError}: If the component couldn't be found.
    */
   getComponent(name: string) {
-    if (!this.#container.components.has(name))
+    if (!this.container.components.has(name))
       throw new TypeError(`Unable to find component with name ${name}.`);
 
-    return this.#container.components.get(name)!;
+    return this.container.components.get(name)!;
   }
 
   /**
@@ -118,10 +122,10 @@ export class SharedAPI {
    * @throws {TypeError}: If the service couldn't be found.
    */
   getService(name: string) {
-    if (!this.#container.services.has(name))
+    if (!this.container.services.has(name))
       throw new TypeError(`Unable to find service with name ${name}.`);
 
-    return this.#container.services.get(name)!;
+    return this.container.services.get(name)!;
   }
 
   /**
@@ -196,7 +200,7 @@ export class SharedAPI {
       once: subscription.once
     });
 
-    sub.subscribe();
     this.entity.subscriptions.push(sub);
+    return sub.subscribe();
   }
 }
