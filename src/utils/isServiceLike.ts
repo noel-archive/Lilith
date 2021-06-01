@@ -31,6 +31,6 @@ export function isServiceLike(value: unknown): value is BaseService {
   return (
     utils.isObject<BaseService>(value) &&
     typeof value.type === 'string' &&
-    value.type === 'component'
+    value.type === 'service'
   );
 }

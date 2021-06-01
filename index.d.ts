@@ -24,7 +24,34 @@ import { Collection } from '@augu/collections';
 import { EventBus } from '@augu/utils';
 
 /** Represents the entrypoint of @augu/lilith */
-declare namespace Lilith {
+declare namespace lilith {
+  // ~ Namespaces ~
+  export namespace utils {
+    /**
+     * Checks if [value] is a [[BaseComponent]] or not.
+     * @param value The value to use
+     */
+    export function isComponentLike(value: unknown): value is BaseComponent;
+
+    /**
+     * Checks if [value] is a [[BaseService]] or not.
+     * @param value The value to use
+     */
+    export function isServiceLike(value: unknown): value is BaseService;
+
+    /**
+     * Returns the default export (if any).
+     * @param value The value to use
+     */
+    export function returnFromExport<T extends object>(value: T): ImportedDefaultExport<T>;
+
+    /**
+     * Returns a boolean value if `value` is not a primitive.
+     * @param value The value to check
+     */
+    export function isPrimitive(value: unknown): boolean;
+  }
+
   // ~ Constants ~
   /** Returns the version of Lilith */
   export const version: string;
@@ -34,14 +61,14 @@ declare namespace Lilith {
    * Represents a "container" of components, singletons, and services. This is the main
    * entrypoint to Lilith, this is your creation tool to create your application! **(\*≧∀≦\*)**
    */
-  export class Container extends EventBus<Lilith.ContainerEvents> {
+  export class Container extends EventBus<lilith.ContainerEvents> {
     /**
      * Represents a "container" of components, singletons, and services. This is the main
      * entrypoint to Lilith, this is your creation tool to create your application! **(\*≧∀≦\*)**
      *
      * @param options Any additional options to use
      */
-    constructor(options?: Lilith.ContainerOptions);
+    constructor(options?: lilith.ContainerOptions);
 
     /**
      * Returns the component tree
@@ -81,7 +108,7 @@ declare namespace Lilith {
      * @param target The target to inject the value.
      * @param pending The pending injections
      */
-    public inject(target: any, pending: Lilith.PendingInjectDefinition): void;
+    public inject(target: any, pending: lilith.PendingInjectDefinition): void;
 
     /**
      * Registers a singleton to this [[Container]]
@@ -645,5 +672,5 @@ declare namespace Lilith {
   }
 }
 
-export = Lilith;
-export as namespace Lilith;
+export = lilith;
+export as namespace lilith;
