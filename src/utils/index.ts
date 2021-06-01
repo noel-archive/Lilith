@@ -20,9 +20,7 @@
  * SOFTWARE.
  */
 
-export * from './inject/ParamInject';
-export * from './inject/LazyInject';
-export * from './inject/Inject';
-export * from './Subscribe';
-export * from './Component';
-export * from './Service';
+export * from './returnFromExport';
+export * from './isComponentLike';
+export * from './isServiceLike';
+export * from './isPrimitive';

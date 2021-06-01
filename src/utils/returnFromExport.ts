@@ -20,9 +20,12 @@
  * SOFTWARE.
  */
 
-export * from './inject/ParamInject';
-export * from './inject/LazyInject';
-export * from './inject/Inject';
-export * from './Subscribe';
-export * from './Component';
-export * from './Service';
+import type { ImportedDefaultExport } from '../types';
+
+/**
+ * Returns the default export (if any).
+ * @param value The value to use
+ */
+export function returnFromExport<T extends object>(value: T): ImportedDefaultExport<T> {
+  return value['default'] !== undefined ? value['default'] : value;
+}

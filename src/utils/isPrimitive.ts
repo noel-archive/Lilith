@@ -20,9 +20,20 @@
  * SOFTWARE.
  */
 
-export * from './inject/ParamInject';
-export * from './inject/LazyInject';
-export * from './inject/Inject';
-export * from './Subscribe';
-export * from './Component';
-export * from './Service';
+import utils from '@augu/utils';
+
+/**
+ * Returns a boolean value if `value` is not a primitive.
+ * @param value The value to check
+ */
+export function isPrimitive(value: unknown) {
+  return (
+    typeof value === 'string' ||
+    typeof value === 'boolean' ||
+    typeof value === 'function' ||
+    typeof value === 'number' ||
+    typeof value === 'symbol' ||
+    typeof value === 'bigint' &&
+    utils.isObject(value)
+  );
+}

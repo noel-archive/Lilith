@@ -20,9 +20,21 @@
  * SOFTWARE.
  */
 
-export * from './inject/ParamInject';
-export * from './inject/LazyInject';
-export * from './inject/Inject';
-export * from './Subscribe';
-export * from './Component';
-export * from './Service';
+import { SharedAPI, EntityType } from './SharedAPI';
+import type { BaseComponent } from '../types';
+import type { Container } from '../Container';
+
+export class ComponentAPI extends SharedAPI {
+  /** {@inheritdoc SharedAPI.entity} */
+  declare public entity: BaseComponent;
+
+  /** {@inheritdoc SharedAPI.type} */
+  declare public type: EntityType.Service;
+
+  constructor(container: Container, entity: BaseComponent) {
+    super(container);
+
+    this.entity = entity;
+    this.type   = EntityType.Service;
+  }
+}

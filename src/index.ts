@@ -20,6 +20,7 @@
  * SOFTWARE.
  */
 
+export * as utils from './utils';
 export * from './decorators';
 export * from './Container';
 export * from './types';

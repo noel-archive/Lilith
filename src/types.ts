@@ -20,6 +20,8 @@
  * SOFTWARE.
  */
 
+import type { Subscription } from './Subscription';
+
 /**
  * Type alias to represented the return value of `require()` or `import()`
  */
@@ -35,9 +37,14 @@ export interface BaseComponent {
   _classRef: any;
 
   /**
+   * List of subscriptions managed by this component.
+   */
+  subscriptions: Subscription[];
+
+  /**
    * List of children attached to this [[BaseComponent]] as it's parent
    */
-  children: any[] | string;
+  children: any[];
 
   /**
    * Represents the type for this [[BaseComponent]]. It's always
@@ -64,9 +71,14 @@ export interface BaseService {
   _classRef: any;
 
   /**
+   * List of subscriptions managed by this service.
+   */
+  subscriptions: Subscription[];
+
+  /**
    * List of children attached to this [[BaseService]] as it's parent
    */
-  children: any[] | string;
+  children: any[];
 
   /**
    * Represents the type for this [[BaseService]]. It's always
@@ -90,6 +102,7 @@ export interface BaseService {
  */
 export const enum MetadataKeys {
   PendingInjections = '$lilith::api::injections::pending',
+  Subscription      = '$lilith::api::subscription',
   Component         = '$lilith::api::component',
   Service           = '$lilith::api::service'
 }
@@ -132,7 +145,7 @@ export interface ReferredObjectDefinition {
   /**
    * The type of this [[ReferredObjectDefintion]]
    */
-  type: 'component' | 'service';
+  type: 'component' | 'service' | 'singleton';
 
   /**
    * The name of this [[ReferredObjectDefinition]]
@@ -158,4 +171,29 @@ export interface BaseSingleton {
    * The singleton's key, just a random scribble of words.
    */
   key: string;
+}
+
+/**
+ * Represents a pending subscription to be added
+ */
+export interface PendingSubscription {
+  /**
+   * The listener function
+   */
+  listener: (...args: any[]) => any;
+
+  /**
+   * The event to use for this subscription
+   */
+  event: string;
+
+  /**
+   * If this subscription should be pushed to the subscription
+   * callstack and popped off when it is emitted.
+   */
+  once: boolean;
+
+  emitterCls?: any;
+  target: any;
+  prop: string | symbol;
 }

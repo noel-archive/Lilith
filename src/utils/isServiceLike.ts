@@ -20,9 +20,17 @@
  * SOFTWARE.
  */
 
-export * from './inject/ParamInject';
-export * from './inject/LazyInject';
-export * from './inject/Inject';
-export * from './Subscribe';
-export * from './Component';
-export * from './Service';
+import { BaseService } from '../types';
+import utils from '@augu/utils';
+
+/**
+ * Checks if [value] is a [[BaseService]] or not.
+ * @param value The value to use
+ */
+export function isServiceLike(value: unknown): value is BaseService {
+  return (
+    utils.isObject<BaseService>(value) &&
+    typeof value.type === 'string' &&
+    value.type === 'component'
+  );
+}
