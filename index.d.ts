@@ -84,13 +84,6 @@ declare namespace Lilith {
     public inject(target: any, pending: Lilith.PendingInjectDefinition): void;
 
     /**
-     * Bulk-add a list of singletons
-     * @param singletons The singletons to add
-     * @deprecated
-     */
-    public addSingletons(singletons: any[]): void;
-
-    /**
      * Registers a singleton to this [[Container]]
      * @param singleton The singleton to register
      */
@@ -116,8 +109,28 @@ declare namespace Lilith {
     /**
      * Runs all injections for components/services
      * @param target The target to inject
+     * @deprecated
      */
     public runInjections(target: any): void;
+
+    /**
+     * Implements all injections into a class prototype (run this before creating a new class instance)
+     * @param target The target class to use
+     */
+    public addInjections(target: any): void;
+
+    /**
+     * Registers an emitter to this [[Container]] for subscription handling.
+     * @param emitter The emitter instance to use
+     * @returns This [[Container]] instance to chain methods.
+     */
+    public addEmitter<E extends EventEmitterLike>(name: string, emitter: E): this;
+
+    /**
+     * Finds an emitter from this [[Container]] and returns it
+     * @param emitterCls The event emitter class to use
+     */
+    public findEmitter<E extends EventEmitterLike>(name: string): E | null;
 
     /**
      * Finds a component, service, or singleton by a specific `predicate` function
@@ -128,6 +141,158 @@ declare namespace Lilith {
       func: (value: BaseComponent | BaseService | BaseSingleton) => boolean,
       thisArg?: ThisArg
     ): S | null;
+  }
+
+  /**
+   * Represents a subscription that is handled by the component or service.
+   */
+  export class Subscription {
+    /**
+     * If this subscription is ran once and unsubscribed after
+     */
+    public once: boolean;
+    /**
+     * The name of the subscription (which is the event name)
+     */
+    public name: string;
+
+    constructor({
+      listener,
+      emitter,
+      name,
+      once
+    }: SubscriptionInfo);
+
+    /**
+     * Subscribes to the emitter
+     */
+    public subscribe(): void;
+
+    /**
+     * Disposes the subscription
+     */
+    public dispose(): void;
+  }
+
+  class ComponentAPI extends SharedAPI {
+    /**
+     * Represents the entity itself
+     */
+    public entity: BaseService;
+
+    /**
+     * The shared API type
+     */
+    public type: EntityType.Service;
+
+    constructor(container: Container, entity: BaseService);
+  }
+
+  class ServiceAPI extends SharedAPI {
+    /**
+     * Represents the entity itself
+     */
+    public entity: BaseService;
+
+    /**
+     * The shared API type
+     */
+    public type: EntityType.Service;
+
+    constructor(container: Container, entity: BaseService);
+  }
+
+  /**
+   * Represents an API for interacting with the container with a
+   * simple API. You can inject references yourself, add subscriptions,
+   * etc. Components will share the [[ComponentAPI]] and services will
+   * share the [[ServiceAPI]], which extends this class.
+   */
+  class SharedAPI {
+    /**
+     * The container instance for this [[SharedAPI]].
+     */
+    public container: Container;
+
+    /**
+     * Represents the entity itself
+     */
+    public entity: BaseComponent | BaseService;
+
+    /**
+     * The shared API type
+     */
+    public type: EntityType;
+
+    constructor(container: Container);
+
+    /**
+     * Returns a boolean value if this instance is [[ComponentAPI]].
+     */
+    public static get isComponentAPI(): boolean;
+
+    /**
+     * Returns a boolean if this instance is [[ServiceAPI]].
+     */
+    public static get isServiceAPI(): boolean;
+
+    /**
+     * Simplified method to retrieve the class reference of a component,
+     * service, or singleton.
+     *
+     * > Note: This method is a proxy to [[Container.$ref]]
+     *
+     * @param ref The reference class to use
+     */
+    public getReference<TReturn = any>(ref: any): TReturn;
+
+    /**
+     * Return a component from the container's component tree.
+     * @param name The name of the component
+     * @throws {TypeError}: If the component couldn't be found.
+     */
+    public getComponent(name: string): BaseComponent;
+
+    /**
+     * Returns a service from the container's services tree.
+     * @param name The name of the service
+     * @throws {TypeError}: If the service couldn't be found.
+     */
+    public getService(name: string): BaseService;
+
+    /**
+     * Lazily adds a subscription to the component or service's subscription
+     * tree. To forward multiple, use the [SharedAPI.forwardSubscriptions] function.
+     *
+     * @param emitter The event emitter to use.
+     * @param name The name of the event to forward
+     * @param listener The listener function to forward
+     * @param once If this event should be emitted once and unsubscribed after it's called.
+     */
+    addSubscription<
+      E extends EventEmitterLike,
+      Events = {},
+      K extends keyof Events = keyof Events
+    >(emitter: E, name: K, listener: Events[K], once?: boolean): void;
+
+    /**
+     * Lazily adds multiple subscriptions into this component or service tree.
+     * To lazily forward once, use the [SharedAPI.addSubscription] function.
+     *
+     * @param emitter The event emitter to use.
+     * @param childClass The child class to forward subscriptions to this component
+     * or service tree.
+     */
+    forwardSubscriptions<E extends EventEmitterLike>(emitter: E, childClass: any): void;
+
+    /**
+     * Lazily add a single subscription with a pending subscription into this component
+     * or service tree.
+     *
+     * @param emitter The emitter to use
+     * @param sub The pending subscription to use
+     */
+    public forwardSubscription<E extends EventEmitterLike>(emitter: E, subscription: PendingSubscription): void;
   }
 
   // ~ Decorators ~
@@ -152,6 +317,33 @@ declare namespace Lilith {
    * @param name The name of the component
    */
   export function Service({ priority, children, name }: ComponentOrServiceOptions): ClassDecorator;
+
+  /**
+   * Adds a subscription to this method with type-safety included
+   * @param event The event name to use
+   * @param emitter The event emitter to use
+   * @param once If this subscription should be pushed to the callstack
+   * and popped off after emittion.
+   */
+  export function Subscribe<
+    T extends Record<string, unknown>,
+    K extends keyof T = keyof T
+  >(event: K, emitter?: string, once?: boolean): MethodDecorator;
+
+  /**
+  * Adds a subscription to this method without type-safety included
+  * @param event The event name to use
+  * @param emitter The event emitter to define
+  * @param once If this subscription should be pushed to the callstack
+  * and popped off after emittion.
+  */
+  export function Subscribe(event: string, emitter?: string, once?: boolean): MethodDecorator;
+
+  // ~ Enums ~
+  export enum EntityType {
+    Component = 'component',
+    Service   = 'service'
+  }
 
   // ~ Types & Interfaces ~
   /**
@@ -411,6 +603,45 @@ declare namespace Lilith {
      * The name of the component
      */
     name: string;
+  }
+
+  /**
+   * Represents a pending subscription to be added
+   */
+  interface PendingSubscription {
+    /**
+     * The listener function
+     */
+    listener: (...args: any[]) => any;
+
+    /**
+     * The event to use for this subscription
+     */
+    event: string;
+
+    /**
+     * If this subscription should be pushed to the subscription
+     * callstack and popped off when it is emitted.
+     */
+    once: boolean;
+
+    emitterCls?: any;
+    target: any;
+    prop: string | symbol;
+  }
+
+  interface SubscriptionInfo {
+    listener(...args: any[]): any;
+    emitter: EventEmitterLike;
+    once: boolean;
+    name: string;
+  }
+
+  interface EventEmitterLike {
+    removeListener(event: string, listener: (...args: any[]) => void): any;
+    addListener(event: string, listener: (...args: any[]) => void): any;
+    once(event: string, listener: (...args: any[]) => void): any;
+    on(event: string, listener: (...args: any[]) => void): any;
   }
 }
 

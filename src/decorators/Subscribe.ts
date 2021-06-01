@@ -21,7 +21,6 @@
  */
 
 import { MetadataKeys, PendingSubscription } from '..';
-import { EventEmitterLike } from '../api/SharedAPI';
 
 /**
  * Adds a subscription to this method with type-safety included
