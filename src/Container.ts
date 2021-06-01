@@ -164,6 +164,14 @@ export class Container extends utils.EventBus<ContainerEvents> {
   }
 
   /**
+   * References scoped to any singleton, service, or component
+   * to the name of the component/singleton/service.
+   */
+  get references() {
+    return this.#references;
+  }
+
+  /**
    * Initializes all components, services, and singletons.
    */
   async load() {

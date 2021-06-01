@@ -92,6 +92,11 @@ declare namespace lilith {
     public services: Collection<string, BaseService>;
 
     /**
+     * The emitter tree for this [[Container]]
+     */
+    public emitters: Collection<string, EventEmitterLike>;
+
+    /**
      * Initializes all components, services, and singletons.
      */
     public load(): Promise<void>;
