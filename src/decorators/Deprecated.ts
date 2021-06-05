@@ -27,9 +27,9 @@
 export function Deprecated(message: string): MethodDecorator {
   return (target, prop, descriptor: TypedPropertyDescriptor<any>) => {
     const originalValue = descriptor.value;
-    descriptor.value = (...args: any[]) => {
+    descriptor.value = function (this: any, ...args: any[]) {
       console.log(`(lilith:${process.pid}) DeprecationWarning: Method "${target.constructor.name}#${String(prop)}" is deprecated and will be removed in the future.\n> ${message}`);
-      return originalValue(...args);
+      return originalValue.call(this, ...args);
     };
   };
 }

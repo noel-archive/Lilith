@@ -22,6 +22,11 @@
 
 import { MetadataKeys, PendingSubscription } from '..';
 
+interface SubscriptionOptions {
+  emitter?: string;
+  once?: boolean;
+}
+
 /**
  * Adds a subscription to this method with type-safety included
  * @param event The event name to use
@@ -32,7 +37,7 @@ import { MetadataKeys, PendingSubscription } from '..';
 export function Subscribe<
   T extends Record<string, unknown>,
   K extends keyof T = keyof T
->(event: K, emitter?: string, once?: boolean): MethodDecorator;
+>(event: K, options?: SubscriptionOptions): MethodDecorator;
 
 /**
  * Adds a subscription to this method without type-safety included
@@ -41,15 +46,15 @@ export function Subscribe<
  * @param once If this subscription should be pushed to the callstack
  * and popped off after emittion.
  */
-export function Subscribe(event: string, emitter?: string, once?: boolean): MethodDecorator;
-export function Subscribe(event: string, emitterCls?: any, once: boolean = false): MethodDecorator {
+export function Subscribe(event: string, options?: SubscriptionOptions): MethodDecorator;
+export function Subscribe(event: string, options?: SubscriptionOptions): MethodDecorator {
   return (target, prop, descriptor: TypedPropertyDescriptor<any>) => {
     const subscriptions: PendingSubscription[] = Reflect.getMetadata(MetadataKeys.Subscription, target) ?? [];
     subscriptions.push({
       listener: descriptor.value!,
-      emitterCls,
+      emitterCls: options?.emitter,
       event,
-      once,
+      once: options?.once === true,
 
       target,
       prop

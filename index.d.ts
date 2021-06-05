@@ -191,6 +191,7 @@ declare namespace lilith {
     constructor({
       listener,
       emitter,
+      thisCtx,
       name,
       once
     }: SubscriptionInfo);
@@ -299,13 +300,14 @@ declare namespace lilith {
      * @param emitter The event emitter to use.
      * @param name The name of the event to forward
      * @param listener The listener function to forward
+     * @param thisCtx The `this` context to use for the listener function
      * @param once If this event should be emitted once and unsubscribed after it's called.
      */
     addSubscription<
       E extends EventEmitterLike,
       Events = {},
       K extends keyof Events = keyof Events
-    >(emitter: E, name: K, listener: Events[K], once?: boolean): void;
+    >(emitter: E, name: K, listener: Events[K], thisCtx: any, once?: boolean): void;
 
     /**
      * Lazily adds multiple subscriptions into this component or service tree.
@@ -363,13 +365,25 @@ declare namespace lilith {
   >(event: K, emitter?: string, once?: boolean): MethodDecorator;
 
   /**
-  * Adds a subscription to this method without type-safety included
-  * @param event The event name to use
-  * @param emitter The event emitter to define
-  * @param once If this subscription should be pushed to the callstack
-  * and popped off after emittion.
-  */
-  export function Subscribe(event: string, emitter?: string, once?: boolean): MethodDecorator;
+   * Adds a subscription to this method with type-safety included
+   * @param event The event name to use
+   * @param emitter The event emitter to use
+   * @param once If this subscription should be pushed to the callstack
+   * and popped off after emittion.
+   */
+  export function Subscribe<
+    T extends Record<string, unknown>,
+    K extends keyof T = keyof T
+  >(event: K, options?: SubscriptionOptions): MethodDecorator;
+
+  /**
+   * Adds a subscription to this method without type-safety included
+   * @param event The event name to use
+   * @param emitter The event emitter to define
+   * @param once If this subscription should be pushed to the callstack
+   * and popped off after emittion.
+   */
+  export function Subscribe(event: string, options?: SubscriptionOptions): MethodDecorator;
 
   // ~ Enums ~
   export enum EntityType {
@@ -665,6 +679,7 @@ declare namespace lilith {
   interface SubscriptionInfo {
     listener(...args: any[]): any;
     emitter: EventEmitterLike;
+    thisCtx: any;
     once: boolean;
     name: string;
   }
@@ -674,6 +689,11 @@ declare namespace lilith {
     addListener(event: string, listener: (...args: any[]) => void): any;
     once(event: string, listener: (...args: any[]) => void): any;
     on(event: string, listener: (...args: any[]) => void): any;
+  }
+
+  interface SubscriptionOptions {
+    emitter?: string;
+    once?: boolean;
   }
 }
 

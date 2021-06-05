@@ -247,7 +247,6 @@ export class Container extends utils.EventBus<ContainerEvents> {
     for (let i = 0; i < sorted.length; i++) {
       const cls = sorted[i];
       cls._classRef = new cls._classRef();
-      this.addInjections(cls);
 
       switch (cls.type) {
         case 'component':
@@ -268,6 +267,7 @@ export class Container extends utils.EventBus<ContainerEvents> {
 
     this.emit('debug', `Registered ${this.components.size} components and ${this.services.size} services`);
     for (const component of this.components.values()) {
+      this.addInjections(component._classRef);
       this.emit('onBeforeInit', component);
       await component._classRef.load?.();
       this.emit('onAfterInit', component);
@@ -305,7 +305,11 @@ export class Container extends utils.EventBus<ContainerEvents> {
           if (emitter === null)
             throw new TypeError(`Unable to find emitter ${subsToForward[i].emitterCls.constructor.name} for subscription ${subsToForward[i].event}.`);
 
-          (component._classRef.api as ComponentAPI).forwardSubscription(emitter, subsToForward[i]);
+          const sub = subsToForward[i];
+          (component._classRef.api as ComponentAPI).forwardSubscription(emitter, {
+            ...sub,
+            thisCtx: c
+          });
         }
       }
 
@@ -324,11 +328,16 @@ export class Container extends utils.EventBus<ContainerEvents> {
         if (emitter === null)
           throw new TypeError(`Unable to find emitter ${subsToForward[i].emitterCls.constructor.name} for subscription ${subsToForward[i].event}.`);
 
-        (component._classRef.api as ComponentAPI).forwardSubscription(emitter, subsToForward[i]);
+        const sub = subsToForward[i];
+        (component._classRef.api as ComponentAPI).forwardSubscription(emitter, {
+          ...sub,
+          thisCtx: component._classRef
+        });
       }
     }
 
     for (const service of this.services.values()) {
+      this.addInjections(service._classRef);
       this.emit('onBeforeInit', service);
       await service._classRef.load?.();
       this.emit('onAfterInit', service);
@@ -366,7 +375,11 @@ export class Container extends utils.EventBus<ContainerEvents> {
           if (emitter === null)
             throw new TypeError(`Unable to find emitter ${subsToForward[i].emitterCls} for subscription ${subsToForward[i].event}.`);
 
-          (service._classRef.api as ServiceAPI).forwardSubscription(emitter, subsToForward[i]);
+          const sub = subsToForward[i];
+          (service._classRef.api as ServiceAPI).forwardSubscription(emitter, {
+            ...sub,
+            thisCtx: c
+          });
         }
       }
 
@@ -385,7 +398,11 @@ export class Container extends utils.EventBus<ContainerEvents> {
         if (emitter === null)
           throw new TypeError(`Unable to find emitter ${subsToForward[i].emitterCls.constructor.name} for subscription ${subsToForward[i].event}.`);
 
-        (service._classRef.api as ComponentAPI).forwardSubscription(emitter, subsToForward[i]);
+        const sub = subsToForward[i];
+        (service._classRef.api as ComponentAPI).forwardSubscription(emitter, {
+          ...sub,
+          thisCtx: service._classRef
+        });
       }
     }
 
@@ -587,7 +604,11 @@ export class Container extends utils.EventBus<ContainerEvents> {
         if (emitter === null)
           throw new TypeError(`Unable to find emitter ${subsToForward[i].emitterCls.constructor.name} for subscription ${subsToForward[i].event}.`);
 
-        (component._classRef.api as ServiceAPI).forwardSubscription(emitter, subsToForward[i]);
+        const sub = subsToForward[i];
+        (component._classRef.api as ServiceAPI).forwardSubscription(emitter, {
+          ...sub,
+          thisCtx: c
+        });
       }
     }
 
@@ -606,7 +627,11 @@ export class Container extends utils.EventBus<ContainerEvents> {
       if (emitter === null)
         throw new TypeError(`Unable to find emitter ${subsToForward[i].emitterCls.constructor.name} for subscription ${subsToForward[i].event}.`);
 
-      (component._classRef.api as ComponentAPI).forwardSubscription(emitter, subsToForward[i]);
+      const sub = subsToForward[i];
+      (component._classRef.api as ComponentAPI).forwardSubscription(emitter, {
+        ...sub,
+        thisCtx: component._classRef
+      });
     }
 
     this.#references.set(component._classRef.constructor, component.name);
@@ -670,7 +695,11 @@ export class Container extends utils.EventBus<ContainerEvents> {
         if (emitter === null)
           throw new TypeError(`Unable to find emitter ${subsToForward[i].emitterCls.constructor.name} for subscription ${subsToForward[i].event}.`);
 
-        (service._classRef.api as ServiceAPI).forwardSubscription(emitter, subsToForward[i]);
+        const sub = subsToForward[i];
+        (service._classRef.api as ServiceAPI).forwardSubscription(emitter, {
+          ...sub,
+          thisCtx: c
+        });
       }
     }
 
@@ -689,7 +718,11 @@ export class Container extends utils.EventBus<ContainerEvents> {
       if (emitter === null)
         throw new TypeError(`Unable to find emitter ${subsToForward[i].emitterCls.constructor.name} for subscription ${subsToForward[i].event}.`);
 
-      (service._classRef.api as ServiceAPI).forwardSubscription(emitter, subsToForward[i]);
+      const sub = subsToForward[i];
+      (service._classRef.api as ServiceAPI).forwardSubscription(emitter, {
+        ...sub,
+        thisCtx: service._classRef
+      });
     }
 
     this.#references.set(service._classRef.constructor, service.name);

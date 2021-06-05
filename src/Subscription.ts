@@ -24,6 +24,8 @@ import type { EventEmitterLike } from './api/SharedAPI';
 
 interface SubscriptionInfo {
   listener(...args: any[]): any;
+
+  thisCtx: any;
   emitter: EventEmitterLike;
   once: boolean;
   name: string;
@@ -50,10 +52,11 @@ export class Subscription {
   constructor({
     listener,
     emitter,
+    thisCtx,
     name,
     once
   }: SubscriptionInfo) {
-    this.#subscribedListener = (...args: any[]) => this.#listener(...args);
+    this.#subscribedListener = (...args: any[]) => this.#listener.call(thisCtx, ...args);
     this.#listener = listener;
     this.#emitter = emitter;
     this.once = once;

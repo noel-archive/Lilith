@@ -135,19 +135,21 @@ export class SharedAPI {
    * @param emitter The event emitter to use.
    * @param name The name of the event to forward
    * @param listener The listener function to forward
+   * @param thisCtx The `this` context to use for the listener function
    * @param once If this event should be emitted once and unsubscribed after it's called.
    */
   addSubscription<
     E extends EventEmitterLike,
     Events = {},
     K extends keyof Events = keyof Events
-  >(emitter: E, name: K, listener: Events[K], once: boolean = false) {
+  >(emitter: E, name: K, listener: Events[K], thisCtx: any, once: boolean = false) {
     if (!isEventEmitterLike(emitter))
       throw new TypeError('EventEmitter passed didn\'t have the following functions: `addListener`, `on`, or `once`.');
 
     const subscription = new Subscription({
       listener: listener as any,
       emitter,
+      thisCtx,
       name: name as string,
       once
     });
@@ -171,6 +173,7 @@ export class SharedAPI {
     const subscriptions: PendingSubscription[] = Reflect.getMetadata(MetadataKeys.Subscription, childClass) ?? [];
     const subs = subscriptions.map(sub => new Subscription({
       listener: sub.listener,
+      thisCtx: childClass,
       emitter,
       name: sub.event,
       once: sub.once
@@ -189,13 +192,14 @@ export class SharedAPI {
    * @param emitter The emitter to use
    * @param sub The pending subscription to use
    */
-  forwardSubscription<E extends EventEmitterLike>(emitter: E, subscription: PendingSubscription) {
+  forwardSubscription<E extends EventEmitterLike>(emitter: E, subscription: PendingSubscription & { thisCtx: any; }) {
     if (!isEventEmitterLike(emitter))
       throw new TypeError('EventEmitter passed didn\'t have the following functions: `addListener`, `on`, or `once`.');
 
     const sub = new Subscription({
       listener: subscription.listener,
       emitter,
+      thisCtx: subscription.thisCtx,
       name: subscription.event,
       once: subscription.once
     });
