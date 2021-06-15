@@ -20,8 +20,8 @@
  * SOFTWARE.
  */
 
-import { BaseComponent, BaseService, BaseSingleton, MetadataKeys, PendingInjectDefinition, ReferredObjectDefinition, ImportedDefaultExport, PendingSubscription } from './types';
-import { returnFromExport, isPrimitive } from './utils';
+import { BaseComponent, BaseService, BaseSingleton, MetadataKeys, PendingInjectDefinition, ReferredObjectDefinition, ImportedDefaultExport, PendingSubscription, BaseVariable, PendingVariableDefinition } from './types';
+import { returnFromExport, isPrimitive, isClass, isComponentLike } from './utils';
 import type { EventEmitterLike } from './api/SharedAPI';
 import { ComponentAPI } from './api/ComponentAPI';
 import { randomBytes } from 'crypto';
@@ -117,6 +117,8 @@ interface ContainerOptions {
  * entrypoint to Lilith, this is your creation tool to create your application! **(\*≧∀≦\*)**
  */
 export class Container extends utils.EventBus<ContainerEvents> {
+  private static _instance: Container;
+
   /**
    * The component tree for this [[Container]]
    */
@@ -126,6 +128,11 @@ export class Container extends utils.EventBus<ContainerEvents> {
    * The singleton tree for this [[Container]]
    */
   public singletons: Collection<string, BaseSingleton> = new Collection();
+
+  /**
+   * The variables tree for this [[Container]].
+   */
+  public variables: Collection<string, BaseVariable> = new Collection();
 
   /**
    * The services tree for this [[Container]]
@@ -154,6 +161,9 @@ export class Container extends utils.EventBus<ContainerEvents> {
     this.#servicesDir = options?.servicesDir;
     this.#references = new Collection();
 
+    if (!Container._instance)
+      Container._instance = this;
+
     const singletons = options?.singletons ?? [];
     for (let i = 0; i < singletons.length; i++) {
       if (isPrimitive(singletons[i]))
@@ -169,6 +179,13 @@ export class Container extends utils.EventBus<ContainerEvents> {
    */
   get references() {
     return this.#references;
+  }
+
+  /**
+   * Returns a reference of this [[Container]] that was constructed.
+   */
+  static get ref() {
+    return this._instance;
   }
 
   /**
@@ -428,6 +445,33 @@ export class Container extends utils.EventBus<ContainerEvents> {
   }
 
   /**
+   * Adds a variable to this [[Container]]
+   * @param name The name of the variable
+   * @param ref The reference of that variable
+   */
+  addVariable(name: string, ref: any) {
+    if (
+      isClass(ref) &&
+      ((this.components.filter(c => c._classRef.constructor === ref.constructor)) ||
+      (this.services.filter(c => c._classRef.constructor === ref.constructor)) ||
+      (this.singletons.filter(c => c.$ref.constructor === ref.constructor)))
+    ) {
+      throw new TypeError('Cannot add singletons, services, or components as variables. Use the `@Inject` decorator.');
+    }
+
+    this.emit('debug', `Registered variable ${name} linked to ${isClass(ref) ? ref.constructor.name : ref}.`);
+
+    this.references.set(isClass(ref) ? ref.constructor : ref, name);
+    this.variables.set(name, {
+      $ref: ref,
+      type: 'variable',
+      name
+    });
+
+    return this;
+  }
+
+  /**
    * Runs all injections for all components and services
    */
   @Deprecated('Use Container.addInjections(target) instead, this will be removed in v5')
@@ -440,14 +484,30 @@ export class Container extends utils.EventBus<ContainerEvents> {
    * @param target The target class to use
    */
   addInjections(target: any) {
-    const injections: PendingInjectDefinition[] = Reflect.getMetadata(MetadataKeys.PendingInjections, global) ?? [];
+    // Add pending injections
+    const injections: PendingInjectDefinition[] = (Reflect.getMetadata(MetadataKeys.PendingInjections, global) ?? []);
     const targetCls = target._classRef !== undefined ? target._classRef : target;
-
     const shouldInject = injections.filter(inject =>
       targetCls.constructor === inject.target.constructor
     );
 
     for (const inject of shouldInject) this.inject(targetCls, inject);
+
+    // Add pending variable injections
+    const varInject: PendingVariableDefinition[] = (Reflect.getMetadata(MetadataKeys.PendingInjections, global) ?? []);
+    const injectVars = varInject.filter(i => targetCls.constructor === i.target.constructor);
+
+    for (const i of injectVars) {
+      Object.defineProperty(i.target, i.prop, {
+        get: () => i.$ref,
+        set: () => {
+          throw new SyntaxError('References cannot mutate state.');
+        },
+
+        enumerable: true,
+        configurable: true
+      });
+    }
   }
 
   /**
@@ -466,6 +526,8 @@ export class Container extends utils.EventBus<ContainerEvents> {
       return this.services.get($ref)!._classRef;
     else if (this.singletons.has($ref))
       return this.singletons.get($ref)!.$ref;
+    else if (this.variables.has($ref))
+      return this.variables.get($ref)!.$ref;
     else
       throw new SyntaxError(`Referenced object with ${$ref} was not found`);
   }

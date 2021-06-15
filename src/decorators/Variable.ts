@@ -20,8 +20,25 @@
  * SOFTWARE.
  */
 
-export * from './returnFromExport';
-export * from './isComponentLike';
-export * from './isServiceLike';
-export * from './isPrimitive';
-export * from './isClass';
+import { MetadataKeys, PendingVariableDefinition } from '../types';
+import { Container } from '../Container';
+
+/**
+ * Appends a variable injected to the property
+ * @param name The variable name
+ */
+export const Variable = (name: string): PropertyDecorator => {
+  return (target, prop) => {
+    // Get the reference if it's not a string
+    let ref = Container.ref.variables.get(name);
+    if (ref === undefined)
+      throw new TypeError(`Unknown variable "${name}"`);
+
+    const variables: PendingVariableDefinition[] = Reflect.getMetadata(MetadataKeys.Variable, target) ?? [];
+    variables.push({
+      $ref: ref,
+      target,
+      prop
+    });
+  };
+};

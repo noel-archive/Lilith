@@ -20,8 +20,9 @@
  * SOFTWARE.
  */
 
-export * from './returnFromExport';
-export * from './isComponentLike';
-export * from './isServiceLike';
-export * from './isPrimitive';
-export * from './isClass';
+/**
+ * Checks if `v` is a class or not
+ * @param v The class
+ */
+export const isClass = (v: any) =>
+  v.constructor?.toString().substring(0, 5) === 'class';

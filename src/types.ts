@@ -103,6 +103,7 @@ export interface BaseService {
 export const enum MetadataKeys {
   PendingInjections = '$lilith::api::injections::pending',
   Subscription      = '$lilith::api::subscription',
+  Variable          = '$lilith::api::variable',
   Component         = '$lilith::api::component',
   Service           = '$lilith::api::service'
 }
@@ -127,6 +128,8 @@ export interface PendingInjectDefinition {
   $ref: any;
 }
 
+export type PendingVariableDefinition = PendingInjectDefinition;
+
 /**
  * Represents the definition of a referred object
  */
@@ -145,7 +148,7 @@ export interface ReferredObjectDefinition {
   /**
    * The type of this [[ReferredObjectDefintion]]
    */
-  type: 'component' | 'service' | 'singleton';
+  type: 'component' | 'service';
 
   /**
    * The name of this [[ReferredObjectDefinition]]
@@ -171,6 +174,28 @@ export interface BaseSingleton {
    * The singleton's key, just a random scribble of words.
    */
   key: string;
+}
+
+/**
+ * Represents a variable instance that was added using
+ * [[Container.addVariable]] or using the `variables` option
+ * when creating a container.
+ */
+export interface BaseVariable {
+  /**
+   * The reference to the variable
+   */
+  $ref: any;
+
+  /**
+   * The type that this is represented as (always `variable`)
+   */
+  type: 'variable';
+
+  /**
+   * The name of the variable
+   */
+  name: string;
 }
 
 /**

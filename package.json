@@ -1,7 +1,7 @@
 {
   "name": "@augu/lilith",
   "description": "🧵 Simple application framework made in TypeScript (made for personal usage)",
-  "version": "4.1.0",
+  "version": "5.0.0",
   "main": "build/index.js",
   "license": "MIT",
   "author": "Chris \"August\" Hernandez <cutie@floofy.dev>",
@@ -29,6 +29,7 @@
   "dependencies": {
     "@augu/collections": "1.0.12",
     "@augu/utils": "1.5.3",
+    "globby": "11.0.3",
     "reflect-metadata": "0.1.13"
   },
   "devDependencies": {
