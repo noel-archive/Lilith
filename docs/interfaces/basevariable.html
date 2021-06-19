@@ -3,7 +3,7 @@
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>ReferredObjectDefinition | Lilith</title>
+	<title>BaseVariable | Lilith</title>
 	<meta name="description" content="Documentation for Lilith">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" href="../assets/css/main.css">
@@ -55,10 +55,10 @@
 					<a href="../modules.html">Lilith</a>
 				</li>
 				<li>
-					<a href="referredobjectdefinition.html">ReferredObjectDefinition</a>
+					<a href="basevariable.html">BaseVariable</a>
 				</li>
 			</ul>
-			<h1>Interface ReferredObjectDefinition</h1>
+			<h1>Interface BaseVariable</h1>
 		</div>
 	</div>
 </header>
@@ -68,7 +68,9 @@
 			<section class="tsd-panel tsd-comment">
 				<div class="tsd-comment tsd-typography">
 					<div class="lead">
-						<p>Represents the definition of a referred object</p>
+						<p>Represents a variable instance that was added using
+							[[Container.addVariable]] or using the <code>variables</code> option
+						when creating a container.</p>
 					</div>
 				</div>
 			</section>
@@ -76,7 +78,7 @@
 				<h3>Hierarchy</h3>
 				<ul class="tsd-hierarchy">
 					<li>
-						<span class="target">ReferredObjectDefinition</span>
+						<span class="target">BaseVariable</span>
 					</li>
 				</ul>
 			</section>
@@ -87,10 +89,9 @@
 						<section class="tsd-index-section ">
 							<h3>Properties</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="referredobjectdefinition.html#children" class="tsd-kind-icon">children</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="referredobjectdefinition.html#name" class="tsd-kind-icon">name</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="referredobjectdefinition.html#priority" class="tsd-kind-icon">priority</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="referredobjectdefinition.html#type" class="tsd-kind-icon">type</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="basevariable.html#_ref" class="tsd-kind-icon">$ref</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="basevariable.html#name" class="tsd-kind-icon">name</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="basevariable.html#type" class="tsd-kind-icon">type</a></li>
 							</ul>
 						</section>
 					</div>
@@ -99,17 +100,17 @@
 			<section class="tsd-panel-group tsd-member-group ">
 				<h2>Properties</h2>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
-					<a name="children" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagOptional">Optional</span> children</h3>
-					<div class="tsd-signature tsd-kind-icon">children<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">[]</span></div>
+					<a name="_ref" class="tsd-anchor"></a>
+					<h3>$ref</h3>
+					<div class="tsd-signature tsd-kind-icon">$ref<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">any</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/Noelware/Lilith/blob/9b1c81d/src/types.ts#L147">src/types.ts:147</a></li>
+							<li>Defined in <a href="https://github.com/Noelware/Lilith/blob/9b1c81d/src/types.ts#L189">src/types.ts:189</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
 						<div class="lead">
-							<p>List of children or an absolute path to load in children</p>
+							<p>The reference to the variable</p>
 						</div>
 					</div>
 				</section>
@@ -119,43 +120,27 @@
 					<div class="tsd-signature tsd-kind-icon">name<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/Noelware/Lilith/blob/9b1c81d/src/types.ts#L157">src/types.ts:157</a></li>
+							<li>Defined in <a href="https://github.com/Noelware/Lilith/blob/9b1c81d/src/types.ts#L199">src/types.ts:199</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
 						<div class="lead">
-							<p>The name of this <a href="referredobjectdefinition.html">ReferredObjectDefinition</a></p>
-						</div>
-					</div>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
-					<a name="priority" class="tsd-anchor"></a>
-					<h3>priority</h3>
-					<div class="tsd-signature tsd-kind-icon">priority<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div>
-					<aside class="tsd-sources">
-						<ul>
-							<li>Defined in <a href="https://github.com/Noelware/Lilith/blob/9b1c81d/src/types.ts#L142">src/types.ts:142</a></li>
-						</ul>
-					</aside>
-					<div class="tsd-comment tsd-typography">
-						<div class="lead">
-							<p>A number to show if this referred object should be initialized
-							first or list, like a priority tree</p>
+							<p>The name of the variable</p>
 						</div>
 					</div>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
 					<a name="type" class="tsd-anchor"></a>
 					<h3>type</h3>
-					<div class="tsd-signature tsd-kind-icon">type<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">&quot;component&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;service&quot;</span></div>
+					<div class="tsd-signature tsd-kind-icon">type<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">&quot;variable&quot;</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/Noelware/Lilith/blob/9b1c81d/src/types.ts#L152">src/types.ts:152</a></li>
+							<li>Defined in <a href="https://github.com/Noelware/Lilith/blob/9b1c81d/src/types.ts#L194">src/types.ts:194</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
 						<div class="lead">
-							<p>The type of this [[ReferredObjectDefintion]]</p>
+							<p>The type that this is represented as (always <code>variable</code>)</p>
 						</div>
 					</div>
 				</section>
@@ -192,9 +177,24 @@
 					<li class=" tsd-kind-interface">
 						<a href="basesingleton.html" class="tsd-kind-icon">Base<wbr>Singleton</a>
 					</li>
-					<li class=" tsd-kind-interface">
+				</ul>
+				<ul class="current">
+					<li class="current tsd-kind-interface">
 						<a href="basevariable.html" class="tsd-kind-icon">Base<wbr>Variable</a>
+						<ul>
+							<li class=" tsd-kind-property tsd-parent-kind-interface">
+								<a href="basevariable.html#_ref" class="tsd-kind-icon">$ref</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-interface">
+								<a href="basevariable.html#name" class="tsd-kind-icon">name</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-interface">
+								<a href="basevariable.html#type" class="tsd-kind-icon">type</a>
+							</li>
+						</ul>
 					</li>
+				</ul>
+				<ul class="after-current">
 					<li class=" tsd-kind-interface">
 						<a href="componentoptions.html" class="tsd-kind-icon">Component<wbr>Options</a>
 					</li>
@@ -204,27 +204,9 @@
 					<li class=" tsd-kind-interface">
 						<a href="pendingsubscription.html" class="tsd-kind-icon">Pending<wbr>Subscription</a>
 					</li>
-				</ul>
-				<ul class="current">
-					<li class="current tsd-kind-interface">
+					<li class=" tsd-kind-interface">
 						<a href="referredobjectdefinition.html" class="tsd-kind-icon">Referred<wbr>Object<wbr>Definition</a>
-						<ul>
-							<li class=" tsd-kind-property tsd-parent-kind-interface">
-								<a href="referredobjectdefinition.html#children" class="tsd-kind-icon">children</a>
-							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-interface">
-								<a href="referredobjectdefinition.html#name" class="tsd-kind-icon">name</a>
-							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-interface">
-								<a href="referredobjectdefinition.html#priority" class="tsd-kind-icon">priority</a>
-							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-interface">
-								<a href="referredobjectdefinition.html#type" class="tsd-kind-icon">type</a>
-							</li>
-						</ul>
 					</li>
-				</ul>
-				<ul class="after-current">
 					<li class=" tsd-kind-interface">
 						<a href="serviceoptions.html" class="tsd-kind-icon">Service<wbr>Options</a>
 					</li>
