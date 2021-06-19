@@ -24,4 +24,3 @@ export * from './returnFromExport';
 export * from './isComponentLike';
 export * from './isServiceLike';
 export * from './isPrimitive';
-export * from './isClass';

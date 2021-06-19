@@ -103,6 +103,7 @@ export interface BaseService {
 export const enum MetadataKeys {
   PendingInjections = '$lilith::api::injections::pending',
   Subscription      = '$lilith::api::subscription',
+  Injectable        = '$lilith::api::injectables',
   Variable          = '$lilith::api::variable',
   Component         = '$lilith::api::component',
   Service           = '$lilith::api::service'
