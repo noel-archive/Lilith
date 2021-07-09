@@ -1,13 +1,14 @@
 {
   "name": "@augu/lilith",
   "description": "🧵 Simple application framework made in TypeScript (made for personal usage)",
-  "version": "5.0.0",
+  "version": "5.0.1",
   "main": "build/index.js",
   "license": "MIT",
   "author": "Chris \"August\" Hernandez <cutie@floofy.dev>",
   "repository": "https://github.com/Noelware/Lilith",
   "bugs": "https://github.com/Noelware/Lilith/issues",
   "types": "index.d.ts",
+  "homepage": "https://lilith.floofy.dev",
   "files": [
     "build/",
     "index.d.ts"
