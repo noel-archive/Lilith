@@ -198,7 +198,7 @@ export class Container extends utils.EventBus<ContainerEvents> {
   /**
    * Returns a reference of this [[Container]] that was constructed.
    */
-  static get ref() {
+  static get instance() {
     return this._instance;
   }
 
@@ -443,6 +443,25 @@ export class Container extends utils.EventBus<ContainerEvents> {
     }
 
     this.emit('debug', 'We are all set. (ㅇㅅㅇ❀) (* ^ ω ^)');
+  }
+
+  /**
+   * Same functionality as [[Container.$ref]] but this can be for any
+   * libraries that depend on dependency injection + has string support
+   * for the [[ref]] parameter.
+   *
+   * @param ref The reference class or the name of a component, service, or singleton
+   */
+  get<TReturn = any>(ref: any): TReturn {
+    if (typeof ref === 'string') {
+      return this.components.get(ref) as TReturn | undefined
+        ?? this.services.get(ref) as TReturn | undefined
+        ?? this.singletons.get(ref) as unknown as TReturn;
+    } else if (utils.isObject<any>(ref)) {
+      return this.$ref(ref);
+    } else {
+      throw new SyntaxError('`ref` was not a string or a object of a class');
+    }
   }
 
   /**

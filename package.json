@@ -1,7 +1,7 @@
 {
   "name": "@augu/lilith",
   "description": "🧵 Simple application framework made in TypeScript (made for personal usage)",
-  "version": "5.0.1",
+  "version": "5.0.2",
   "main": "build/index.js",
   "license": "MIT",
   "author": "Chris \"August\" Hernandez <cutie@floofy.dev>",
@@ -25,7 +25,7 @@
     "prepare": "npm run build",
     "build": "npm run lint && rm -rf build && tsc",
     "lint": "eslint src --ext .ts --fix",
-    "docs": "typedoc src/index.ts --out ./docs"
+    "docs": "typedoc src/index.ts --out ./docs --theme minimal"
   },
   "dependencies": {
     "@augu/collections": "1.0.12",

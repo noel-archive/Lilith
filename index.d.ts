@@ -71,6 +71,11 @@ declare namespace lilith {
     constructor(options?: lilith.ContainerOptions);
 
     /**
+     * Returns the instance of this [Container].
+     */
+    public static instance: lilith.Container;
+
+    /**
      * Returns the component tree
      */
     public components: Collection<string, BaseComponent>;
@@ -100,6 +105,15 @@ declare namespace lilith {
      * Initializes all components, services, and singletons.
      */
     public load(): Promise<void>;
+
+    /**
+     * Same functionality as [[Container.$ref]] but this can be for any
+     * libraries that depend on dependency injection + has string support
+     * for the [[ref]] parameter.
+     *
+     * @param ref The reference class or the name of a component, service, or singleton
+     */
+    public get<TReturn = any>(ref: any): TReturn;
 
     /**
      * Returns a reference from the component, singleton, or service tree
@@ -351,18 +365,6 @@ declare namespace lilith {
    * @param name The name of the component
    */
   export function Service({ priority, children, name }: ComponentOrServiceOptions): ClassDecorator;
-
-  /**
-   * Adds a subscription to this method with type-safety included
-   * @param event The event name to use
-   * @param emitter The event emitter to use
-   * @param once If this subscription should be pushed to the callstack
-   * and popped off after emittion.
-   */
-  export function Subscribe<
-    T extends Record<string, unknown>,
-    K extends keyof T = keyof T
-  >(event: K, emitter?: string, once?: boolean): MethodDecorator;
 
   /**
    * Adds a subscription to this method with type-safety included
