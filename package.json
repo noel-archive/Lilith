@@ -25,7 +25,7 @@
     "prepare": "npm run build",
     "build": "npm run lint && rm -rf build && tsc",
     "lint": "eslint src --ext .ts --fix",
-    "docs": "typedoc src/index.ts --out ./docs --theme minimal"
+    "docs": "typedoc src/index.ts --out ./docs --theme minimal && echo lilith.floofy.dev >> docs/CNAME"
   },
   "dependencies": {
     "@augu/collections": "1.0.12",
