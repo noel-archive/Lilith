@@ -454,9 +454,9 @@ export class Container extends utils.EventBus<ContainerEvents> {
    */
   get<TReturn = any>(ref: any): TReturn {
     if (typeof ref === 'string') {
-      return this.components.get(ref) as TReturn | undefined
-        ?? this.services.get(ref) as TReturn | undefined
-        ?? this.singletons.get(ref) as unknown as TReturn;
+      return this.components.get(ref)?._classRef as TReturn | undefined
+        ?? this.services.get(ref)?._classRef as TReturn | undefined
+        ?? this.singletons.get(ref)?.$ref as TReturn;
     } else if (utils.isObject<any>(ref)) {
       return this.$ref(ref);
     } else {
