@@ -1,6 +1,7 @@
 {
   "excludeProtected": true,
   "excludePrivate": true,
+  "entryPoints": ["src/index.ts"],
   "tsconfig": "tsconfig.json",
   "readme": "README.md",
   "name": "Lilith"

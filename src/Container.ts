@@ -597,8 +597,9 @@ export class Container extends utils.EventBus<ContainerEvents> {
   /**
    * Applies a component to this [[Container]]
    * @param cls The component to add
+   * @param args Any additional arguments to construct the component
    */
-  async addComponent(cls: any) {
+  async addComponent(cls: any, ...args: any[]) {
     const metadata: ReferredObjectDefinition | undefined = Reflect.getMetadata(MetadataKeys.Component, cls);
     if (metadata === undefined)
       throw new TypeError('Missing @Component decorator (did you construct this class? if so, don\'t)');
@@ -612,7 +613,7 @@ export class Container extends utils.EventBus<ContainerEvents> {
       name: metadata.name
     };
 
-    component._classRef = new cls();
+    component._classRef = new cls(...args);
     this.addInjections(component);
 
     this.emit('onBeforeInit', component);
@@ -692,8 +693,9 @@ export class Container extends utils.EventBus<ContainerEvents> {
   /**
    * Applies a service to this [[Container]]
    * @param cls The component to add
+   * @param args Any additional arguments to construct the service
    */
-  async addService(cls: any) {
+  async addService(cls: any, ...args: any[]) {
     const metadata: ReferredObjectDefinition | undefined = Reflect.getMetadata(MetadataKeys.Service, cls);
     if (metadata === undefined)
       throw new TypeError('Missing @Service decorator (did you construct this class? if so, don\'t)');
@@ -707,7 +709,7 @@ export class Container extends utils.EventBus<ContainerEvents> {
       name: metadata.name
     };
 
-    service._classRef = new cls();
+    service._classRef = new cls(...args);
     this.addInjections(service);
 
     this.emit('onBeforeInit', service);
