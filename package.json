@@ -20,10 +20,10 @@
     "node": ">=14"
   },
   "scripts": {
-    "clean:node_modules": "del /D node_modules/@types/**/node_modules && del /D node_modules/@augu/**/node_modules",
+    "clean:node_modules": "rmdir /S /Q node_modules/@types/**/node_modules && rmdir /S /Q node_modules/@augu/**/node_modules",
     "prepare": "yarn build && yarn docs",
     "format": "prettier --config ./.prettierrc.json --parser typescript --write src/**/*.ts",
-    "build": "yarn lint && yarn format && del /D build && tsc",
+    "build": "yarn lint && yarn format && rmdir /S /Q build && tsc",
     "lint": "eslint src --ext .ts --fix",
     "docs": "typedoc --out ./docs --theme minimal && echo lilith.floofy.dev >> docs/CNAME"
   },
