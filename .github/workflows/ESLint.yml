@@ -28,10 +28,10 @@ jobs:
         run: npm i -g eslint
 
       - name: Install dependencies
-        run: npm ci
+        run: yarn
 
       - name: Lints the repository
-        run: npm run lint
+        run: eslint src --ext .ts --fix
 
       - name: Build the project for any errors
         run: tsc --noEmit
