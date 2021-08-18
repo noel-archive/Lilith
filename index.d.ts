@@ -187,6 +187,23 @@ declare namespace lilith {
       func: (value: BaseComponent | BaseService | BaseSingleton) => boolean,
       thisArg?: ThisArg
     ): S | null;
+
+    /**
+     * Imports a singleton with a default export, and maybe a `init` / `teardown`
+     * function.
+     *
+     * @param import_ The singleton import, this can also be a function
+     * to lazy-load the import.
+     *
+     * @example
+     * ```js
+     * container.importSingleton(() => import('./my-singleton-here'));
+     * container.importSingleton({ default: <some singleton>, init() {}, teardown() {} });
+     * ```
+     *
+     * @returns This container instance.
+     */
+    public importSingleton<T>(import_: lilith.SingletonImport<T> | (() => lilith.SingletonImport<T>)): Promise<this>;
   }
 
   /**
@@ -202,13 +219,7 @@ declare namespace lilith {
      */
     public name: string;
 
-    constructor({
-      listener,
-      emitter,
-      thisCtx,
-      name,
-      once
-    }: SubscriptionInfo);
+    constructor({ listener, emitter, thisCtx, name, once }: SubscriptionInfo);
 
     /**
      * Subscribes to the emitter
@@ -317,11 +328,13 @@ declare namespace lilith {
      * @param thisCtx The `this` context to use for the listener function
      * @param once If this event should be emitted once and unsubscribed after it's called.
      */
-    addSubscription<
-      E extends EventEmitterLike,
-      Events = {},
-      K extends keyof Events = keyof Events
-    >(emitter: E, name: K, listener: Events[K], thisCtx: any, once?: boolean): void;
+    addSubscription<E extends EventEmitterLike, Events = {}, K extends keyof Events = keyof Events>(
+      emitter: E,
+      name: K,
+      listener: Events[K],
+      thisCtx: any,
+      once?: boolean
+    ): void;
 
     /**
      * Lazily adds multiple subscriptions into this component or service tree.
@@ -373,10 +386,10 @@ declare namespace lilith {
    * @param once If this subscription should be pushed to the callstack
    * and popped off after emittion.
    */
-  export function Subscribe<
-    T extends Record<string, unknown>,
-    K extends keyof T = keyof T
-  >(event: K, options?: SubscriptionOptions): MethodDecorator;
+  export function Subscribe<T extends Record<string, unknown>, K extends keyof T = keyof T>(
+    event: K,
+    options?: SubscriptionOptions
+  ): MethodDecorator;
 
   /**
    * Adds a subscription to this method without type-safety included
@@ -390,7 +403,7 @@ declare namespace lilith {
   // ~ Enums ~
   export enum EntityType {
     Component = 'component',
-    Service   = 'service'
+    Service = 'service',
   }
 
   // ~ Types & Interfaces ~
@@ -436,9 +449,7 @@ declare namespace lilith {
   /**
    * Type alias to represented the return value of `require()` or `import()`
    */
-  type ImportedDefaultExport<T> = T extends { default: infer P }
-    ? P
-    : T;
+  type ImportedDefaultExport<T> = T extends { default: infer P } ? P : T;
 
   /**
    * Represents a base component; typed for [[Application.components]].
@@ -498,6 +509,8 @@ declare namespace lilith {
    * Represents a singleton that is registered into Lilith
    */
   interface BaseSingleton {
+    teardown?(this: Container, singleton: any): void | Promise<void>;
+
     /**
      * The reference to the singleton itself
      */
@@ -696,6 +709,26 @@ declare namespace lilith {
   interface SubscriptionOptions {
     emitter?: string;
     once?: boolean;
+  }
+
+  /**
+   * Represents a singleton import for [[Container.importSingleton]].
+   */
+  export interface SingletonImport<T> {
+    /**
+     * Function to teardown this singleton, if any
+     * @param singleton The singleton if you need it without
+     * grabbing it yourself. :3
+     */
+    teardown?(this: Container, singleton: T): void | Promise<void>;
+
+    /**
+     * Function to initialize this singleton, if any.
+     * @param container The container instance if you need it.
+     */
+    init?(container: Container): void | Promise<void>;
+
+    default: any;
   }
 }
 

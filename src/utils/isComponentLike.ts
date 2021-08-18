@@ -28,9 +28,5 @@ import utils from '@augu/utils';
  * @param value The value to use
  */
 export function isComponentLike(value: unknown): value is BaseComponent {
-  return (
-    utils.isObject<BaseComponent>(value) &&
-    typeof value.type === 'string' &&
-    value.type === 'component'
-  );
+  return utils.isObject<BaseComponent>(value) && typeof value.type === 'string' && value.type === 'component';
 }

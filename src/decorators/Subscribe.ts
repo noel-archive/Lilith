@@ -34,10 +34,10 @@ interface SubscriptionOptions {
  * @param once If this subscription should be pushed to the callstack
  * and popped off after emittion.
  */
-export function Subscribe<
-  T extends Record<string, unknown>,
-  K extends keyof T = keyof T
->(event: K, options?: SubscriptionOptions): MethodDecorator;
+export function Subscribe<T extends Record<string, unknown>, K extends keyof T = keyof T>(
+  event: K,
+  options?: SubscriptionOptions
+): MethodDecorator;
 
 /**
  * Adds a subscription to this method without type-safety included
@@ -57,7 +57,7 @@ export function Subscribe(event: string, options?: SubscriptionOptions): MethodD
       once: options?.once === true,
 
       target,
-      prop
+      prop,
     });
 
     Reflect.defineMetadata(MetadataKeys.Subscription, subscriptions, target);

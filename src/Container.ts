@@ -20,7 +20,15 @@
  * SOFTWARE.
  */
 
-import { BaseComponent, BaseService, BaseSingleton, MetadataKeys, PendingInjectDefinition, ReferredObjectDefinition, PendingSubscription } from './types';
+import {
+  BaseComponent,
+  BaseService,
+  BaseSingleton,
+  MetadataKeys,
+  PendingInjectDefinition,
+  ReferredObjectDefinition,
+  PendingSubscription,
+} from './types';
 import { returnFromExport, isPrimitive } from './utils';
 import type { EventEmitterLike } from './api/SharedAPI';
 import { ComponentAPI } from './api/ComponentAPI';
@@ -122,6 +130,26 @@ interface ContainerOptions {
 }
 
 /**
+ * Represents a singleton import for [[Container.importSingleton]].
+ */
+export interface SingletonImport<T> {
+  /**
+   * Function to teardown this singleton, if any
+   * @param singleton The singleton if you need it without
+   * grabbing it yourself. :3
+   */
+  teardown?(this: Container, singleton: T): void | Promise<void>;
+
+  /**
+   * Function to initialize this singleton, if any.
+   * @param container The container instance if you need it.
+   */
+  init?(container: Container): void | Promise<void>;
+
+  default: any;
+}
+
+/**
  * Represents a "container" of components, singletons, and services. This is the main
  * entrypoint to Lilith, this is your creation tool to create your application! **(\*≧∀≦\*)**
  */
@@ -165,8 +193,7 @@ export class Container extends utils.EventBus<ContainerEvents> {
     this.#servicesDir = options?.servicesDir;
     this.#references = new Collection();
 
-    if (!Container._instance)
-      Container._instance = this;
+    if (!Container._instance) Container._instance = this;
 
     const singletons = options?.singletons ?? [];
     for (let i = 0; i < singletons.length; i++) {
@@ -183,7 +210,7 @@ export class Container extends utils.EventBus<ContainerEvents> {
 
     const services = options?.services ?? [];
     for (let i = 0; i < services.length; i++) {
-      this.addComponent(services[i]);
+      this.addService(services[i]);
     }
   }
 
@@ -206,7 +233,7 @@ export class Container extends utils.EventBus<ContainerEvents> {
    * Initializes all components, services, and singletons.
    */
   async load() {
-    this.emit('debug', '( ★ ≧ ▽ ^))★☆ Let\'s get started!');
+    this.emit('debug', "( ★ ≧ ▽ ^))★☆ Let's get started!");
 
     const pending: (BaseService | BaseComponent)[] = [];
     if (this.#componentsDir !== undefined) {
@@ -222,17 +249,19 @@ export class Container extends utils.EventBus<ContainerEvents> {
           continue;
         }
 
-        const metadata: ReferredObjectDefinition | undefined = Reflect.getMetadata(MetadataKeys.Component, imported.default);
-        if (metadata === undefined)
-          throw new SyntaxError('Missing @Component decorator');
+        const metadata: ReferredObjectDefinition | undefined = Reflect.getMetadata(
+          MetadataKeys.Component,
+          imported.default
+        );
+        if (metadata === undefined) throw new SyntaxError('Missing @Component decorator');
 
         pending.push({
           subscriptions: [],
           _classRef: imported.default,
           priority: metadata.priority,
-          children: metadata.children as any ?? [],
+          children: (metadata.children as any) ?? [],
           type: 'component',
-          name: metadata.name
+          name: metadata.name,
         });
 
         this.emit('debug', `Added reference of component "${metadata.name}" linked to ${imported.default!.name}`);
@@ -252,17 +281,19 @@ export class Container extends utils.EventBus<ContainerEvents> {
           continue;
         }
 
-        const metadata: ReferredObjectDefinition | undefined = Reflect.getMetadata(MetadataKeys.Service, imported.default);
-        if (metadata === undefined)
-          throw new SyntaxError('Missing @Service decorator');
+        const metadata: ReferredObjectDefinition | undefined = Reflect.getMetadata(
+          MetadataKeys.Service,
+          imported.default
+        );
+        if (metadata === undefined) throw new SyntaxError('Missing @Service decorator');
 
         pending.push({
           subscriptions: [],
           _classRef: imported.default,
           priority: metadata.priority,
-          children: metadata.children as any ?? [],
+          children: (metadata.children as any) ?? [],
           type: 'service',
-          name: metadata.name
+          name: metadata.name,
         });
 
         this.emit('debug', `Added reference of service "${metadata.name}" linked to ${imported.default!.name}`);
@@ -303,7 +334,7 @@ export class Container extends utils.EventBus<ContainerEvents> {
       let children: any[] = [];
       if (typeof component.children === 'string') {
         const refs = await utils.readdir(component.children);
-        children = await Promise.all(refs.map(ref => import(ref)));
+        children = await Promise.all(refs.map((ref) => import(ref)));
       } else if (component.children.length > 0) {
         children = component.children;
       }
@@ -324,20 +355,27 @@ export class Container extends utils.EventBus<ContainerEvents> {
         // but components can also.
         const subscriptions: PendingSubscription[] = Reflect.getMetadata(MetadataKeys.Subscription, c) ?? [];
         if (subscriptions.length > 0) {
-          const subsToForward = subscriptions.filter(sub => sub.emitterCls !== undefined);
+          const subsToForward = subscriptions.filter((sub) => sub.emitterCls !== undefined);
 
-          if (subscriptions.filter(sub => sub.emitterCls === undefined).length > 0)
-            this.emit('debug', `Unable to forward ${subscriptions.filter(sub => sub.emitterCls === undefined).length} events due to no emitter class to automate this, please handle them yourself under \`_classRef.onChildLoad(child)\`.`);
+          if (subscriptions.filter((sub) => sub.emitterCls === undefined).length > 0)
+            this.emit(
+              'debug',
+              `Unable to forward ${
+                subscriptions.filter((sub) => sub.emitterCls === undefined).length
+              } events due to no emitter class to automate this, please handle them yourself under \`_classRef.onChildLoad(child)\`.`
+            );
 
           for (let i = 0; i < subsToForward.length; i++) {
             const emitter = this.findEmitter(subsToForward[i].emitterCls!);
             if (emitter === null)
-              throw new TypeError(`Unable to find emitter ${subsToForward[i].emitterCls.constructor.name} for subscription ${subsToForward[i].event}.`);
+              throw new TypeError(
+                `Unable to find emitter ${subsToForward[i].emitterCls.constructor.name} for subscription ${subsToForward[i].event}.`
+              );
 
             const sub = subsToForward[i];
             (component._classRef.api as ComponentAPI).forwardSubscription(emitter, {
               ...sub,
-              thisCtx: c
+              thisCtx: c,
             });
           }
         }
@@ -347,22 +385,30 @@ export class Container extends utils.EventBus<ContainerEvents> {
 
       // It's most likely children classes will have subscriptions
       // but components can also.
-      const subscriptions: PendingSubscription[] = Reflect.getMetadata(MetadataKeys.Subscription, component._classRef) ?? [];
+      const subscriptions: PendingSubscription[] =
+        Reflect.getMetadata(MetadataKeys.Subscription, component._classRef) ?? [];
       if (subscriptions.length > 0) {
-        const subsToForward = subscriptions.filter(sub => sub.emitterCls !== undefined);
+        const subsToForward = subscriptions.filter((sub) => sub.emitterCls !== undefined);
 
-        if (subscriptions.filter(sub => sub.emitterCls === undefined).length > 0)
-          this.emit('debug', `Unable to forward ${subscriptions.filter(sub => sub.emitterCls === undefined).length} events due to no emitter class to automate this, please handle them yourself under \`_classRef.load()\`.`);
+        if (subscriptions.filter((sub) => sub.emitterCls === undefined).length > 0)
+          this.emit(
+            'debug',
+            `Unable to forward ${
+              subscriptions.filter((sub) => sub.emitterCls === undefined).length
+            } events due to no emitter class to automate this, please handle them yourself under \`_classRef.load()\`.`
+          );
 
         for (let i = 0; i < subsToForward.length; i++) {
           const emitter = this.findEmitter(subsToForward[i].emitterCls!);
           if (emitter === null)
-            throw new TypeError(`Unable to find emitter ${subsToForward[i].emitterCls.constructor.name} for subscription ${subsToForward[i].event}.`);
+            throw new TypeError(
+              `Unable to find emitter ${subsToForward[i].emitterCls.constructor.name} for subscription ${subsToForward[i].event}.`
+            );
 
           const sub = subsToForward[i];
           (component._classRef.api as ComponentAPI).forwardSubscription(emitter, {
             ...sub,
-            thisCtx: component._classRef
+            thisCtx: component._classRef,
           });
         }
       }
@@ -377,7 +423,7 @@ export class Container extends utils.EventBus<ContainerEvents> {
       let children: any[] = [];
       if (typeof service.children === 'string') {
         const refs = await utils.readdir(service.children);
-        children = await Promise.all(refs.map(ref => import(ref)));
+        children = await Promise.all(refs.map((ref) => import(ref)));
       } else if (service.children.length > 0) {
         children = service.children;
       }
@@ -398,20 +444,27 @@ export class Container extends utils.EventBus<ContainerEvents> {
         // but services can also.
         const subscriptions: PendingSubscription[] = Reflect.getMetadata(MetadataKeys.Subscription, c) ?? [];
         if (subscriptions.length > 0) {
-          const subsToForward = subscriptions.filter(sub => sub.emitterCls !== undefined);
+          const subsToForward = subscriptions.filter((sub) => sub.emitterCls !== undefined);
 
-          if (subscriptions.filter(sub => sub.emitterCls === undefined).length > 0)
-            this.emit('debug', `Unable to forward ${subscriptions.filter(sub => sub.emitterCls === undefined).length} events due to no emitter class to automate this, please handle them yourself under \`_classRef.onChildLoad(child)\`.`);
+          if (subscriptions.filter((sub) => sub.emitterCls === undefined).length > 0)
+            this.emit(
+              'debug',
+              `Unable to forward ${
+                subscriptions.filter((sub) => sub.emitterCls === undefined).length
+              } events due to no emitter class to automate this, please handle them yourself under \`_classRef.onChildLoad(child)\`.`
+            );
 
           for (let i = 0; i < subsToForward.length; i++) {
             const emitter = this.findEmitter(subsToForward[i].emitterCls!);
             if (emitter === null)
-              throw new TypeError(`Unable to find emitter ${subsToForward[i].emitterCls} for subscription ${subsToForward[i].event}.`);
+              throw new TypeError(
+                `Unable to find emitter ${subsToForward[i].emitterCls} for subscription ${subsToForward[i].event}.`
+              );
 
             const sub = subsToForward[i];
             (service._classRef.api as ServiceAPI).forwardSubscription(emitter, {
               ...sub,
-              thisCtx: c
+              thisCtx: c,
             });
           }
         }
@@ -421,22 +474,30 @@ export class Container extends utils.EventBus<ContainerEvents> {
 
       // It's most likely children classes will have subscriptions
       // but components can also.
-      const subscriptions: PendingSubscription[] = Reflect.getMetadata(MetadataKeys.Subscription, service._classRef) ?? [];
+      const subscriptions: PendingSubscription[] =
+        Reflect.getMetadata(MetadataKeys.Subscription, service._classRef) ?? [];
       if (subscriptions.length > 0) {
-        const subsToForward = subscriptions.filter(sub => sub.emitterCls !== undefined);
+        const subsToForward = subscriptions.filter((sub) => sub.emitterCls !== undefined);
 
-        if (subscriptions.filter(sub => sub.emitterCls === undefined).length > 0)
-          this.emit('debug', `Unable to forward ${subscriptions.filter(sub => sub.emitterCls === undefined).length} events due to no emitter class to automate this, please handle them yourself under \`_classRef.load()\`.`);
+        if (subscriptions.filter((sub) => sub.emitterCls === undefined).length > 0)
+          this.emit(
+            'debug',
+            `Unable to forward ${
+              subscriptions.filter((sub) => sub.emitterCls === undefined).length
+            } events due to no emitter class to automate this, please handle them yourself under \`_classRef.load()\`.`
+          );
 
         for (let i = 0; i < subsToForward.length; i++) {
           const emitter = this.findEmitter(subsToForward[i].emitterCls!);
           if (emitter === null)
-            throw new TypeError(`Unable to find emitter ${subsToForward[i].emitterCls.constructor.name} for subscription ${subsToForward[i].event}.`);
+            throw new TypeError(
+              `Unable to find emitter ${subsToForward[i].emitterCls.constructor.name} for subscription ${subsToForward[i].event}.`
+            );
 
           const sub = subsToForward[i];
           (service._classRef.api as ComponentAPI).forwardSubscription(emitter, {
             ...sub,
-            thisCtx: service._classRef
+            thisCtx: service._classRef,
           });
         }
       }
@@ -454,9 +515,11 @@ export class Container extends utils.EventBus<ContainerEvents> {
    */
   get<TReturn = any>(ref: any): TReturn {
     if (typeof ref === 'string') {
-      return this.components.get(ref)?._classRef as TReturn | undefined
-        ?? this.services.get(ref)?._classRef as TReturn | undefined
-        ?? this.singletons.get(ref)?.$ref as TReturn;
+      return (
+        (this.components.get(ref)?._classRef as TReturn | undefined) ??
+        (this.services.get(ref)?._classRef as TReturn | undefined) ??
+        (this.singletons.get(ref)?.$ref as TReturn)
+      );
     } else if (utils.isObject<any>(ref)) {
       return this.$ref(ref);
     } else {
@@ -488,11 +551,9 @@ export class Container extends utils.EventBus<ContainerEvents> {
    */
   addInjections(target: any) {
     // Add pending injections
-    const injections: PendingInjectDefinition[] = (Reflect.getMetadata(MetadataKeys.PendingInjections, global) ?? []);
+    const injections: PendingInjectDefinition[] = Reflect.getMetadata(MetadataKeys.PendingInjections, global) ?? [];
     const targetCls = target._classRef !== undefined ? target._classRef : target;
-    const shouldInject = injections.filter(inject =>
-      targetCls.constructor === inject.target.constructor
-    );
+    const shouldInject = injections.filter((inject) => targetCls.constructor === inject.target.constructor);
 
     for (const inject of shouldInject) this.inject(targetCls, inject);
   }
@@ -504,17 +565,12 @@ export class Container extends utils.EventBus<ContainerEvents> {
    */
   $ref<TReturn = any>(ref: any): TReturn {
     const $ref = this.#references.get(ref);
-    if ($ref === undefined)
-      throw new TypeError('Reference was not found');
+    if ($ref === undefined) throw new TypeError('Reference was not found');
 
-    if (this.components.has($ref))
-      return this.components.get($ref)!._classRef;
-    else if (this.services.has($ref))
-      return this.services.get($ref)!._classRef;
-    else if (this.singletons.has($ref))
-      return this.singletons.get($ref)!.$ref;
-    else
-      throw new SyntaxError(`Referenced object with ${$ref} was not found`);
+    if (this.components.has($ref)) return this.components.get($ref)!._classRef;
+    else if (this.services.has($ref)) return this.services.get($ref)!._classRef;
+    else if (this.singletons.has($ref)) return this.singletons.get($ref)!.$ref;
+    else throw new SyntaxError(`Referenced object with ${$ref} was not found`);
   }
 
   /**
@@ -532,15 +588,17 @@ export class Container extends utils.EventBus<ContainerEvents> {
       },
 
       enumerable: true,
-      configurable: true
+      configurable: true,
     });
   }
 
   /**
    * Registers a singleton to this [[Container]]
    * @param singleton The singleton to register
+   * @param teardown A teardown function to call when this
+   * singleton is being destroyed.
    */
-  addSingleton(singleton: any) {
+  addSingleton(singleton: any, teardown: (this: Container, singleton: any) => void | Promise<void> = () => void 0) {
     if (isPrimitive(singleton))
       throw new TypeError('Unable to register primitives as singletons (use variables instead)');
 
@@ -548,9 +606,10 @@ export class Container extends utils.EventBus<ContainerEvents> {
     const value = returnFromExport(singleton);
 
     const s: BaseSingleton = {
+      teardown,
       $ref: value,
       type: 'singleton',
-      key: id
+      key: id,
     };
 
     this.emit('debug', `Registered singleton ${singleton.name}`);
@@ -565,28 +624,35 @@ export class Container extends utils.EventBus<ContainerEvents> {
   dispose() {
     for (const component of this.components.values()) {
       // Dispose the component itself
-      (async() => await component._classRef.dispose?.())();
+      (async () => await component._classRef.dispose?.())();
 
       // Dispose all component children
-      for (const child of component.children)
-        (async() => await component._classRef.onChildDispose?.(child))();
+      for (const child of component.children) (async () => await component._classRef.onChildDispose?.(child))();
 
       // Unsubscribes any subscriptions
-      for (const sub of component.subscriptions)
-        sub.dispose();
+      for (const sub of component.subscriptions) sub.dispose();
     }
 
     for (const service of this.services.values()) {
       // Dispose the service itself
-      (async() => await service._classRef.dispose?.())();
+      (async () => await service._classRef.dispose?.())();
 
       // Dispose the service's children (if any)
-      for (const child of service.children)
-        (async() => await service._classRef.onChildDispose?.(child))();
+      for (const child of service.children) (async () => await service._classRef.onChildDispose?.(child))();
 
       // Unsubscribes any subscriptions
-      for (const sub of service.subscriptions)
-        sub.dispose();
+      for (const sub of service.subscriptions) sub.dispose();
+    }
+
+    for (const singleton of this.singletons.values()) {
+      // Destroy the singleton
+      (async () => {
+        try {
+          await singleton.teardown?.call(this, singleton.$ref);
+        } catch (ex) {
+          // preverse async trace
+        }
+      })();
     }
 
     this.components.clear();
@@ -602,7 +668,7 @@ export class Container extends utils.EventBus<ContainerEvents> {
   async addComponent(cls: any, ...args: any[]) {
     const metadata: ReferredObjectDefinition | undefined = Reflect.getMetadata(MetadataKeys.Component, cls);
     if (metadata === undefined)
-      throw new TypeError('Missing @Component decorator (did you construct this class? if so, don\'t)');
+      throw new TypeError("Missing @Component decorator (did you construct this class? if so, don't)");
 
     const component: BaseComponent = {
       subscriptions: [],
@@ -610,7 +676,7 @@ export class Container extends utils.EventBus<ContainerEvents> {
       children: [],
       priority: metadata.priority,
       type: 'component',
-      name: metadata.name
+      name: metadata.name,
     };
 
     component._classRef = new cls(...args);
@@ -623,7 +689,7 @@ export class Container extends utils.EventBus<ContainerEvents> {
     let children: any[] = [];
     if (typeof component.children === 'string') {
       const refs = await utils.readdir(component.children);
-      children = await Promise.all(refs.map(ref => import(ref)));
+      children = await Promise.all(refs.map((ref) => import(ref)));
     } else if (component.children.length > 0) {
       children = component.children;
     }
@@ -643,20 +709,27 @@ export class Container extends utils.EventBus<ContainerEvents> {
       // but components can also.
       const subscriptions: PendingSubscription[] = Reflect.getMetadata(MetadataKeys.Subscription, c) ?? [];
       if (subscriptions.length > 0) {
-        const subsToForward = subscriptions.filter(sub => sub.emitterCls !== undefined);
+        const subsToForward = subscriptions.filter((sub) => sub.emitterCls !== undefined);
 
-        if (subscriptions.filter(sub => sub.emitterCls === undefined).length > 0)
-          this.emit('debug', `Unable to forward ${subscriptions.filter(sub => sub.emitterCls === undefined).length} events due to no emitter class to automate this, please handle them yourself under \`_classRef.onChildLoad(child)\`.`);
+        if (subscriptions.filter((sub) => sub.emitterCls === undefined).length > 0)
+          this.emit(
+            'debug',
+            `Unable to forward ${
+              subscriptions.filter((sub) => sub.emitterCls === undefined).length
+            } events due to no emitter class to automate this, please handle them yourself under \`_classRef.onChildLoad(child)\`.`
+          );
 
         for (let i = 0; i < subsToForward.length; i++) {
           const emitter = this.findEmitter(subsToForward[i].emitterCls!);
           if (emitter === null)
-            throw new TypeError(`Unable to find emitter ${subsToForward[i].emitterCls.constructor.name} for subscription ${subsToForward[i].event}.`);
+            throw new TypeError(
+              `Unable to find emitter ${subsToForward[i].emitterCls.constructor.name} for subscription ${subsToForward[i].event}.`
+            );
 
           const sub = subsToForward[i];
           (component._classRef.api as ServiceAPI).forwardSubscription(emitter, {
             ...sub,
-            thisCtx: c
+            thisCtx: c,
           });
         }
       }
@@ -666,22 +739,30 @@ export class Container extends utils.EventBus<ContainerEvents> {
 
     // It's most likely children classes will have subscriptions
     // but components can also.
-    const subscriptions: PendingSubscription[] = Reflect.getMetadata(MetadataKeys.Subscription, component._classRef) ?? [];
+    const subscriptions: PendingSubscription[] =
+      Reflect.getMetadata(MetadataKeys.Subscription, component._classRef) ?? [];
     if (subscriptions.length > 0) {
-      const subsToForward = subscriptions.filter(sub => sub.emitterCls !== undefined);
+      const subsToForward = subscriptions.filter((sub) => sub.emitterCls !== undefined);
 
-      if (subscriptions.filter(sub => sub.emitterCls === undefined).length > 0)
-        this.emit('debug', `Unable to forward ${subscriptions.filter(sub => sub.emitterCls === undefined).length} events due to no emitter class to automate this, please handle them yourself under \`_classRef.load()\`.`);
+      if (subscriptions.filter((sub) => sub.emitterCls === undefined).length > 0)
+        this.emit(
+          'debug',
+          `Unable to forward ${
+            subscriptions.filter((sub) => sub.emitterCls === undefined).length
+          } events due to no emitter class to automate this, please handle them yourself under \`_classRef.load()\`.`
+        );
 
       for (let i = 0; i < subsToForward.length; i++) {
         const emitter = this.findEmitter(subsToForward[i].emitterCls!);
         if (emitter === null)
-          throw new TypeError(`Unable to find emitter ${subsToForward[i].emitterCls.constructor.name} for subscription ${subsToForward[i].event}.`);
+          throw new TypeError(
+            `Unable to find emitter ${subsToForward[i].emitterCls.constructor.name} for subscription ${subsToForward[i].event}.`
+          );
 
         const sub = subsToForward[i];
         (component._classRef.api as ComponentAPI).forwardSubscription(emitter, {
           ...sub,
-          thisCtx: component._classRef
+          thisCtx: component._classRef,
         });
       }
     }
@@ -698,7 +779,7 @@ export class Container extends utils.EventBus<ContainerEvents> {
   async addService(cls: any, ...args: any[]) {
     const metadata: ReferredObjectDefinition | undefined = Reflect.getMetadata(MetadataKeys.Service, cls);
     if (metadata === undefined)
-      throw new TypeError('Missing @Service decorator (did you construct this class? if so, don\'t)');
+      throw new TypeError("Missing @Service decorator (did you construct this class? if so, don't)");
 
     const service: BaseService = {
       subscriptions: [],
@@ -706,7 +787,7 @@ export class Container extends utils.EventBus<ContainerEvents> {
       children: [],
       priority: metadata.priority,
       type: 'service',
-      name: metadata.name
+      name: metadata.name,
     };
 
     service._classRef = new cls(...args);
@@ -719,7 +800,7 @@ export class Container extends utils.EventBus<ContainerEvents> {
     let children: any[] = [];
     if (typeof service.children === 'string') {
       const refs = await utils.readdir(service.children);
-      children = await Promise.all(refs.map(ref => import(ref)));
+      children = await Promise.all(refs.map((ref) => import(ref)));
     } else if (service.children.length > 0) {
       children = service.children;
     }
@@ -739,20 +820,27 @@ export class Container extends utils.EventBus<ContainerEvents> {
       // but services can also.
       const subscriptions: PendingSubscription[] = Reflect.getMetadata(MetadataKeys.Subscription, c) ?? [];
       if (subscriptions.length > 0) {
-        const subsToForward = subscriptions.filter(sub => sub.emitterCls !== undefined);
+        const subsToForward = subscriptions.filter((sub) => sub.emitterCls !== undefined);
 
-        if (subscriptions.filter(sub => sub.emitterCls === undefined).length > 0)
-          this.emit('debug', `Unable to forward ${subscriptions.filter(sub => sub.emitterCls === undefined).length} events due to no emitter class to automate this, please handle them yourself under \`_classRef.onChildLoad(child)\`.`);
+        if (subscriptions.filter((sub) => sub.emitterCls === undefined).length > 0)
+          this.emit(
+            'debug',
+            `Unable to forward ${
+              subscriptions.filter((sub) => sub.emitterCls === undefined).length
+            } events due to no emitter class to automate this, please handle them yourself under \`_classRef.onChildLoad(child)\`.`
+          );
 
         for (let i = 0; i < subsToForward.length; i++) {
           const emitter = this.findEmitter(subsToForward[i].emitterCls!);
           if (emitter === null)
-            throw new TypeError(`Unable to find emitter ${subsToForward[i].emitterCls.constructor.name} for subscription ${subsToForward[i].event}.`);
+            throw new TypeError(
+              `Unable to find emitter ${subsToForward[i].emitterCls.constructor.name} for subscription ${subsToForward[i].event}.`
+            );
 
           const sub = subsToForward[i];
           (service._classRef.api as ServiceAPI).forwardSubscription(emitter, {
             ...sub,
-            thisCtx: c
+            thisCtx: c,
           });
         }
       }
@@ -762,22 +850,30 @@ export class Container extends utils.EventBus<ContainerEvents> {
 
     // It's most likely children classes will have subscriptions
     // but components can also.
-    const subscriptions: PendingSubscription[] = Reflect.getMetadata(MetadataKeys.Subscription, service._classRef) ?? [];
+    const subscriptions: PendingSubscription[] =
+      Reflect.getMetadata(MetadataKeys.Subscription, service._classRef) ?? [];
     if (subscriptions.length > 0) {
-      const subsToForward = subscriptions.filter(sub => sub.emitterCls !== undefined);
+      const subsToForward = subscriptions.filter((sub) => sub.emitterCls !== undefined);
 
-      if (subscriptions.filter(sub => sub.emitterCls === undefined).length > 0)
-        this.emit('debug', `Unable to forward ${subscriptions.filter(sub => sub.emitterCls === undefined).length} events due to no emitter class to automate this, please handle them yourself under \`_classRef.load()\`.`);
+      if (subscriptions.filter((sub) => sub.emitterCls === undefined).length > 0)
+        this.emit(
+          'debug',
+          `Unable to forward ${
+            subscriptions.filter((sub) => sub.emitterCls === undefined).length
+          } events due to no emitter class to automate this, please handle them yourself under \`_classRef.load()\`.`
+        );
 
       for (let i = 0; i < subsToForward.length; i++) {
         const emitter = this.findEmitter(subsToForward[i].emitterCls!);
         if (emitter === null)
-          throw new TypeError(`Unable to find emitter ${subsToForward[i].emitterCls.constructor.name} for subscription ${subsToForward[i].event}.`);
+          throw new TypeError(
+            `Unable to find emitter ${subsToForward[i].emitterCls.constructor.name} for subscription ${subsToForward[i].event}.`
+          );
 
         const sub = subsToForward[i];
         (service._classRef.api as ServiceAPI).forwardSubscription(emitter, {
           ...sub,
-          thisCtx: service._classRef
+          thisCtx: service._classRef,
         });
       }
     }
@@ -821,5 +917,29 @@ export class Container extends utils.EventBus<ContainerEvents> {
     }
 
     return null;
+  }
+
+  /**
+   * Imports a singleton with a default export, and maybe a `init` / `teardown`
+   * function.
+   *
+   * @param import_ The singleton import, this can also be a function
+   * to lazy-load the import.
+   *
+   * @example
+   * ```js
+   * container.importSingleton(() => import('./my-singleton-here'));
+   * container.importSingleton({ default: <some singleton>, init() {}, teardown() {} });
+   * ```
+   *
+   * @returns This container instance.
+   */
+  async importSingleton<T>(import_: SingletonImport<T> | (() => Promise<SingletonImport<T>> | SingletonImport<T>)) {
+    const singleton = typeof import_ === 'function' ? await import_() : import_;
+    this.addSingleton(singleton.default, singleton.teardown);
+
+    if (singleton.init !== undefined) await singleton.init(this);
+
+    return this;
   }
 }

@@ -49,13 +49,7 @@ export class Subscription {
   #listener: (...args: any[]) => void;
   #emitter: EventEmitterLike;
 
-  constructor({
-    listener,
-    emitter,
-    thisCtx,
-    name,
-    once
-  }: SubscriptionInfo) {
+  constructor({ listener, emitter, thisCtx, name, once }: SubscriptionInfo) {
     this.#subscribedListener = (...args: any[]) => this.#listener.call(thisCtx, ...args);
     this.#listener = listener;
     this.#emitter = emitter;

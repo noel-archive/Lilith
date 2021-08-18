@@ -32,4 +32,4 @@ export * from './types';
 /**
  * Returns the current version of @augu/lilith
  */
-export const version: string = (require('../package.json')).version;
+export const version: string = require('../package.json').version;

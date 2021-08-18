@@ -27,7 +27,7 @@ import { isObject } from '@augu/utils';
 
 export enum EntityType {
   Component = 'component',
-  Service   = 'service'
+  Service = 'service',
 }
 
 export interface EventEmitterLike {
@@ -38,10 +38,9 @@ export interface EventEmitterLike {
 }
 
 function isEventEmitterLike(value: unknown): value is EventEmitterLike {
-  return isObject<EventEmitterLike>(value) && (
-    typeof value.addListener === 'function' ||
-    typeof value.once === 'function' ||
-    typeof value.on === 'function'
+  return (
+    isObject<EventEmitterLike>(value) &&
+    (typeof value.addListener === 'function' || typeof value.once === 'function' || typeof value.on === 'function')
   );
 }
 
@@ -72,8 +71,7 @@ export class SharedAPI {
   constructor(container: Container) {
     this.container = container;
 
-    if (!SharedAPI._instance)
-      SharedAPI._instance = this;
+    if (!SharedAPI._instance) SharedAPI._instance = this;
   }
 
   /**
@@ -110,8 +108,7 @@ export class SharedAPI {
    * @throws {TypeError}: If the component couldn't be found.
    */
   getComponent(name: string) {
-    if (!this.container.components.has(name))
-      throw new TypeError(`Unable to find component with name ${name}.`);
+    if (!this.container.components.has(name)) throw new TypeError(`Unable to find component with name ${name}.`);
 
     return this.container.components.get(name)!;
   }
@@ -122,8 +119,7 @@ export class SharedAPI {
    * @throws {TypeError}: If the service couldn't be found.
    */
   getService(name: string) {
-    if (!this.container.services.has(name))
-      throw new TypeError(`Unable to find service with name ${name}.`);
+    if (!this.container.services.has(name)) throw new TypeError(`Unable to find service with name ${name}.`);
 
     return this.container.services.get(name)!;
   }
@@ -138,20 +134,22 @@ export class SharedAPI {
    * @param thisCtx The `this` context to use for the listener function
    * @param once If this event should be emitted once and unsubscribed after it's called.
    */
-  addSubscription<
-    E extends EventEmitterLike,
-    Events = {},
-    K extends keyof Events = keyof Events
-  >(emitter: E, name: K, listener: Events[K], thisCtx: any, once: boolean = false) {
+  addSubscription<E extends EventEmitterLike, Events = {}, K extends keyof Events = keyof Events>(
+    emitter: E,
+    name: K,
+    listener: Events[K],
+    thisCtx: any,
+    once: boolean = false
+  ) {
     if (!isEventEmitterLike(emitter))
-      throw new TypeError('EventEmitter passed didn\'t have the following functions: `addListener`, `on`, or `once`.');
+      throw new TypeError("EventEmitter passed didn't have the following functions: `addListener`, `on`, or `once`.");
 
     const subscription = new Subscription({
       listener: listener as any,
       emitter,
       thisCtx,
       name: name as string,
-      once
+      once,
     });
 
     this.entity.subscriptions.push(subscription);
@@ -168,19 +166,21 @@ export class SharedAPI {
    */
   forwardSubscriptions<E extends EventEmitterLike>(emitter: E, childClass: any) {
     if (!isEventEmitterLike(emitter))
-      throw new TypeError('EventEmitter passed didn\'t have the following functions: `addListener`, `on`, or `once`.');
+      throw new TypeError("EventEmitter passed didn't have the following functions: `addListener`, `on`, or `once`.");
 
     const subscriptions: PendingSubscription[] = Reflect.getMetadata(MetadataKeys.Subscription, childClass) ?? [];
-    const subs = subscriptions.map(sub => new Subscription({
-      listener: sub.listener,
-      thisCtx: childClass,
-      emitter,
-      name: sub.event,
-      once: sub.once
-    }));
+    const subs = subscriptions.map(
+      (sub) =>
+        new Subscription({
+          listener: sub.listener,
+          thisCtx: childClass,
+          emitter,
+          name: sub.event,
+          once: sub.once,
+        })
+    );
 
-    for (const sub of subs)
-      sub.subscribe();
+    for (const sub of subs) sub.subscribe();
 
     this.entity.subscriptions = this.entity.subscriptions.concat(subs);
   }
@@ -192,16 +192,16 @@ export class SharedAPI {
    * @param emitter The emitter to use
    * @param sub The pending subscription to use
    */
-  forwardSubscription<E extends EventEmitterLike>(emitter: E, subscription: PendingSubscription & { thisCtx: any; }) {
+  forwardSubscription<E extends EventEmitterLike>(emitter: E, subscription: PendingSubscription & { thisCtx: any }) {
     if (!isEventEmitterLike(emitter))
-      throw new TypeError('EventEmitter passed didn\'t have the following functions: `addListener`, `on`, or `once`.');
+      throw new TypeError("EventEmitter passed didn't have the following functions: `addListener`, `on`, or `once`.");
 
     const sub = new Subscription({
       listener: subscription.listener,
       emitter,
       thisCtx: subscription.thisCtx,
       name: subscription.event,
-      once: subscription.once
+      once: subscription.once,
     });
 
     this.entity.subscriptions.push(sub);

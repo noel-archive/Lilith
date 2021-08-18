@@ -53,11 +53,15 @@ export function Service({ name, priority, children }: ServiceOptions): ClassDeco
         throw new TypeError('Service children should be an Array of injectables or an absolute path');
     }
 
-    Reflect.defineMetadata(MetadataKeys.Service, (<ReferredObjectDefinition> {
-      priority,
-      children,
-      type: 'service',
-      name
-    }), target);
+    Reflect.defineMetadata(
+      MetadataKeys.Service,
+      <ReferredObjectDefinition>{
+        priority,
+        children,
+        type: 'service',
+        name,
+      },
+      target
+    );
   };
 }

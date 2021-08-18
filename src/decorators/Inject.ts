@@ -27,14 +27,13 @@ import { PendingInjectDefinition, MetadataKeys } from '../types';
  */
 export const Inject: PropertyDecorator = (target: any, prop) => {
   const $ref = Reflect.getMetadata('design:type', target, prop);
-  if ($ref === undefined)
-    throw new TypeError(`Inferred reference for property ${String(prop)} was not found`);
+  if ($ref === undefined) throw new TypeError(`Inferred reference for property ${String(prop)} was not found`);
 
   const pending: PendingInjectDefinition[] = Reflect.getMetadata(MetadataKeys.PendingInjections, global) ?? [];
   pending.push({
     target,
     prop,
-    $ref
+    $ref,
   });
 
   Reflect.defineMetadata(MetadataKeys.PendingInjections, pending, global);

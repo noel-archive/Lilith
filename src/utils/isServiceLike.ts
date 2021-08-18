@@ -28,9 +28,5 @@ import utils from '@augu/utils';
  * @param value The value to use
  */
 export function isServiceLike(value: unknown): value is BaseService {
-  return (
-    utils.isObject<BaseService>(value) &&
-    typeof value.type === 'string' &&
-    value.type === 'service'
-  );
+  return utils.isObject<BaseService>(value) && typeof value.type === 'string' && value.type === 'service';
 }

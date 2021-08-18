@@ -21,13 +21,12 @@
  */
 
 import type { Subscription } from './Subscription';
+import type { Container } from '.';
 
 /**
  * Type alias to represented the return value of `require()` or `import()`
  */
-export type ImportedDefaultExport<T> = T extends { default: infer P }
-  ? P
-  : T;
+export type ImportedDefaultExport<T> = T extends { default: infer P } ? P : T;
 
 /**
  * Represents a base component; typed for [[Application.components]].
@@ -57,7 +56,7 @@ export interface BaseComponent {
    */
   name: string;
 
-   /**
+  /**
    * The priority of this [[BaseComponent]]
    */
   priority: number;
@@ -102,11 +101,11 @@ export interface BaseService {
  */
 export const enum MetadataKeys {
   PendingInjections = '$lilith::api::injections::pending',
-  Subscription      = '$lilith::api::subscription',
-  Injectable        = '$lilith::api::injectables',
-  Variable          = '$lilith::api::variable',
-  Component         = '$lilith::api::component',
-  Service           = '$lilith::api::service'
+  Subscription = '$lilith::api::subscription',
+  Injectable = '$lilith::api::injectables',
+  Variable = '$lilith::api::variable',
+  Component = '$lilith::api::component',
+  Service = '$lilith::api::service',
 }
 
 /**
@@ -161,6 +160,11 @@ export interface ReferredObjectDefinition {
  * Represents a singleton that is registered into Lilith
  */
 export interface BaseSingleton {
+  /**
+   * Function to teardown this singleton, if any
+   */
+  teardown?(this: Container, singleton: any): void | Promise<void>;
+
   /**
    * The reference to the singleton itself
    */

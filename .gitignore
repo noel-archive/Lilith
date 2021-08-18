@@ -4,5 +4,4 @@ node_modules/
 .idea/
 build/
 
-*.lock
 *.log

@@ -33,7 +33,6 @@ export function isPrimitive(value: unknown) {
     typeof value === 'function' ||
     typeof value === 'number' ||
     typeof value === 'symbol' ||
-    typeof value === 'bigint' &&
-    utils.isObject(value)
+    (typeof value === 'bigint' && utils.isObject(value))
   );
 }

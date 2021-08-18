@@ -56,11 +56,15 @@ export function Component({ name, priority, children }: ComponentOptions): Class
         throw new TypeError('Component children should be an Array of injectables or an absolute path');
     }
 
-    Reflect.defineMetadata(MetadataKeys.Component, (<ReferredObjectDefinition> {
-      priority,
-      children,
-      type: 'component',
-      name
-    }), target);
+    Reflect.defineMetadata(
+      MetadataKeys.Component,
+      <ReferredObjectDefinition>{
+        priority,
+        children,
+        type: 'component',
+        name,
+      },
+      target
+    );
   };
 }

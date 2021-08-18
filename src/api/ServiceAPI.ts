@@ -26,15 +26,15 @@ import type { Container } from '../Container';
 
 export class ServiceAPI extends SharedAPI {
   /** {@inheritdoc SharedAPI.entity} */
-  declare public entity: BaseService;
+  public declare entity: BaseService;
 
   /** {@inheritdoc SharedAPI.type} */
-  declare public type: EntityType.Service;
+  public declare type: EntityType.Service;
 
   constructor(container: Container, entity: BaseService) {
     super(container);
 
     this.entity = entity;
-    this.type   = EntityType.Service;
+    this.type = EntityType.Service;
   }
 }
