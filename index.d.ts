@@ -203,7 +203,7 @@ declare namespace lilith {
      *
      * @returns This container instance.
      */
-    public importSingleton<T>(import_: lilith.SingletonImport<T> | (() => lilith.SingletonImport<T>)): Promise<this>;
+    public importSingleton(import_: any | (() => any)): Promise<this>;
   }
 
   /**
@@ -399,6 +399,17 @@ declare namespace lilith {
    * and popped off after emittion.
    */
   export function Subscribe(event: string, options?: SubscriptionOptions): MethodDecorator;
+
+  /**
+   * Returns the container in a React-hook fashion.
+   */
+  export function useContainer(): Container;
+
+  /**
+   * Returns the component or service API.
+   * @param name The name of the component / service
+   */
+  export function useApi<T extends lilith.SharedAPI>(name: string): T | undefined;
 
   // ~ Enums ~
   export enum EntityType {

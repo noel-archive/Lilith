@@ -29,6 +29,7 @@ import {
   ReferredObjectDefinition,
   PendingSubscription,
 } from './types';
+
 import { returnFromExport, isPrimitive } from './utils';
 import type { EventEmitterLike } from './api/SharedAPI';
 import { ComponentAPI } from './api/ComponentAPI';
@@ -934,10 +935,11 @@ export class Container extends utils.EventBus<ContainerEvents> {
    *
    * @returns This container instance.
    */
-  async importSingleton<T>(import_: SingletonImport<T> | (() => Promise<SingletonImport<T>> | SingletonImport<T>)) {
-    const singleton = typeof import_ === 'function' ? await import_() : import_;
-    this.addSingleton(singleton.default, singleton.teardown);
+  async importSingleton<T extends SingletonImport<any>>(import_: any | (() => any)) {
+    if (!import_.default) throw new TypeError('Missing `default` export!');
 
+    const singleton = (typeof import_ === 'function' ? await import_() : import_) as T;
+    this.addSingleton(singleton.default, singleton.teardown);
     if (singleton.init !== undefined) await singleton.init(this);
 
     return this;

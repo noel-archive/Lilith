@@ -1,16 +1,24 @@
 {
   "name": "@augu/lilith",
   "description": "🧵 Simple application framework made in TypeScript (made for personal usage)",
-  "version": "5.1.0",
-  "main": "build/index.js",
+  "version": "5.2.0",
+  "main": "dist/lilith.cjs",
   "license": "MIT",
   "author": "Chris \"August\" Hernandez <cutie@floofy.dev>",
   "repository": "https://github.com/Noelware/Lilith",
   "bugs": "https://github.com/Noelware/Lilith/issues",
   "types": "index.d.ts",
-  "homepage": "https://lilith.floofy.dev",
+  "exports": {
+    "./": [
+      "./*"
+    ],
+    ".": {
+      "require": "./dist/lilith.cjs",
+      "import": "./dist/lilith.mjs"
+    }
+  },
   "files": [
-    "build/",
+    "dist/",
     "index.d.ts"
   ],
   "funding": {
@@ -21,9 +29,9 @@
   },
   "scripts": {
     "clean:node_modules": "rmdir /S /Q node_modules/@types/**/node_modules && rmdir /S /Q node_modules/@augu/**/node_modules",
-    "prepare": "yarn build && yarn docs",
+    "prepare": "yarn build",
     "format": "prettier --config ./.prettierrc.json --parser typescript --write src/**/*.ts",
-    "build": "yarn lint && yarn format && rmdir /S /Q build && tsc",
+    "build": "yarn lint && yarn format && rimraf dist && node scripts/build.js && gen-esm-wrapper dist/lilith.cjs dist/lilith.mjs && tsc",
     "lint": "eslint src --ext .ts --fix",
     "docs": "typedoc --out ./docs --theme minimal && echo lilith.floofy.dev >> docs/CNAME"
   },
@@ -35,14 +43,18 @@
   "devDependencies": {
     "@augu/eslint-config": "2.2.0",
     "@augu/tsconfig": "1.1.1",
-    "@types/node": "14.17.9",
+    "@types/node": "16.6.2",
     "@typescript-eslint/eslint-plugin": "4.29.2",
     "@typescript-eslint/parser": "4.29.2",
+    "esbuild": "0.12.20",
     "eslint": "7.32.0",
-    "eslint-config-prettier": "^8.3.0",
-    "eslint-plugin-prettier": "^3.4.0",
+    "eslint-config-prettier": "8.3.0",
+    "eslint-plugin-prettier": "3.4.0",
+    "gen-esm-wrapper": "1.1.2",
     "husky": "7.0.1",
-    "prettier": "^2.3.2",
+    "leeks.js": "0.2.2",
+    "prettier": "2.3.2",
+    "rimraf": "3.0.2",
     "typedoc": "0.21.5",
     "typescript": "4.3.5"
   }

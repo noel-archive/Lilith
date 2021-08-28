@@ -22,14 +22,30 @@
 
 import 'reflect-metadata';
 
+import type { SharedAPI } from './api/SharedAPI';
+import { Container } from './Container';
+
 export * from './api/ComponentAPI';
 export * from './api/ServiceAPI';
 export * as utils from './utils';
 export * from './decorators';
-export * from './Container';
 export * from './types';
+export { Container };
 
 /**
  * Returns the current version of @augu/lilith
  */
 export const version: string = require('../package.json').version;
+
+/**
+ * Component hook to return the container like a React hook!
+ * @returns The {@link Container} instance.
+ */
+export const useContainer = () => Container.instance;
+
+/**
+ * Component hook to return the shared API between a component or service.
+ * @param name The name of the component / service
+ * @returns `T` or undefined if the component/service wasn't found.
+ */
+export const useApi = <T extends SharedAPI>(name: string): T | undefined => Container.instance.get(name).api;
