@@ -28,7 +28,7 @@
     "node": ">=14"
   },
   "scripts": {
-    "clean:node_modules": "rmdir /S /Q node_modules/@types/**/node_modules && rmdir /S /Q node_modules/@augu/**/node_modules",
+    "clean:node_modules": "rimraf node_modules/@types/**/node_modules && rimraf node_modules/@augu/**/node_modules",
     "prepare": "yarn build",
     "format": "prettier --config ./.prettierrc.json --parser typescript --write src/**/*.ts",
     "build": "yarn lint && yarn format && rimraf dist && node scripts/build.js && gen-esm-wrapper dist/lilith.cjs dist/lilith.mjs && tsc",
