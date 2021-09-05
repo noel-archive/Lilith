@@ -1,7 +1,7 @@
 {
   "name": "@augu/lilith",
   "description": "🧵 Simple application framework made in TypeScript (made for personal usage)",
-  "version": "5.2.0",
+  "version": "5.3.0",
   "main": "dist/lilith.cjs",
   "license": "MIT",
   "author": "Chris \"August\" Hernandez <cutie@floofy.dev>",
@@ -10,7 +10,7 @@
   "types": "index.d.ts",
   "exports": {
     "./": [
-      "./*"
+      "./dist/*"
     ],
     ".": {
       "require": "./dist/lilith.cjs",

@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2021 August
+ * Copyright (c) 2021 Noelware
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -48,4 +48,4 @@ export const useContainer = () => Container.instance;
  * @param name The name of the component / service
  * @returns `T` or undefined if the component/service wasn't found.
  */
-export const useApi = <T extends SharedAPI>(name: string): T | undefined => Container.instance.get(name).api;
+export const useApi = <T extends SharedAPI>(name: string): T | undefined => Container.instance.get(name)?.api;

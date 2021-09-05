@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2021 August
+ * Copyright (c) 2021 Noelware
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -33,6 +33,7 @@ export function isPrimitive(value: unknown) {
     typeof value === 'function' ||
     typeof value === 'number' ||
     typeof value === 'symbol' ||
-    (typeof value === 'bigint' && utils.isObject(value))
+    typeof value === 'bigint' ||
+    !utils.isObject(value)
   );
 }

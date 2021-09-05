@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2021 August
+ * Copyright (c) 2021 Noelware
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -112,6 +112,16 @@ export const enum MetadataKeys {
  * Represents the pending injections from all classes
  */
 export interface PendingInjectDefinition {
+  /**
+   * If this belongs in a constructor/function parameter.
+   */
+  isParam: boolean;
+
+  /**
+   * Returns the index if {@link PendingInjectDefinition.isParam} is true.
+   */
+  index?: number;
+
   /**
    * The target class
    */

@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2021 August
+ * Copyright (c) 2021 Noelware
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -20,7 +20,7 @@
  * SOFTWARE.
  */
 
-import { PendingInjectDefinition, MetadataKeys } from '../types';
+import { PendingInjectDefinition, MetadataKeys } from '../../types';
 
 /**
  * Decorator to inject a component, service, or singleton into
@@ -31,6 +31,7 @@ export const Inject: PropertyDecorator = (target: any, prop) => {
 
   const pending: PendingInjectDefinition[] = Reflect.getMetadata(MetadataKeys.PendingInjections, global) ?? [];
   pending.push({
+    isParam: false,
     target,
     prop,
     $ref,
