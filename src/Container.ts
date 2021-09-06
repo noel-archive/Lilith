@@ -98,6 +98,11 @@ interface ContainerEvents {
    * @param message The message
    */
   debug(message: string): void;
+
+  /**
+   * Emitted when the pre-load initialization is complete.
+   */
+  loaded(): void;
 }
 
 /**
@@ -180,6 +185,7 @@ export class Container extends utils.EventBus<ContainerEvents> {
   #componentsDir?: string;
   #servicesDir?: string;
   #references: Collection<any, string>;
+  #options?: ContainerOptions;
 
   /**
    * Represents a "container" of components, singletons, and services. This is the main
@@ -193,26 +199,10 @@ export class Container extends utils.EventBus<ContainerEvents> {
     this.#componentsDir = options?.componentsDir;
     this.#servicesDir = options?.servicesDir;
     this.#references = new Collection();
+    this.#options = options;
 
     if (!Container._instance) Container._instance = this;
-
-    const singletons = options?.singletons ?? [];
-    for (let i = 0; i < singletons.length; i++) {
-      if (isPrimitive(singletons[i]))
-        throw new TypeError(`Cannot register singleton ${singletons[i]}. It is a primitive value.`);
-
-      this.addSingleton(singletons[i]);
-    }
-
-    const components = options?.components ?? [];
-    for (let i = 0; i < components.length; i++) {
-      this.addComponent(components[i]);
-    }
-
-    const services = options?.services ?? [];
-    for (let i = 0; i < services.length; i++) {
-      this.addService(services[i]);
-    }
+    this._preInit().then(() => this.emit('loaded'));
   }
 
   /**
@@ -228,6 +218,34 @@ export class Container extends utils.EventBus<ContainerEvents> {
    */
   static get instance() {
     return this._instance;
+  }
+
+  private async _preInit() {
+    const singletons = this.#options?.singletons ?? [];
+    for (let i = 0; i < singletons.length; i++) {
+      if (isPrimitive(singletons[i]))
+        throw new TypeError(`Cannot register singleton ${singletons[i]}. It is a primitive value.`);
+
+      if (typeof singletons[i] === 'function') {
+        const s = await singletons[i]();
+        this.addSingleton(s.default, s.teardown);
+
+        if (s.init !== undefined) await s.init.call(this);
+        continue;
+      }
+
+      this.addSingleton(singletons[i]);
+    }
+
+    const components = this.#options?.components ?? [];
+    for (let i = 0; i < components.length; i++) {
+      this.addComponent(components[i]);
+    }
+
+    const services = this.#options?.services ?? [];
+    for (let i = 0; i < services.length; i++) {
+      this.addService(services[i]);
+    }
   }
 
   /**
