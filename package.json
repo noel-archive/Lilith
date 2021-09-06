@@ -1,25 +1,16 @@
 {
   "name": "@augu/lilith",
   "description": "🧵 Simple application framework made in TypeScript (made for personal usage)",
-  "version": "5.3.1",
-  "main": "dist/lilith.cjs",
+  "version": "5.3.2",
+  "main": "build/index.js",
   "license": "MIT",
   "author": "Chris \"August\" Hernandez <cutie@floofy.dev>",
   "repository": "https://github.com/Noelware/Lilith",
   "bugs": "https://github.com/Noelware/Lilith/issues",
   "homepage": "https://lilith.floofy.dev",
   "types": "index.d.ts",
-  "exports": {
-    "./": [
-      "./dist/*"
-    ],
-    ".": {
-      "require": "./dist/lilith.cjs",
-      "import": "./dist/lilith.mjs"
-    }
-  },
   "files": [
-    "dist/",
+    "build/",
     "index.d.ts"
   ],
   "funding": {
@@ -32,7 +23,7 @@
     "clean:node_modules": "rimraf node_modules/@types/**/node_modules && rimraf node_modules/@augu/**/node_modules",
     "prepare": "yarn clean:node_modules && yarn build",
     "format": "prettier --config ./.prettierrc.json --parser typescript --write src/**/*.ts",
-    "build": "yarn lint && yarn format && rimraf dist && node scripts/build.js && gen-esm-wrapper dist/lilith.cjs dist/lilith.mjs && tsc",
+    "build": "yarn lint && yarn format && rimraf build && tsc",
     "lint": "eslint src --ext .ts --fix",
     "docs": "typedoc --out ./docs --theme minimal && echo lilith.floofy.dev >> docs/CNAME"
   },
