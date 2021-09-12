@@ -2,10 +2,10 @@
 # yarn lockfile v1
 
 
-"@augu/collections@1.0.12":
-  version "1.0.12"
-  resolved "https://registry.yarnpkg.com/@augu/collections/-/collections-1.0.12.tgz#6682bdafbf30ad1071f8335ddcfcfd5fc0517202"
-  integrity sha512-bs+NT4q2t6krJZt6CWn8OCFLGD4fidDnGCTYmnbD5atmOTU2pBUKYqg0QsdZK2vk7+B+mL1ydTj+2Wc7eV43BQ==
+"@augu/collections@1.1.0":
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/@augu/collections/-/collections-1.1.0.tgz#afa7a75fb397e94f7fc3c06c68a41ccf95fa3d9d"
+  integrity sha512-WEh0NYdKtmcJEZt3jf2PUGtb9Q5/taNaQmlVTIkFi9up7HNRX3uyGS61zwEHOEwPgUXxO1iDsjLwTKz2q1RqOw==
 
 "@augu/eslint-config@2.2.0":
   version "2.2.0"
