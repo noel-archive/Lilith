@@ -25,7 +25,7 @@
     "format": "prettier --config ./.prettierrc.json --parser typescript --write src/**/*.ts",
     "build": "yarn lint && yarn format && rimraf build && tsc",
     "lint": "eslint src --ext .ts --fix",
-    "docs": "typedoc --out ./docs --theme minimal && echo lilith.floofy.dev >> docs/CNAME"
+    "docs": "typedoc --out ./docs && echo lilith.floofy.dev >> docs/CNAME"
   },
   "dependencies": {
     "@augu/collections": "1.0.12",
