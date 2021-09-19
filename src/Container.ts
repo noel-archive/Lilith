@@ -360,6 +360,7 @@ export class Container extends utils.EventBus<ContainerEvents> {
 
       children = children.map(returnFromExport);
       for (let i = 0; i < children.length; i++) {
+        const isLastChild = i === children.length - 1;
         const child = children[i];
         const c = new child();
         this.addInjections(c);
@@ -367,7 +368,7 @@ export class Container extends utils.EventBus<ContainerEvents> {
         c.parent = component._classRef;
 
         this.emit('onBeforeChildInit', component, c);
-        await component._classRef.onChildLoad?.(c);
+        await component._classRef.onChildLoad?.(c, isLastChild);
         this.emit('onAfterChildInit', component, c);
 
         // It's most likely children classes will have subscriptions
@@ -406,6 +407,7 @@ export class Container extends utils.EventBus<ContainerEvents> {
       // but components can also.
       const subscriptions: PendingSubscription[] =
         Reflect.getMetadata(MetadataKeys.Subscription, component._classRef) ?? [];
+
       if (subscriptions.length > 0) {
         const subsToForward = subscriptions.filter((sub) => sub.emitterCls !== undefined);
 
@@ -449,6 +451,7 @@ export class Container extends utils.EventBus<ContainerEvents> {
 
       children = children.map(returnFromExport);
       for (let i = 0; i < children.length; i++) {
+        const isLastChild = i === children.length - 1;
         const child = children[i];
         const c = new child();
         this.addInjections(c);
@@ -456,7 +459,7 @@ export class Container extends utils.EventBus<ContainerEvents> {
         c.parent = service._classRef;
 
         this.emit('onBeforeChildInit', service, c);
-        await service._classRef.onChildLoad?.(c);
+        await service._classRef.onChildLoad?.(c, isLastChild);
         this.emit('onAfterChildInit', service, c);
 
         // It's most likely children classes will have subscriptions

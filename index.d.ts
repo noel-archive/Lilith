@@ -405,12 +405,6 @@ declare namespace lilith {
    */
   export function useContainer(): Container;
 
-  /**
-   * Returns the component or service API.
-   * @param name The name of the component / service
-   */
-  export function useApi<T extends lilith.SharedAPI>(name: string): T | undefined;
-
   // ~ Enums ~
   export enum EntityType {
     Component = 'component',
@@ -439,8 +433,10 @@ declare namespace lilith {
      *
      * @param child The child object that was received from the parent component / services'
      * `children` property.
+     *
+     * @param isLastChild If the child object is the last child in the tree.
      */
-    onChildLoad?(child: C): void;
+    onChildLoad?(child: C, isLastChild: boolean): void;
 
     /**
      * Called when [Container.dispose] is called. This disposes

@@ -42,10 +42,3 @@ export const version: string = require('../package.json').version;
  * @returns The {@link Container} instance.
  */
 export const useContainer = () => Container.instance;
-
-/**
- * Component hook to return the shared API between a component or service.
- * @param name The name of the component / service
- * @returns `T` or undefined if the component/service wasn't found.
- */
-export const useApi = <T extends SharedAPI>(name: string): T | undefined => Container.instance.get(name)?.api;
