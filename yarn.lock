@@ -832,10 +832,10 @@ jsonc-parser@^3.0.0:
   resolved "https://registry.yarnpkg.com/jsonc-parser/-/jsonc-parser-3.0.0.tgz#abdd785701c7e7eaca8a9ec8cf070ca51a745a22"
   integrity sha512-fQzRfAbIBnR0IQvftw9FJveWiHp72Fg20giDrHz6TdfB12UH/uue0D3hm57UB5KgAVuniLMCaS8P1IMj9NR7cA==
 
-leeks.js@0.2.2:
-  version "0.2.2"
-  resolved "https://registry.yarnpkg.com/leeks.js/-/leeks.js-0.2.2.tgz#2e8aeb2cc42faaa2ce1c2e1b1c35e5ed80888143"
-  integrity sha512-cXbDc4a0ft0pQwN2ubagjsT1xKBeW0CP6pPmbUo+KvKynFwaqtGaBjdtpwkBO5NdwSw2OcJ89BYe9mjeZEfzQQ==
+leeks.js@0.2.3:
+  version "0.2.3"
+  resolved "https://registry.yarnpkg.com/leeks.js/-/leeks.js-0.2.3.tgz#141d4d2e79ada03b60b8e90b113f506a918cf80d"
+  integrity sha512-0b59OSCNLuFDxcapKJgpI7HnxayYNTCDjwFWu7BhTGk1hKpRL/6SDyqfI1D4sQGUd14l0oegNP1Ry2VaU9hUYg==
 
 levn@^0.4.1:
   version "0.4.1"
