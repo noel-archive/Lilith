@@ -38,7 +38,7 @@
     "@types/node": "16.6.2",
     "@typescript-eslint/eslint-plugin": "4.31.2",
     "@typescript-eslint/parser": "4.31.2",
-    "esbuild": "0.12.28",
+    "esbuild": "0.12.29",
     "eslint": "7.32.0",
     "eslint-config-prettier": "8.3.0",
     "eslint-plugin-prettier": "4.0.0",
