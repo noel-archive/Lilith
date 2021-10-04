@@ -538,21 +538,7 @@ export class Container extends utils.EventBus<ContainerEvents> {
       const injectable = injectables[i];
       this.emit('debug', `Found injectable ${injectable.$ref.name} to construct!`);
 
-      // Find a list of @Inject decorators
-      const pendingInjections: PendingInjectDefinition[] =
-        Reflect.getMetadata(MetadataKeys.PendingInjections, global) ?? [];
-
-      const shouldInject = pendingInjections
-        .filter((injector) => injector.$ref.constructor && injector.isParam)
-        .sort((a, b) => a.index! - b.index!);
-
-      const paramTree: any[] = [];
-      for (let j = 0; j < shouldInject.length; j++) {
-        const ref = this.$ref(shouldInject[j].$ref);
-        paramTree.push(ref);
-      }
-
-      const instance = new injectable.$ref(...paramTree);
+      const instance = new injectable.$ref();
       instance.api = new InjectableAPI(this, {
         ...injectable,
         $ref: instance,
@@ -659,6 +645,7 @@ export class Container extends utils.EventBus<ContainerEvents> {
     if (this.components.has($ref)) return this.components.get($ref)!._classRef;
     else if (this.services.has($ref)) return this.services.get($ref)!._classRef;
     else if (this.singletons.has($ref)) return this.singletons.get($ref)!.$ref;
+    else if (this.injectables.has($ref)) return this.injectables.get($ref)!.$ref;
     else throw new SyntaxError(`Referenced object with ${$ref} was not found`);
   }
 
@@ -758,25 +745,11 @@ export class Container extends utils.EventBus<ContainerEvents> {
   addInjectable<T = any>(instance: T | Ctor<T>) {
     if (isPrimitive(instance)) throw new Error('Primitives are not supported in the injectable system.');
 
-    // Find a list of @Inject decorators
-    const pendingInjections: PendingInjectDefinition[] =
-      Reflect.getMetadata(MetadataKeys.PendingInjections, global) ?? [];
-
-    const shouldInject = pendingInjections
-      .filter((injector) => injector.$ref.constructor && injector.isParam)
-      .sort((a, b) => a.index! - b.index!);
-
-    const paramTree: any[] = [];
-    for (let j = 0; j < shouldInject.length; j++) {
-      const ref = this.$ref(shouldInject[j].$ref);
-      paramTree.push(ref);
-    }
-
     const injectable =
       instance instanceof Function
         ? instance.default !== undefined
-          ? new instance.default(...paramTree)
-          : new instance(...paramTree)
+          ? new instance.default()
+          : new instance()
         : instance;
 
     const randomId = randomBytes(4).toString('hex');
@@ -795,7 +768,7 @@ export class Container extends utils.EventBus<ContainerEvents> {
     this.references.set(instance, randomId);
 
     // Injectables might have subscriptions to implement!
-    const subscriptions: PendingSubscription[] = Reflect.getMetadata(MetadataKeys.Subscription, injectable);
+    const subscriptions: PendingSubscription[] = Reflect.getMetadata(MetadataKeys.Subscription, injectable) ?? [];
     if (subscriptions.length > 0) {
       const forward = subscriptions.filter((sub) => sub.emitterCls !== undefined);
       const cannotForward = subscriptions.filter((sub) => sub.emitterCls === undefined);

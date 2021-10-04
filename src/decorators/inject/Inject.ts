@@ -25,11 +25,7 @@ import { PendingInjectDefinition, MetadataKeys } from '../../types';
 /**
  * Decorator to inject a component, service, or singleton into
  */
-export const Inject: PropertyDecorator | ParameterDecorator = (
-  target: any,
-  prop: string | symbol,
-  paramIndex?: number
-) => {
+export const Inject: PropertyDecorator = (target: any, prop: string | symbol, paramIndex?: number) => {
   const $ref = Reflect.getMetadata('design:type', target, prop);
   if ($ref === undefined) throw new TypeError(`Inferred reference for property ${String(prop)} was not found`);
 
