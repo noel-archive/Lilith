@@ -237,3 +237,24 @@ export interface PendingSubscription {
   target: any;
   prop: string | symbol;
 }
+
+/**
+ * Represents a base object of the `@Injectable` decorator.
+ */
+export interface BaseInjectable {
+  /**
+   * Returns the reference of the injectable.
+   */
+  $ref: any;
+
+  /**
+   * Returns the type this object is, it'll always be
+   * `'injectable'`.
+   */
+  type: 'injectable';
+
+  /**
+   * List of subscriptions managed by this service.
+   */
+  subscriptions: Subscription[];
+}

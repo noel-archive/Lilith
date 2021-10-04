@@ -1,0 +1,10 @@
+{
+  "extends": "@augu/tsconfig",
+  "compilerOptions": {
+    "moduleResolution": "node",
+    "types": ["node", "@types/jest"],
+    "noEmit": true // ts-jest compiles them and type-checks for us
+  },
+  "include": ["tests/**/*.ts"],
+  "exclude": ["node_modules", "src/**/*.ts"]
+}

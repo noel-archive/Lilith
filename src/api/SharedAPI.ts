@@ -24,10 +24,12 @@ import { BaseComponent, BaseService, MetadataKeys, PendingSubscription } from '.
 import type { Container } from '../Container';
 import { Subscription } from '../Subscription';
 import { isObject } from '@augu/utils';
+import { BaseInjectable } from '..';
 
 export enum EntityType {
   Component = 'component',
   Service = 'service',
+  Injectable = 'injectable',
 }
 
 export interface EventEmitterLike {
@@ -61,7 +63,7 @@ export class SharedAPI {
   /**
    * Represents the entity itself
    */
-  public entity!: BaseComponent | BaseService;
+  public entity!: BaseComponent | BaseService | BaseInjectable;
 
   /**
    * The shared API type

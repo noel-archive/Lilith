@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2021 Noelware
+ * Copyright (c) 2021 August
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -20,27 +20,21 @@
  * SOFTWARE.
  */
 
-import { PendingInjectDefinition, MetadataKeys } from '../../types';
+import { SharedAPI, EntityType } from './SharedAPI';
+import type { Container } from '../Container';
+import type { BaseInjectable } from '../types';
 
-/**
- * Decorator to inject a component, service, or singleton into
- */
-export const Inject: PropertyDecorator | ParameterDecorator = (
-  target: any,
-  prop: string | symbol,
-  paramIndex?: number
-) => {
-  const $ref = Reflect.getMetadata('design:type', target, prop);
-  if ($ref === undefined) throw new TypeError(`Inferred reference for property ${String(prop)} was not found`);
+export class InjectableAPI extends SharedAPI {
+  /** {@inheritdoc SharedAPI.entity} */
+  public declare entity: BaseInjectable;
 
-  const pending: PendingInjectDefinition[] = Reflect.getMetadata(MetadataKeys.PendingInjections, global) ?? [];
-  pending.push({
-    isParam: paramIndex !== undefined,
-    index: paramIndex,
-    target,
-    prop,
-    $ref,
-  });
+  /** {@inheritdoc SharedAPI.type} */
+  public declare type: EntityType.Injectable;
 
-  Reflect.defineMetadata(MetadataKeys.PendingInjections, pending, global);
-};
+  constructor(container: Container, entity: BaseInjectable) {
+    super(container);
+
+    this.entity = entity;
+    this.type = EntityType.Injectable;
+  }
+}

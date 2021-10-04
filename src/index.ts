@@ -42,3 +42,12 @@ export const version: string = require('../package.json').version;
  * @returns The {@link Container} instance.
  */
 export const useContainer = () => Container.instance;
+
+/**
+ * Adds an injectable reference to the {@link instance}.
+ * @param instance The instance object to define the injectable
+ */
+export const injectable = <T>(instance: T) => {
+  const container = useContainer();
+  container.addInjectable(instance);
+};

@@ -20,27 +20,22 @@
  * SOFTWARE.
  */
 
-import { PendingInjectDefinition, MetadataKeys } from '../../types';
+import { BaseInjectable, MetadataKeys } from '..';
 
 /**
- * Decorator to inject a component, service, or singleton into
+ * Implements injectable class references into Lilith which can
+ * apply to any `@Inject` decorators to properly inject them.
  */
-export const Inject: PropertyDecorator | ParameterDecorator = (
-  target: any,
-  prop: string | symbol,
-  paramIndex?: number
-) => {
-  const $ref = Reflect.getMetadata('design:type', target, prop);
-  if ($ref === undefined) throw new TypeError(`Inferred reference for property ${String(prop)} was not found`);
-
-  const pending: PendingInjectDefinition[] = Reflect.getMetadata(MetadataKeys.PendingInjections, global) ?? [];
-  pending.push({
-    isParam: paramIndex !== undefined,
-    index: paramIndex,
-    target,
-    prop,
-    $ref,
-  });
-
-  Reflect.defineMetadata(MetadataKeys.PendingInjections, pending, global);
+export const Injectable: ClassDecorator = (target) => {
+  // Add the metadata key to the global namespace,
+  // so Lilith can create it as a injectable reference.
+  Reflect.defineMetadata(
+    MetadataKeys.Injectable,
+    <BaseInjectable>{
+      $ref: target,
+      type: 'injectable',
+      subscriptions: [],
+    },
+    global
+  );
 };

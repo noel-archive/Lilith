@@ -20,27 +20,11 @@
  * SOFTWARE.
  */
 
-import { PendingInjectDefinition, MetadataKeys } from '../../types';
+import { Component } from '../../../../src';
 
-/**
- * Decorator to inject a component, service, or singleton into
- */
-export const Inject: PropertyDecorator | ParameterDecorator = (
-  target: any,
-  prop: string | symbol,
-  paramIndex?: number
-) => {
-  const $ref = Reflect.getMetadata('design:type', target, prop);
-  if ($ref === undefined) throw new TypeError(`Inferred reference for property ${String(prop)} was not found`);
-
-  const pending: PendingInjectDefinition[] = Reflect.getMetadata(MetadataKeys.PendingInjections, global) ?? [];
-  pending.push({
-    isParam: paramIndex !== undefined,
-    index: paramIndex,
-    target,
-    prop,
-    $ref,
-  });
-
-  Reflect.defineMetadata(MetadataKeys.PendingInjections, pending, global);
-};
+@Component({
+  name: 'uno',
+  priority: 0,
+})
+// @ts-ignore
+export default class ComponentUno {}
