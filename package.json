@@ -47,7 +47,7 @@
     "husky": "7.0.4",
     "jest": "27.3.1",
     "leeks.js": "0.2.4",
-    "prettier": "2.4.1",
+    "prettier": "2.5.0",
     "rimraf": "3.0.2",
     "typedoc": "0.22.10",
     "ts-jest": "27.0.7",
