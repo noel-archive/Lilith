@@ -42,7 +42,7 @@ async function main() {
 
   if (existsSync(join(process.cwd(), 'dist'))) await rm(join(process.cwd(), 'dist'), { recursive: true, force: true });
   for (const library of LIBRARIES) {
-    const dir = join(process.cwd(), 'dist', 'lilith', library === 'lilith' ? 'core' : library);
+    const dir = join(process.cwd(), 'dist', library === 'lilith' ? 'core' : library);
     await mkdir(dir, { recursive: true });
 
     log.info(`Building library distribution ${colors.gray(`@lilith/${library === 'lilith' ? 'core' : library}`)}...`);
