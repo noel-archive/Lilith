@@ -1,0 +1,12 @@
+{
+  "extends": "@augu/tsconfig/dom.json",
+  "compilerOptions": {
+    "moduleResolution": "node",
+    "removeComments": true,
+    "types": ["node", "reflect-metadata"],
+    "baseUrl": ".",
+    "noEmit": true // tsup does this for us
+  },
+  "exclude": ["node_modules"],
+  "include": ["**/*.ts"]
+}

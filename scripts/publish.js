@@ -23,24 +23,28 @@
 
 // @ts-check
 
-const { copyFile, readFile, writeFile } = require('fs/promises');
+const { copyFile, writeFile, mkdir, rm, readFile } = require('fs/promises');
+const getStackVersion = require('./util/stack-version');
+const { existsSync } = require('fs');
 const LoggerFactory = require('./util/log');
+const { join } = require('path');
 const { colors } = require('leeks.js');
 const { build } = require('tsup');
-const { join } = require('path');
 
-const log = LoggerFactory.get('build');
+const LIBRARIES = ['lilith'];
+
+const log = LoggerFactory.get('publish');
 async function main() {
-  const stackVersion = await readFile(join(process.cwd(), '.stack-version'), 'utf-8').then((f) =>
-    f
-      .split('\n')
-      .filter((f) => f && !f.startsWith('#'))
-      .at(0)
-  );
+  log.info('Preparing for publishing!');
 
-  log.info(`Building for stack version v${stackVersion}!`);
+  const stackVersion = await getStackVersion();
+  log.info(`Stack Version: v${stackVersion}`);
 
-  for (const library of ['lilith']) {
+  if (existsSync(join(process.cwd(), 'dist'))) await rm(join(process.cwd(), 'dist'), { recursive: true, force: true });
+  for (const library of LIBRARIES) {
+    const dir = join(process.cwd(), 'dist', 'lilith', library === 'lilith' ? 'core' : library);
+    await mkdir(dir, { recursive: true });
+
     log.info(`Building library distribution ${colors.gray(`@lilith/${library === 'lilith' ? 'core' : library}`)}...`);
     const now = Date.now();
     await build({
@@ -50,7 +54,7 @@ async function main() {
       platform: 'node',
       target: 'node16',
       format: ['cjs', 'esm'],
-      outDir: join(process.cwd(), 'src', library, 'dist'),
+      outDir: join(dir, 'dist'),
       minify: (process.env.NODE_ENV && process.env.NODE_ENV === 'production') || false,
       bundle: true,
       clean: true,
@@ -59,18 +63,16 @@ async function main() {
       dts: false
     });
 
-    await copyFile(
-      join(process.cwd(), 'src', library, 'typings.d.ts'),
-      join(process.cwd(), 'src', library, 'dist', 'index.d.ts')
-    );
+    await copyFile(join(process.cwd(), 'LICENSE'), join(dir, 'LICENSE'));
+    await copyFile(join(process.cwd(), 'src', library, 'README.md'), join(dir, 'README.md'));
+    await copyFile(join(process.cwd(), 'src', library, 'package.json'), join(dir, 'package.json'));
+    await copyFile(join(process.cwd(), 'src', library, 'typings.d.ts'), join(dir, 'dist', 'index.d.ts'));
 
-    let contents = await readFile(join(process.cwd(), 'src', library, 'dist', 'index.d.ts'), 'utf-8');
-    contents = contents.replace('@lilith/{library}', `@lilith/${library === 'lilith' ? 'core' : library}`);
+    const pkgContents = await readFile(join(dir, 'package.json'), 'utf-8');
+    // @ts-ignore
+    const newPkgContents = pkgContents.replace('0.0.0-dev.0', stackVersion);
+    await writeFile(join(dir, 'package.json'), newPkgContents);
 
-    // @ts-expect-error
-    contents = contents.replace('{version}', stackVersion);
-
-    await writeFile(join(process.cwd(), 'src', library, 'dist', 'index.d.ts'), contents);
     log.success(
       `Took ${colors.gray(`${Date.now() - now}ms`)} to build distribution for library ${colors.gray(
         `@lilith/${library === 'lilith' ? 'core' : library}`
