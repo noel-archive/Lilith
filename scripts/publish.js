@@ -27,11 +27,11 @@ const { copyFile, writeFile, mkdir, rm, readFile } = require('fs/promises');
 const getStackVersion = require('./util/stack-version');
 const { existsSync } = require('fs');
 const LoggerFactory = require('./util/log');
-const { join } = require('path');
 const { colors } = require('leeks.js');
+const { join } = require('path');
 const { build } = require('tsup');
 
-const LIBRARIES = ['lilith'];
+const LIBRARIES = ['lilith', 'config'];
 
 const log = LoggerFactory.get('publish');
 async function main() {
@@ -55,7 +55,7 @@ async function main() {
       target: 'node16',
       format: ['cjs', 'esm'],
       outDir: join(dir, 'dist'),
-      minify: (process.env.NODE_ENV && process.env.NODE_ENV === 'production') || false,
+      minify: true,
       bundle: true,
       clean: true,
       entry: [join(process.cwd(), 'src', library, 'index.ts')],

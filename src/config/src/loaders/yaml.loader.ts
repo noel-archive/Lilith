@@ -21,8 +21,24 @@
  * SOFTWARE.
  */
 
-import { defineConfig } from 'vitest/config';
+import { BaseLoader } from './base.loader';
+import { tryRequire } from '@noelware/utils';
 
-export default defineConfig({
-  test: { dir: './tests' }
-});
+type YAML = typeof import('js-yaml');
+
+export class YamlLoader<Config = {}> extends BaseLoader<Config> {
+  private _library: YAML;
+  constructor() {
+    super();
+
+    this._library = tryRequire('js-yaml');
+  }
+
+  override deserialize(contents: string): Config {
+    return this._library.load(contents) as unknown as Config;
+  }
+
+  override serialize(config: Config): string {
+    return this._library.dump(config, { noArrayIndent: false, indent: 4 });
+  }
+}

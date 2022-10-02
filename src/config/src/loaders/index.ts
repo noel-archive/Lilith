@@ -21,8 +21,7 @@
  * SOFTWARE.
  */
 
-import { defineConfig } from 'vitest/config';
-
-export default defineConfig({
-  test: { dir: './tests' }
-});
+export * from './yaml.loader';
+export * from './toml.loader';
+export * from './json.loader';
+export * from './base.loader';

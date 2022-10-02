@@ -1,11 +1,11 @@
 {
-  "name": "@lilith/core",
-  "description": "🧵 Application framework for TypeScript to build robust, and simple services",
+  "name": "@lilith/config",
+  "description": "🧵 Service to use different configuration providers in a single Lilith service!",
   "version": "0.0.0-dev.0",
   "main": "dist/index.js",
   "author": "Noel <cutie@floofy.dev>, Noelware Team <team@noelware.org>",
   "license": "MIT",
-  "repository": "https://github.com/Noelware/Lilith/tree/master/src/lilith",
+  "repository": "https://github.com/Noelware/Lilith/tree/master/src/config",
   "bugs": "https://github.com/Noelware/Lilith/issues",
   "types": "dist/index.d.ts",
   "files": [
@@ -23,12 +23,12 @@
     "lint": "eslint src --ext .ts,.tsx --fix"
   },
   "dependencies": {
-    "@noelware/utils": "2.2.1",
-    "reflect-metadata": "0.1.13"
+    "dot-prop": "6.0.1"
   },
   "devDependencies": {
     "@augu/eslint-config": "3.0.0",
     "@augu/tsconfig": "1.1.1",
+    "@types/js-yaml": "4.0.5",
     "@types/node": "18.7.20",
     "@typescript-eslint/eslint-plugin": "5.38.0",
     "@typescript-eslint/parser": "5.38.0",
@@ -37,5 +37,11 @@
     "type-fest": "3.0.0",
     "typescript": "4.8.3",
     "vitest": "0.23.4"
+  },
+  "optionalDependencies": {
+    "@lilith/core": "workspace:src/lilith",
+    "@ltd/j-toml": "1.35.2",
+    "js-yaml": "4.1.0",
+    "zod": "3.19.1"
   }
 }

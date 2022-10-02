@@ -194,6 +194,23 @@ declare namespace Lilith {
      * @param value The lazily evaluated value that is used to act as a singleton.
      */
     addSingleton<T extends {}>(value: () => T): void;
+
+    /**
+     * Gets a variable from this {@link Container} instance. This is the recommended way
+     * to get variables than {@link Container.inject} since this is more type-safe and
+     * fast way.
+     *
+     * @param key The variable's name.
+     * @return The variable, or `null` if no variable was found.
+     */
+    variable<K extends keyof Variables>(key: K): Variables[K] | null;
+
+    /**
+     * Adds a variable at runtime.
+     * @param key The variable name
+     * @param value The variable value
+     */
+    addVariable<K extends keyof Variables>(key: K, value: Variables[K]): void;
   }
 
   /** Represents all the events that a [[Container]] can listen to. */
@@ -512,7 +529,7 @@ declare namespace Lilith {
    * Simpiled version of creating a {@link Container}.
    * @param options The container options.
    */
-  export const createLilith: <Variables extends {} = {}>(options?: ContainerOptions<Variables>) => Container;
+  export const createLilith: <Variables extends {} = {}>(options?: ContainerOptions<Variables>) => Container<Variables>;
 
   /**
    * Represents all the metadata keys that Lilith uses. This is meant for internal

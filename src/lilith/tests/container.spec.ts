@@ -27,7 +27,6 @@ import { describe, expect, test } from 'vitest';
 import { useContainer } from '../src/use-container';
 import { isSingleton } from '../src/functions';
 import { Container } from '../src/container';
-import { join } from 'path';
 
 describe('@lilith/core - Container', () => {
   const container = new Container();

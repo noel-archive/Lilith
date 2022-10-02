@@ -23,12 +23,13 @@
 
 import { type Ctor, EventBus, hasOwnProperty, isObject, Lazy, readdir, isBrowser, readdirSync } from '@noelware/utils';
 import { ContainerEvents, LifecycleEvents, Load, MetadataKeys, Service, Singleton } from './types';
-import type { InjectInjectionMeta, ServiceDecoratorDeclaration } from './decorators';
+import type { InjectInjectionMeta, ServiceDecoratorDeclaration, VariableInjectionMeta } from './decorators';
 import { isService, isSingleton, singleton } from './functions';
 import type { Constructor } from 'type-fest';
 import { lstatSync } from 'fs';
 import { lstat } from 'fs/promises';
 import { randomBytes } from './crypto-utils';
+import { isPromise } from 'util/types';
 
 // this is only for #addService so it doesn't recurse. The max depth is 3 at the moment.
 let NUMBER_OF_NESTED_CHILDREN = 0;
@@ -61,7 +62,28 @@ export class Container<Variables extends {} = {}> extends EventBus<ContainerEven
   }
 
   #debug(message: string) {
-    this.emit('debug', 'container', message);
+    this.emit('debug', message);
+  }
+
+  async #loadFromFiles(path: string, callback: (file: string, now: number) => Promise<void>) {
+    // Check if we are in a browser environment. If so, { path: string }
+    // should not be supported.
+    if (isBrowser)
+      throw new Error(`Using a object containing path [${path}] is not supported in a browser environment.`);
+
+    let now = Date.now();
+    this.#debug(`Loading files from path ${path}!`);
+
+    const stat = await lstat(path);
+    if (!stat.isDirectory()) throw new Error(`Path [${path}] was not a directory.`);
+
+    const files = await readdir(path, { exclude: ['.js.map'] });
+    this.#debug(`Found ${files.length} files in ${Date.now() - now}ms!`);
+
+    for (const file of files) {
+      await callback(file, now);
+      now = Date.now();
+    }
   }
 
   /**
@@ -83,48 +105,26 @@ export class Container<Variables extends {} = {}> extends EventBus<ContainerEven
   async start() {
     this.#debug("( ★ ≧ ▽ ^)) ★ ☆ Let's get started!");
 
-    // Load all singletons first.
+    // Load singletons first
     for (const thisImport of this.#options.singletons ?? []) {
       if (isObject(thisImport)) {
+        // Check if it is a singleton (from the `singleton` function)
         if (isSingleton(thisImport)) {
-          this.#debug('Found singleton object, registering!');
+          this.#debug(`Found singleton object ${thisImport.name}, registering!`);
           this.addSingleton(thisImport);
 
           continue;
         }
 
-        // Maybe it is a { path: string } object?
-        if (hasOwnProperty<{ path: string }>(thisImport as any, 'path')) {
-          // Check if we are in a browser environment. If so, { path: string }
-          // should not be supported.
-          if (isBrowser)
-            throw new Error(
-              `Using a object containing path [${(thisImport as any).path}] is not supported in a browser environment.`
-            );
-
-          const path = (thisImport as any).path;
-          let now = Date.now();
-
-          this.#debug(`Found service loader for path [${path}], now loading files...`);
-          const stat = await lstat(path);
-          if (!stat.isDirectory()) throw new Error(`Path [${path}] was not a directory.`);
-
-          const files = await readdir(path, { exclude: ['.js.map'] });
-          this.#debug(`Found ${files.length} files that might be singletons in ${Date.now() - now}ms!`);
-
-          now = Date.now();
-          for (const file of files) {
+        if (hasOwnProperty<any>(thisImport, 'path')) {
+          await this.#loadFromFiles((thisImport as any).path, async (file, now) => {
             const singletonImport: Ctor<any> = await import(file);
             if (!singletonImport.default) throw new Error(`Object in file ${file} didn't export a default instance.`);
             if (!isObject(singletonImport.default)) throw new Error(`Default export must be a object.`);
 
             const singleton_ = singleton({
-              onDestroy: hasOwnProperty<any>(singletonImport, 'onDestroy')
-                ? ((singletonImport as any).onDestroy as any)
-                : undefined,
-
-              onLoad: hasOwnProperty<any>(singletonImport, 'onLoad')
-                ? ((singletonImport as any).onLoad as any)
+              onDestroy: hasOwnProperty<any>(singletonImport, 'teardown')
+                ? ((singletonImport as any).teardown as any)
                 : undefined,
 
               provide() {
@@ -133,50 +133,73 @@ export class Container<Variables extends {} = {}> extends EventBus<ContainerEven
             });
 
             this.addSingleton(singleton_);
-          }
+            this.#debug(`Registered singleton ${singleton_.name} in ${Date.now() - now}ms!`);
+          });
 
           continue;
         }
+
+        this.addSingleton(() => thisImport);
       }
 
       if (typeof thisImport === 'function') {
-        this.addSingleton(
-          singleton(() => {
-            const $ref = new (thisImport as Constructor<any>)();
-            const injections: InjectInjectionMeta[] = Reflect.getMetadata(MetadataKeys.Injections, thisImport) ?? [];
-
-            this.#debug(`found ${injections.length} injections for singleton ${thisImport.name}!`);
-            for (const inject of injections) {
-              this.#debug(`Injecting property ${$ref.name}#${String(inject.property)} of instance ${inject.$ref.name}`);
-              const reference = this.inject(inject.$ref);
-              if (reference === null) throw new Error(`Reference of instance ${inject.$ref} was not found.`);
-
-              Object.defineProperty(thisImport, inject.property, {
-                get() {
-                  return reference;
-                },
-
-                set() {
-                  throw new SyntaxError(`Cannot mutate reference property [${String(inject.property)}]`);
-                },
-
-                enumerable: true,
-                configurable: true
-              });
+        this.addSingleton(() => {
+          const $ref = new (thisImport as Constructor<any>)();
+          const variables: VariableInjectionMeta[] = Reflect.getMetadata(MetadataKeys.Variable, thisImport) ?? [];
+          this.#debug(`found ${variables.length} variables to inject into singleton ${thisImport.name}`);
+          for (const { property, key } of variables) {
+            this.#debug(`Injecting variable property ${$ref.name}#${String(property)} from variable ${String(key)}`);
+            const reference = this.variable(String(key) as keyof Variables);
+            if (reference === null) {
+              this.#debug(`Variable ${String(key)} was not found, skipping!`);
+              continue;
             }
 
-            return $ref;
-          })
-        );
-      } else if (isObject(thisImport)) {
-        this.addSingleton(singleton(() => thisImport as object));
+            Object.defineProperty(thisImport, property, {
+              get() {
+                return reference;
+              },
+
+              set() {
+                throw new SyntaxError(`Cannot mutate reference property [${String(property)}]`);
+              },
+
+              enumerable: true,
+              configurable: true
+            });
+          }
+
+          const injections: InjectInjectionMeta[] = Reflect.getMetadata(MetadataKeys.Injections, thisImport) ?? [];
+          this.#debug(`found ${injections.length} injections for singleton ${thisImport.name}!`);
+          for (const inject of injections) {
+            this.#debug(`Injecting property ${$ref.name}#${String(inject.property)} of instance ${inject.$ref.name}`);
+            const reference = this.inject(inject.$ref);
+            if (reference === null) {
+              this.#debug(`Reference ${inject.$ref.name} was not found, skipping!`);
+              continue;
+            }
+
+            Object.defineProperty(thisImport, inject.property, {
+              get() {
+                return reference;
+              },
+
+              set() {
+                throw new SyntaxError(`Cannot mutate reference property [${String(inject.property)}]`);
+              },
+
+              enumerable: true,
+              configurable: true
+            });
+          }
+
+          return $ref;
+        });
       } else {
         throw new Error('Singleton must be a function or a object.');
       }
     }
 
-    // Then, let's create services
-    const services: Service[] = [];
     for (const thisImport of this.#options.services ?? []) {
       if (isObject(thisImport)) {
         if (isService(thisImport)) {
@@ -186,26 +209,8 @@ export class Container<Variables extends {} = {}> extends EventBus<ContainerEven
           continue;
         }
 
-        if (hasOwnProperty<{ path: string }>(thisImport as any, 'path')) {
-          // Check if we are in a browser environment. If so, { path: string }
-          // should not be supported.
-          if (isBrowser)
-            throw new Error(
-              `Using a object containing path [${(thisImport as any).path}] is not supported in a browser environment.`
-            );
-
-          const path = (thisImport as any).path;
-          let now = Date.now();
-
-          this.#debug(`Found service loader for path [${path}], now loading files...`);
-          const stat = await lstat(path);
-          if (!stat.isDirectory()) throw new Error(`Path [${path}] was not a directory.`);
-
-          const files = await readdir(path, { exclude: ['.js.map'] });
-          this.#debug(`Found ${files.length} files that might be services in ${Date.now() - now}ms!`);
-
-          now = Date.now();
-          for (const file of files) {
+        if (hasOwnProperty<any>(thisImport, 'path')) {
+          await this.#loadFromFiles((thisImport as any).path, async (file, now) => {
             const serviceImport: Ctor<any> = await import(file);
             if (!serviceImport.default) throw new Error(`Object in file ${file} didn't export a default class.`);
 
@@ -220,8 +225,7 @@ export class Container<Variables extends {} = {}> extends EventBus<ContainerEven
                 `Class instance ${serviceImport.default} in path [${file}] doesn't use the @Service decorator.`
               );
 
-            this.#debug(`Validated service in file [${file}] in ${Date.now() - now}ms`);
-            services.push({
+            await this.addService({
               priority: attr.priority ?? 0,
               children: attr.children ?? [],
               $ref: serviceImport.default,
@@ -229,25 +233,25 @@ export class Container<Variables extends {} = {}> extends EventBus<ContainerEven
               name: attr.name
             });
 
-            now = Date.now();
-          }
+            this.#debug(`Validated and registed service ${attr.name} in ${Date.now() - now}ms!`);
+          });
 
           continue;
         }
 
-        let now = Date.now();
+        this.#debug(`Found instance ${thisImport.constructor.name}, now trying to load!`);
 
-        // It could be a class instance, so let's do that!
+        // Services require the `@Service` attribute.
         const attr: ServiceDecoratorDeclaration | undefined = Reflect.getMetadata(
           MetadataKeys.Service,
-          (thisImport as any).constructor
+          thisImport.constructor
         );
 
-        if (!attr) throw new Error(`Object instance ${thisImport} doesn't contain a @Service decorator!`);
-        this.#debug(`Took ${Date.now() - now}ms to collect service metadata!`);
-        services.push({
+        if (!attr) throw new Error(`Object ${thisImport} doesn't use the @Service decorator.`);
+        await this.addService({
           priority: attr.priority ?? 0,
           children: attr.children ?? [],
+          $ref: thisImport,
           type: 'service',
           name: attr.name
         });
@@ -268,18 +272,13 @@ export class Container<Variables extends {} = {}> extends EventBus<ContainerEven
         throw new Error(`Class instance ${(thisImport as any).constructor.name} doesn't contain a @Service decorator!`);
 
       this.#debug(`Took ${Date.now() - now}ms to get service metadata`);
-      services.push({
+      await this.addService({
         priority: attr.priority ?? 0,
         children: attr.children ?? [],
         $ref: thisImport,
         type: 'service',
         name: attr.name
       });
-    }
-
-    this.#debug(`Found ${services.length} services to be loaded!`);
-    for (const service of services.sort((a, b) => b.priority - a.priority)) {
-      await this.addService(service);
     }
 
     this.#debug('We are all set! (ㅇㅅㅇ❀) (* ^ ω ^)');
@@ -441,56 +440,88 @@ export class Container<Variables extends {} = {}> extends EventBus<ContainerEven
 
     // $ref now should only be a class definition, if any.
     if (service.$ref !== undefined) {
-      this.#debug('Found reference in service declaration, checking if it is a class!');
-      if (typeof service.$ref !== 'function')
-        throw new Error(
-          `Service ${service.name}'s reference must be a class constructor, received \`${
-            typeof service.$ref === 'object' ? 'array/null' : typeof service.$ref
-          }\``
-        );
+      if (typeof service.$ref === 'function') {
+        this.#debug(`Found class ${service.$ref.name}! Now creating instance...`);
+        const oldRef = service.$ref;
+        const $ref = new service.$ref();
+        for (const event of ['onLoad', 'onDestroy', 'onChildLoad', 'onChildDestroy']) {
+          this.#debug(`trying to bind event ${event} to service ${$ref.constructor.name}!`);
+          service[event] =
+            $ref[event] !== undefined && typeof $ref[event] === 'function' ? $ref[event].bind($ref) : service[event];
+        }
 
-      this.#debug(`Found class ${service.$ref.name}! Now creating instance...`);
-      const oldRef = service.$ref;
-      const $ref = new service.$ref();
-      for (const event of ['onLoad', 'onDestroy', 'onChildLoad', 'onChildDestroy']) {
-        this.#debug(`trying to bind event ${event} to service ${$ref.constructor.name}!`);
-        service[event] =
-          $ref[event] !== undefined && typeof $ref[event] === 'function' ? $ref[event].bind($ref) : service[event];
+        const variables: VariableInjectionMeta[] = Reflect.getMetadata(MetadataKeys.Variable, oldRef) ?? [];
+        this.#debug(`found ${variables.length} variables to inject into service ${$ref.constructor.name}`);
+        for (const { property, key } of variables) {
+          this.#debug(`Injecting variable property ${$ref.name}#${String(property)} from variable ${String(key)}`);
+          const reference = this.variable(String(key) as keyof Variables);
+          if (reference === null) {
+            this.#debug(`Variable ${String(key)} was not found, skipping!`);
+            continue;
+          }
+
+          Object.defineProperty($ref, property, {
+            get() {
+              return reference;
+            },
+
+            set() {
+              throw new SyntaxError(`Cannot mutate reference property [${String(property)}]`);
+            },
+
+            enumerable: true,
+            configurable: true
+          });
+        }
+
+        // Load in all the injections, because onLoad might call the injectable
+        // properties!
+        const injections: InjectInjectionMeta[] = Reflect.getMetadata(MetadataKeys.Injections, oldRef) ?? [];
+        this.#debug(`found ${injections.length} injections from service ${service.name} (${$ref.constructor.name})`);
+        for (const inject of injections) {
+          this.#debug(
+            `Injecting property ${service.$ref.name}#${String(inject.property)} with instance of ${inject.$ref.name}`
+          );
+
+          const reference = this.inject(inject.$ref as Ctor<any>);
+          if (reference === null) {
+            this.#debug(`Reference ${inject.$ref.name} was not found, skipping!`);
+            continue;
+          }
+
+          Object.defineProperty($ref, inject.property, {
+            get() {
+              return reference;
+            },
+
+            set() {
+              throw new SyntaxError(`Cannot mutate reference property [${String(inject.property)}]`);
+            },
+
+            enumerable: true,
+            configurable: true
+          });
+        }
+
+        // switch out to instance instead to call onLoad!
+        service.$ref = $ref;
+      } else {
+        for (const event of ['onLoad', 'onDestroy', 'onChildLoad', 'onChildDestroy']) {
+          this.#debug(`trying to bind event ${event} to service ${service.$ref.constructor.name}!`);
+          service[event] =
+            service.$ref[event] !== undefined && typeof service.$ref[event] === 'function'
+              ? service.$ref[event]
+              : service[event];
+        }
       }
-
-      // Load in all the injections, because onLoad might call the injectable
-      // properties!
-      const injections: InjectInjectionMeta[] = Reflect.getMetadata(MetadataKeys.Injections, oldRef) ?? [];
-      this.#debug(`found ${injections.length} injections from service ${service.name} (${$ref.constructor.name})`);
-      for (const inject of injections) {
-        this.#debug(
-          `Injecting property ${service.$ref.name}#${String(inject.property)} with instance of ${inject.$ref.name}`
-        );
-
-        const reference = this.inject(inject.$ref as Ctor<any>);
-        if (reference === null) throw new Error(`Reference ${inject.$ref.name} was not found.`);
-        Object.defineProperty($ref, inject.property, {
-          get() {
-            return reference;
-          },
-
-          set() {
-            throw new SyntaxError(`Cannot mutate reference property [${String(inject.property)}]`);
-          },
-
-          enumerable: true,
-          configurable: true
-        });
-      }
-
-      // switch out to instance instead to call onLoad!
-      service.$ref = $ref;
     }
 
     this.emit('service:register', service);
 
     // call the onLoad method.
-    service.onLoad?.();
+    this.#debug('Now loading the service via #onLoad()');
+    await service.onLoad?.call(service.$ref);
+
     this.#services.set(service.name, service);
     this.#references.set(service.$ref.constructor, service.name);
 
@@ -510,5 +541,14 @@ export class Container<Variables extends {} = {}> extends EventBus<ContainerEven
   variable<K extends keyof Variables>(key: K): Variables[K] | null;
   variable(key: string) {
     return this.#variables.get(key) || null;
+  }
+
+  /**
+   * Adds a variable at runtime.
+   * @param key The variable name
+   * @param value The variable value
+   */
+  addVariable<K extends keyof Variables>(key: K, value: Variables[K]) {
+    this.#variables.set(key as string, value);
   }
 }

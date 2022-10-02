@@ -21,8 +21,14 @@
  * SOFTWARE.
  */
 
-import { defineConfig } from 'vitest/config';
+import { BaseLoader } from './base.loader';
 
-export default defineConfig({
-  test: { dir: './tests' }
-});
+export class JsonLoader<Config = {}> extends BaseLoader<Config> {
+  override deserialize(contents: string): Config {
+    return JSON.parse(contents);
+  }
+
+  override serialize(config: Config): string {
+    return JSON.stringify(config, null, 4);
+  }
+}

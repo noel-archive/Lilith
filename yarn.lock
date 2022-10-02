@@ -112,6 +112,38 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@lilith/config@workspace:src/config":
+  version: 0.0.0-use.local
+  resolution: "@lilith/config@workspace:src/config"
+  dependencies:
+    "@augu/eslint-config": 3.0.0
+    "@augu/tsconfig": 1.1.1
+    "@lilith/core": "workspace:src/lilith"
+    "@ltd/j-toml": 1.35.2
+    "@types/js-yaml": 4.0.5
+    "@types/node": 18.7.20
+    "@typescript-eslint/eslint-plugin": 5.38.0
+    "@typescript-eslint/parser": 5.38.0
+    dot-prop: 6.0.1
+    eslint: 8.24.0
+    eslint-config-prettier: 8.5.0
+    js-yaml: 4.1.0
+    type-fest: 3.0.0
+    typescript: 4.8.3
+    vitest: 0.23.4
+    zod: 3.19.1
+  dependenciesMeta:
+    "@lilith/core":
+      optional: true
+    "@ltd/j-toml":
+      optional: true
+    js-yaml:
+      optional: true
+    zod:
+      optional: true
+  languageName: unknown
+  linkType: soft
+
 "@lilith/core@workspace:src/lilith":
   version: 0.0.0-use.local
   resolution: "@lilith/core@workspace:src/lilith"
@@ -150,6 +182,13 @@ __metadata:
     vitest: 0.23.4
   languageName: unknown
   linkType: soft
+
+"@ltd/j-toml@npm:1.35.2":
+  version: 1.35.2
+  resolution: "@ltd/j-toml@npm:1.35.2"
+  checksum: 631f23d63c0963288d6d28748c706f0d74ddf977f40d2b461e0cd9a3e638d723e4b3b7587adc9879657168c07fd734a08f238abe89446d4fbc3c106075c97a0a
+  languageName: node
+  linkType: hard
 
 "@nodelib/fs.scandir@npm:2.1.5":
   version: 2.1.5
@@ -252,6 +291,13 @@ __metadata:
     "@types/minimatch": "*"
     "@types/node": "*"
   checksum: 1817b05f5a8aed851d102a65b5e926d5c777bef927ea62b36d635860eef5364f2046bb5a692d135b6f2b28f34e4a9d44ade9396122c0845bcc7636d35f624747
+  languageName: node
+  linkType: hard
+
+"@types/js-yaml@npm:4.0.5":
+  version: 4.0.5
+  resolution: "@types/js-yaml@npm:4.0.5"
+  checksum: 7dcac8c50fec31643cc9d6444b5503239a861414cdfaa7ae9a38bc22597c4d850c4b8cec3d82d73b3fbca408348ce223b0408d598b32e094470dfffc6d486b4d
   languageName: node
   linkType: hard
 
@@ -813,6 +859,15 @@ __metadata:
   dependencies:
     esutils: ^2.0.2
   checksum: fd7673ca77fe26cd5cba38d816bc72d641f500f1f9b25b83e8ce28827fe2da7ad583a8da26ab6af85f834138cf8dae9f69b0cd6ab925f52ddab1754db44d99ce
+  languageName: node
+  linkType: hard
+
+"dot-prop@npm:6.0.1":
+  version: 6.0.1
+  resolution: "dot-prop@npm:6.0.1"
+  dependencies:
+    is-obj: ^2.0.0
+  checksum: 0f47600a4b93e1dc37261da4e6909652c008832a5d3684b5bf9a9a0d3f4c67ea949a86dceed9b72f5733ed8e8e6383cc5958df3bbd0799ee317fd181f2ece700
   languageName: node
   linkType: hard
 
@@ -1691,6 +1746,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"is-obj@npm:^2.0.0":
+  version: 2.0.0
+  resolution: "is-obj@npm:2.0.0"
+  checksum: c9916ac8f4621962a42f5e80e7ffdb1d79a3fab7456ceaeea394cd9e0858d04f985a9ace45be44433bf605673c8be8810540fe4cc7f4266fc7526ced95af5a08
+  languageName: node
+  linkType: hard
+
 "is-stream@npm:^2.0.0":
   version: 2.0.1
   resolution: "is-stream@npm:2.0.1"
@@ -1726,7 +1788,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"js-yaml@npm:^4.1.0":
+"js-yaml@npm:4.1.0, js-yaml@npm:^4.1.0":
   version: 4.1.0
   resolution: "js-yaml@npm:4.1.0"
   dependencies:
@@ -3051,5 +3113,12 @@ __metadata:
   version: 0.1.0
   resolution: "yocto-queue@npm:0.1.0"
   checksum: f77b3d8d00310def622123df93d4ee654fc6a0096182af8bd60679ddcdfb3474c56c6c7190817c84a2785648cdee9d721c0154eb45698c62176c322fb46fc700
+  languageName: node
+  linkType: hard
+
+"zod@npm:3.19.1":
+  version: 3.19.1
+  resolution: "zod@npm:3.19.1"
+  checksum: 56e420ea5845912324a8fc61833714a2aec84954e418b52660d76502183c6e62fef9447cbfa64349640c5ce190cf2c24267e006bb80f066183e2f3fa9fe11864
   languageName: node
   linkType: hard

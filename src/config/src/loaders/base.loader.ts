@@ -21,8 +21,20 @@
  * SOFTWARE.
  */
 
-import { defineConfig } from 'vitest/config';
+/**
+ * Represents a base class to load the configuration file from, then serialize it
+ * to the {@link Config} object.
+ */
+export abstract class BaseLoader<Config = {}> {
+  /**
+   * Deserializes the content provided and returns it as a {@link Config} object.
+   * @param contents The contents to deserialize
+   */
+  abstract deserialize(contents: string): Config;
 
-export default defineConfig({
-  test: { dir: './tests' }
-});
+  /**
+   * Serializes the configuration object into a string!
+   * @param config The configuration to serialize
+   */
+  abstract serialize(config: Config): string;
+}

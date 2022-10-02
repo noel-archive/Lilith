@@ -21,8 +21,23 @@
  * SOFTWARE.
  */
 
-import { defineConfig } from 'vitest/config';
+import { BaseLoader } from './base.loader';
+import { tryRequire } from '@noelware/utils';
 
-export default defineConfig({
-  test: { dir: './tests' }
-});
+type Toml = typeof import('@ltd/j-toml');
+
+export class TomlLoader<Config = {}> extends BaseLoader<Config> {
+  private _library: Toml = null!;
+  constructor() {
+    super();
+    this._library = tryRequire('@ltd/j-toml');
+  }
+
+  override deserialize(contents: string): Config {
+    return this._library.parse(contents) as Config;
+  }
+
+  override serialize(config: Config): string {
+    return this._library.stringify(config as any, { indent: 4 });
+  }
+}

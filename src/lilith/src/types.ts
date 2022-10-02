@@ -108,13 +108,13 @@ export interface LilithObject {
 /** Represents a interface of the basic lifecycles a {@link LilithObject} has. */
 export interface LifecycleEvents<A extends any[] = []> {
   onDestroy?(...args: A): void;
-  onLoad?(...args: A): void;
+  onLoad?(...args: A): Promise<void> | void;
 }
 
 /** Represents an extension of {@link LifecycleEvents} to include children lifecycles. */
 export interface ChildLifecycleEvents extends LifecycleEvents {
   onChildDestroy?(child: LilithObject): void;
-  onChildLoad?(child: LilithObject): void;
+  onChildLoad?(child: LilithObject): Promise<void> | void;
 }
 
 /**
