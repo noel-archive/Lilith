@@ -91,12 +91,11 @@ describe('@lilith/core - Container', () => {
     newContainer.destroy();
 
     // Create a new container that uses plain objects like {}
-    // @ts-expect-error
     newContainer = new Container({ services: [{}] });
     newContainer.on('debug', console.log);
 
     await expect(() => newContainer.start()).rejects.toThrowErrorMatchingInlineSnapshot(
-      '"Object instance [object Object] doesn\'t contain a @Service decorator!"'
+      '"Object [object Object] doesn\'t use the @Service decorator."'
     );
 
     newContainer.destroy();

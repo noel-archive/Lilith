@@ -21,44 +21,39 @@
  * SOFTWARE.
  */
 
-// @ts-check
+import { Logger } from './logger';
 
-const { info, warning, error } = require('@actions/core');
-const { readdir } = require('@noelware/utils');
-const { ESLint } = require('eslint');
-const { join } = require('path');
+/**
+ * Represents a factory for constructing loggers! You should probably use the `LogFactory`
+ * class to use this interface.
+ */
+export interface LoggerFactory {
+  /**
+   * Returns this factory's log seperator, which can be changed at runtime.
+   */
+  get seperator(): string;
 
-const LIBRARIES = ['lilith', 'config', 'logging'];
+  /**
+   * Sets the factory's log seperator, and update every logger's name to use that
+   * seperator. If this was changed while logs were committed, only new flushed logs
+   * will use the seperator.
+   *
+   * @param value The seperator to use.
+   */
+  set seperator(value: string);
 
-const main = async () => {
-  info('starting linter...');
-
-  const eslint = new ESLint({
-    useEslintrc: true
-  });
-
-  for (const library of LIBRARIES) {
-    const srcDir = join(process.cwd(), 'src', library);
-    info(`Linting in directory [${srcDir}]`);
-
-    const results = await eslint.lintFiles(await readdir(join(srcDir, 'src'), { extensions: ['.ts', '.tsx'] }));
-    for (const result of results) {
-      for (const message of result.messages) {
-        const fn = message.severity === 1 ? warning : error;
-        fn(`${result.filePath}:${message.line}:${message.column} [${message.ruleId}] :: ${message.message}`, {
-          file: result.filePath,
-          endColumn: message.endColumn,
-          endLine: message.endLine,
-          startColumn: message.column,
-          startLine: message.line,
-          title: `[${message.ruleId}] ${message.message}`
-        });
-      }
-    }
-  }
-};
-
-main().catch((ex) => {
-  console.error(ex);
-  process.exit(0);
-});
+  /**
+   * Returns a logger by the given paths. All paths that are given use `.` as the seperator! You can
+   * configure the seperator using `LogFactory.seperator = ';'` at runtime if you wish.
+   *
+   * @param paths The paths that are conjuctioned with the factory's seperator.
+   * @example
+   * ```ts
+   * import { LogFactory } from '@lilith/logging';
+   *
+   * LogFactory.get('a', 'log', 'name');
+   * // => Logger { name: 'a.log.name' }
+   * ```
+   */
+  get(...paths: string[]): Logger;
+}

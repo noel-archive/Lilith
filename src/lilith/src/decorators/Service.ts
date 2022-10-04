@@ -31,7 +31,7 @@ export interface ServiceDecoratorDeclaration {
   priority?: number;
 
   /** Children objects to load into this service. This can be any piece of data, even services! */
-  children?: Load<any>[];
+  children?: Load[];
 
   /** The name of the service to identify itself. */
   name: string;

@@ -35,9 +35,9 @@ import { isPromise } from 'util/types';
 let NUMBER_OF_NESTED_CHILDREN = 0;
 
 export interface ContainerOptions<Variables extends {} = {}> {
-  singletons?: (Load<Singleton> | (() => any))[];
+  singletons?: (Load | (() => any))[];
   variables?: Variables;
-  services?: Load<Service>[];
+  services?: Load[];
 }
 
 export class Container<Variables extends {} = {}> extends EventBus<ContainerEvents> {

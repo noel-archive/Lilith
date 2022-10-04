@@ -21,44 +21,44 @@
  * SOFTWARE.
  */
 
-// @ts-check
+import type { LoggerFactory } from '../factory';
+import type { LogRecord } from '../types';
+import type { Logger } from '../logger';
 
-const { info, warning, error } = require('@actions/core');
-const { readdir } = require('@noelware/utils');
-const { ESLint } = require('eslint');
-const { join } = require('path');
+/**
+ * Represents a base implementation of creating your own log backend. This is responsible for:
+ * - writing data to a logger,
+ * - creating the logger factory,
+ * - creating loggers internally.
+ */
+export abstract class BaseBackend<
+  Options extends {} = {},
+  LF extends LoggerFactory = LoggerFactory,
+  LoggerImpl extends Logger = Logger
+> {
+  /**
+   * Writes and flushes a record to the logger.
+   * @param record The record object that is created from the log service.
+   */
+  abstract write(record: LogRecord<any>): void;
 
-const LIBRARIES = ['lilith', 'config', 'logging'];
+  /**
+   * Gets, or creates a logger by the specified path.
+   * @param paths The path to use.
+   */
+  abstract getLogger(...paths: string[]): LoggerImpl;
 
-const main = async () => {
-  info('starting linter...');
+  /**
+   * Returns the logger factory that this backend is responsible for.
+   */
+  abstract getLoggerFactory(): LF;
 
-  const eslint = new ESLint({
-    useEslintrc: true
-  });
-
-  for (const library of LIBRARIES) {
-    const srcDir = join(process.cwd(), 'src', library);
-    info(`Linting in directory [${srcDir}]`);
-
-    const results = await eslint.lintFiles(await readdir(join(srcDir, 'src'), { extensions: ['.ts', '.tsx'] }));
-    for (const result of results) {
-      for (const message of result.messages) {
-        const fn = message.severity === 1 ? warning : error;
-        fn(`${result.filePath}:${message.line}:${message.column} [${message.ruleId}] :: ${message.message}`, {
-          file: result.filePath,
-          endColumn: message.endColumn,
-          endLine: message.endLine,
-          startColumn: message.column,
-          startLine: message.line,
-          title: `[${message.ruleId}] ${message.message}`
-        });
-      }
-    }
+  /**
+   * Closes and flushes any previous cached log records to the appenders it was configured
+   * to use. This should be an idempotent call, so subsequent calls can't prevent this being
+   * closed already.
+   */
+  close() {
+    /* do nothing */
   }
-};
-
-main().catch((ex) => {
-  console.error(ex);
-  process.exit(0);
-});
+}

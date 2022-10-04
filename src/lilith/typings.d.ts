@@ -115,7 +115,7 @@ declare namespace Lilith {
   export type ReplaceColonWithDash<S> = S extends string ? Replace<S, ':', '-', { all: true }> : never;
 
   /** Represents a type-alias for loading Lilith objects. */
-  export type Load<O extends LilithObject> = O | Constructor<any> | { path: string };
+  export type Load = any | Constructor<any> | { path: string };
 
   /**
    * Represents all the container events mapped from the colon counterpart to camelCase.
@@ -124,9 +124,9 @@ declare namespace Lilith {
 
   /** Represents the core options for the {@link Container}. */
   export interface ContainerOptions<Variables extends {} = {}> {
-    singletons?: Load<Singleton>[];
+    singletons?: (Load | (() => any))[];
     variables?: Variables;
-    services?: Load<Service>[];
+    services?: Load[];
   }
 
   /**
@@ -439,7 +439,7 @@ declare namespace Lilith {
     priority?: number;
 
     /** Children objects to load into this service. This can be any piece of data, even services! */
-    children?: Load<any>[];
+    children?: Load[];
 
     /** The name of the service to identify itself. */
     name: string;

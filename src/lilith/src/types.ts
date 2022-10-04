@@ -31,7 +31,7 @@ export type ContainerEventNames = keyof ContainerEvents;
 export type ReplaceColonWithDash<S> = S extends string ? Replace<S, ':', '-', { all: true }> : never;
 
 /** Represents a type-alias for loading Lilith objects. */
-export type Load<O extends LilithObject> = O | Constructor<any> | { path: string };
+export type Load = any | Constructor<any> | { path: string };
 
 /** Represents all the events that a [[Container]] can listen to. */
 export interface ContainerEvents {

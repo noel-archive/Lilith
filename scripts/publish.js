@@ -31,7 +31,7 @@ const { colors } = require('leeks.js');
 const { join } = require('path');
 const { build } = require('tsup');
 
-const LIBRARIES = ['lilith', 'config'];
+const LIBRARIES = ['lilith', 'config', 'logging'];
 
 const log = LoggerFactory.get('publish');
 async function main() {

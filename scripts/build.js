@@ -40,7 +40,7 @@ async function main() {
 
   log.info(`Building for stack version v${stackVersion}!`);
 
-  for (const library of ['lilith', 'config']) {
+  for (const library of ['lilith', 'config', 'logging']) {
     log.info(`Building library distribution ${colors.gray(`@lilith/${library === 'lilith' ? 'core' : library}`)}...`);
     const now = Date.now();
     await build({

@@ -21,44 +21,16 @@
  * SOFTWARE.
  */
 
-// @ts-check
-
-const { info, warning, error } = require('@actions/core');
-const { readdir } = require('@noelware/utils');
-const { ESLint } = require('eslint');
-const { join } = require('path');
-
-const LIBRARIES = ['lilith', 'config', 'logging'];
-
-const main = async () => {
-  info('starting linter...');
-
-  const eslint = new ESLint({
-    useEslintrc: true
-  });
-
-  for (const library of LIBRARIES) {
-    const srcDir = join(process.cwd(), 'src', library);
-    info(`Linting in directory [${srcDir}]`);
-
-    const results = await eslint.lintFiles(await readdir(join(srcDir, 'src'), { extensions: ['.ts', '.tsx'] }));
-    for (const result of results) {
-      for (const message of result.messages) {
-        const fn = message.severity === 1 ? warning : error;
-        fn(`${result.filePath}:${message.line}:${message.column} [${message.ruleId}] :: ${message.message}`, {
-          file: result.filePath,
-          endColumn: message.endColumn,
-          endLine: message.endLine,
-          startColumn: message.column,
-          startLine: message.line,
-          title: `[${message.ruleId}] ${message.message}`
-        });
-      }
-    }
-  }
-};
-
-main().catch((ex) => {
-  console.error(ex);
-  process.exit(0);
-});
+/**
+ * Represents a logger that can be used to log anything. You can create a logger in the following ways:
+ *
+ * - (1) By using the `@Log` annotation,
+ * - (2) By using the **LoggerFactory#get** method.
+ *
+ * Using this interface is not recommended, but it's public API!
+ */
+export interface Logger
+  extends Record<'info' | 'debug' | 'error' | 'fatal' | 'trace' | 'warn', (...messages: unknown[]) => unknown> {
+  /** Returns the name of the logger */
+  name: string;
+}

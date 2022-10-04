@@ -21,44 +21,7 @@
  * SOFTWARE.
  */
 
-// @ts-check
-
-const { info, warning, error } = require('@actions/core');
-const { readdir } = require('@noelware/utils');
-const { ESLint } = require('eslint');
-const { join } = require('path');
-
-const LIBRARIES = ['lilith', 'config', 'logging'];
-
-const main = async () => {
-  info('starting linter...');
-
-  const eslint = new ESLint({
-    useEslintrc: true
-  });
-
-  for (const library of LIBRARIES) {
-    const srcDir = join(process.cwd(), 'src', library);
-    info(`Linting in directory [${srcDir}]`);
-
-    const results = await eslint.lintFiles(await readdir(join(srcDir, 'src'), { extensions: ['.ts', '.tsx'] }));
-    for (const result of results) {
-      for (const message of result.messages) {
-        const fn = message.severity === 1 ? warning : error;
-        fn(`${result.filePath}:${message.line}:${message.column} [${message.ruleId}] :: ${message.message}`, {
-          file: result.filePath,
-          endColumn: message.endColumn,
-          endLine: message.endLine,
-          startColumn: message.column,
-          startLine: message.line,
-          title: `[${message.ruleId}] ${message.message}`
-        });
-      }
-    }
-  }
-};
-
-main().catch((ex) => {
-  console.error(ex);
-  process.exit(0);
-});
+export * from './src/backends/base.backend';
+export * from './src/service';
+export * from './src/utils';
+export * from './src/types';
