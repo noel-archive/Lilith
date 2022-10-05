@@ -181,6 +181,30 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@lilith/logging-winston@workspace:src/winston":
+  version: 0.0.0-use.local
+  resolution: "@lilith/logging-winston@workspace:src/winston"
+  dependencies:
+    "@augu/eslint-config": 3.0.0
+    "@augu/tsconfig": 1.1.1
+    "@lilith/logging": "workspace:src/logging"
+    "@types/node": 18.7.20
+    "@typescript-eslint/eslint-plugin": 5.38.0
+    "@typescript-eslint/parser": 5.38.0
+    eslint: 8.24.0
+    eslint-config-prettier: 8.5.0
+    type-fest: 3.0.0
+    typescript: 4.8.3
+    vitest: 0.23.4
+    winston: 3.8.2
+  dependenciesMeta:
+    "@lilith/logging":
+      optional: true
+    winston:
+      optional: true
+  languageName: unknown
+  linkType: soft
+
 "@lilith/logging@workspace:src/logging":
   version: 0.0.0-use.local
   resolution: "@lilith/logging@workspace:src/logging"
@@ -220,30 +244,6 @@ __metadata:
     rimraf: 3.0.2
     tsup: 6.2.3
     vitest: 0.23.4
-  languageName: unknown
-  linkType: soft
-
-"@lilith/winston@workspace:src/winston":
-  version: 0.0.0-use.local
-  resolution: "@lilith/winston@workspace:src/winston"
-  dependencies:
-    "@augu/eslint-config": 3.0.0
-    "@augu/tsconfig": 1.1.1
-    "@lilith/logging": "workspace:src/logging"
-    "@types/node": 18.7.20
-    "@typescript-eslint/eslint-plugin": 5.38.0
-    "@typescript-eslint/parser": 5.38.0
-    eslint: 8.24.0
-    eslint-config-prettier: 8.5.0
-    type-fest: 3.0.0
-    typescript: 4.8.3
-    vitest: 0.23.4
-    winston: 3.8.2
-  dependenciesMeta:
-    "@lilith/logging":
-      optional: true
-    winston:
-      optional: true
   languageName: unknown
   linkType: soft
 
