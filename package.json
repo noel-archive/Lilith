@@ -12,7 +12,7 @@
     "src/config"
   ],
   "scripts": {
-    "test:ci": "yarn fmt && yarn lint && node scripts/ci/test-vitest",
+    "test:ci": "yarn fmt && yarn lint && node scripts/ci/vitest",
     "lint:ci": "yarn fmt && yarn lint && node scripts/ci/eslint",
     "build": "yarn lint && yarn fmt && node scripts/build",
     "lint": "yarn workspaces foreach -pt run lint",
