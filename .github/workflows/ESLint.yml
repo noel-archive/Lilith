@@ -77,8 +77,8 @@ jobs:
       - name: Lint project
         run: yarn lint
 
-      - name: Check for any compile errors
-        run: tsc --noEmit
+      # - name: Check for any compile errors
+      #   run: tsc --noEmit
 
       - name: Run tests
         run: yarn test
