@@ -23,7 +23,7 @@
     "lint": "eslint src --ext .ts,.tsx --fix"
   },
   "dependencies": {
-    "dot-prop": "6.0.1"
+    "dot-prop": "7.2.0"
   },
   "devDependencies": {
     "@augu/eslint-config": "3.0.0",
