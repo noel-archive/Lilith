@@ -6,7 +6,7 @@
 
 - `@lilith/logging` **~** Package to handle logging scenarios, combined with the `@lilith/config` package also!
 - `@lilith/config` **~** Package to handle different configuration sources, that are easily injectable with the `@Variable` decorator.
-- `@lilith/http` **~** Package for creating a minimal HTTP server with Lilith's functionality. It also includes Next.js, Nuxt.js, and Vite integration to combine your backend and frontend together.
+<!-- - `@lilith/http` **~** Package for creating a minimal HTTP server with Lilith's functionality. It also includes Next.js, Nuxt.js, and Vite integration to combine your backend and frontend together. -->
 
 ## Usage
 
@@ -28,7 +28,7 @@ const container = createLilith({
     { path: './path/to/singletons' },
     singleton<Logger>({
       provide() { return Logger.create(); }
-      onLoad(logger /*: Logger */, args: /* any */) { /* create singleton (args = { name: string | null }) */ },
+      onLoad(logger /*: Logger */) { /* ran once singleton is loaded into the container */ },
       onDestroy(logger /*: Logger */) { /* destroy singleton */ }
     })
   ],
@@ -52,10 +52,6 @@ const logger = inject('logger');
 
 const service = inject('myservice');
 // => Service
-
-// Grab a service's children and do something with it. Returns `null`
-// if the child dependency wasn't found.
-service.child('<some child dependency>').doSomething();
 ```
 
 ## Packages
@@ -120,35 +116,36 @@ container.start();
 **@lilith/logging** is a service package that lets you inject a `LoggerFactoryService` into your services and creates a **Logger** for using logging. This package requires a peer dependency on **winston**:
 
 ```sh
-$ npm install @lilith/core @lilith/logging winston
-$ yarn add @lilith/core @lilith/logging winston
-$ pnpm install @lilith/core @lilith/logging winston
+$ npm install @lilith/core @lilith/logging @lilith/logging-winston winston
+$ yarn add @lilith/core @lilith/logging @lilith/logging-winston winston
+$ pnpm install @lilith/core @lilith/logging @lilith/logging-winston winston
 ```
 
 ```ts
-import { LoggerFactoryService, type Logger } from '@lilith/logging';
 import { Service, Inject, createLilith } from '@lilith/core';
+import { LogService, type Logger } from '@lilith/logging';
+import { WinstonBackend } from '@lilith/logging-winston';
 import winston from 'winston';
 
 @Service({ name: 'my service name' })
 class MyService {
   @Inject
+  private readonly logging!: LogService<WinstonBackend>;
   private readonly logger!: Logger;
 
   onLoad() {
+    this.logger = this.logging.loggerFactory.get('my', 'service', 'info');
     this.logger.info('I am loading stuff!');
-    // [Sept 24th, 2022 - 22:18:59] [12531 | path/to/service.ts:54] INFO  :: I am loading stuff!
   }
 }
 
 const container = createLilith({
   services: [
-    new LoggerFactoryService({
-      transports: [new winston.transports.Console()],
-      useEcs: false, // read below
-      json: false // appears if `winston.transports.Console` is used in the `transports` array,
-      // which will use Elastic Common Schema (if `useECS` is true) or uses a plain
-      // JSON object of the current log context (if `useECS` is false).
+    new LogService({
+      defaultLevel: 'debug',
+      backend: new WinstonBackend({
+        transports: [new winston.transports.Console()]
+      })
     }),
     MyService
   ]
@@ -215,7 +212,7 @@ container.start();
 const service = container.inject(MyService);
 ```
 
-### @lilith/http
+<!-- ### @lilith/http
 
 **@lilith/http** is a service library that helps you build a HTTP server with HTTP frameworks like:
 
@@ -333,7 +330,7 @@ const container = createLilith({
 
 // Starts the HTTP server.
 container.start();
-```
+``` -->
 
 ## Contributing
 
