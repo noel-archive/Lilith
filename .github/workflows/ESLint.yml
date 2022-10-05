@@ -75,10 +75,13 @@ jobs:
         run: yarn install --immutable
 
       - name: Lint project
-        run: yarn lint
+        run: yarn lint:ci
+
+      - name: Build project
+        run: yarn build
 
       # - name: Check for any compile errors
       #   run: tsc --noEmit
 
       - name: Run tests
-        run: yarn test
+        run: yarn test:ci

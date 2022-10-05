@@ -234,7 +234,7 @@ __metadata:
     "@actions/core": 1.9.1
     "@augu/eslint-config": 3.0.0
     "@noelware/utils": 2.2.1
-    "@types/eslint": 8
+    "@types/eslint": 8.4.6
     "@types/rimraf": 3.0.2
     eslint: 8.24.0
     eslint-config-prettier: 8.5.0
@@ -331,7 +331,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/eslint@npm:8":
+"@types/eslint@npm:8.4.6":
   version: 8.4.6
   resolution: "@types/eslint@npm:8.4.6"
   dependencies:
