@@ -1,0 +1,7 @@
+{
+  "name": "Lilith",
+  "dockerFile": "Dockerfile",
+  "remoteUser": "noel",
+  "workspaceFolder": "/workspace",
+  "extensions": ["dbaeumer.vscode-eslint"]
+}

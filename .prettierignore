@@ -1,6 +1,1 @@
-.github
-.husky
-build
-docs
-node_modules
-dist
+.gitignore

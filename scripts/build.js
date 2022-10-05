@@ -1,5 +1,6 @@
-/**
- * Copyright (c) 2021 August
+/*
+ * 🧵 Lilith: Application framework for TypeScript to build robust, and simple services
+ * Copyright (c) 2021-2022 Noelware <team@noelware.org>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -20,45 +21,65 @@
  * SOFTWARE.
  */
 
-const {
-  existsSync,
-  promises: { mkdir },
-} = require('fs');
+// @ts-check
 
+const { copyFile, readFile, writeFile } = require('fs/promises');
+const LoggerFactory = require('./util/log');
+const { colors } = require('leeks.js');
+const { build } = require('tsup');
 const { join } = require('path');
-const esbuild = require('esbuild');
-const leeks = require('leeks.js');
 
-const logger = {
-  error: (...messages) => console.error(leeks.hex('', '!'), ...messages),
-  info: (...messages) => console.log(leeks.hex('', '+'), ...messages),
-  warn: (...messages) => console.log(leeks.hex('', '?'), ...messages),
-};
+const log = LoggerFactory.get('build');
+async function main() {
+  const stackVersion = await readFile(join(process.cwd(), '.stack-version'), 'utf-8').then((f) =>
+    f
+      .split('\n')
+      .filter((f) => f && !f.startsWith('#'))
+      .at(0)
+  );
 
-const main = async () => {
-  logger.info(`Building ${leeks.colors.gray('@augu/lilith')} in production mode.`);
-  const DIST_PATH = join(process.cwd(), 'dist');
+  log.info(`Building for stack version v${stackVersion}!`);
 
-  if (DIST_PATH !== null && !existsSync(DIST_PATH)) await mkdir(DIST_PATH);
-  logger.info('Compiling TypeScript with `esbuild`...');
+  for (const library of ['lilith', 'config', 'logging', 'winston']) {
+    log.info(`Building library distribution ${colors.gray(`@lilith/${library === 'lilith' ? 'core' : library}`)}...`);
+    const now = Date.now();
+    await build({
+      sourcemap: true,
+      treeshake: true,
+      tsconfig: join(process.cwd(), 'src', library, 'tsconfig.json'),
+      platform: 'node',
+      target: 'node16',
+      format: ['cjs', 'esm'],
+      outDir: join(process.cwd(), 'src', library, 'dist'),
+      minify: (process.env.NODE_ENV && process.env.NODE_ENV === 'production') || false,
+      bundle: true,
+      clean: true,
+      entry: [join(process.cwd(), 'src', library, 'index.ts')],
+      name: `@lilith/${library === 'lilith' ? 'core' : library}`,
+      dts: false
+    });
 
-  await esbuild.build({
-    bundle: true,
-    entryPoints: [join(process.cwd(), 'src', 'index.ts')],
-    outfile: join(process.cwd(), 'dist', 'lilith.cjs'),
-    format: 'cjs',
-    platform: 'node',
-    target: 'node14',
-  });
+    await copyFile(
+      join(process.cwd(), 'src', library, 'typings.d.ts'),
+      join(process.cwd(), 'src', library, 'dist', 'index.d.ts')
+    );
 
-  logger.info('Built successfully without any errors, I hope :3');
+    let contents = await readFile(join(process.cwd(), 'src', library, 'dist', 'index.d.ts'), 'utf-8');
+    contents = contents.replace('@lilith/{library}', `@lilith/${library === 'lilith' ? 'core' : library}`);
 
-  return 0;
-};
+    // @ts-expect-error
+    contents = contents.replace('{version}', stackVersion);
 
-main()
-  .then((code) => process.exit(code))
-  .catch((ex) => {
-    logger.error(ex);
-    process.exit(1);
-  });
+    await writeFile(join(process.cwd(), 'src', library, 'dist', 'index.d.ts'), contents);
+    log.success(
+      `Took ${colors.gray(`${Date.now() - now}ms`)} to build distribution for library ${colors.gray(
+        `@lilith/${library === 'lilith' ? 'core' : library}`
+      )}!`
+    );
+  }
+}
+
+main().catch((ex) => {
+  log.error(ex);
+  process.exit(1);
+});
