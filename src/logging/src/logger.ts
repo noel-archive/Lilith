@@ -30,7 +30,7 @@
  * Using this interface is not recommended, but it's public API!
  */
 export interface Logger
-  extends Record<'info' | 'debug' | 'error' | 'fatal' | 'trace' | 'warn', (...messages: unknown[]) => unknown> {
+  extends Record<'info' | 'debug' | 'error' | 'fatal' | 'trace' | 'warn', (...messages: unknown[]) => void> {
   /** Returns the name of the logger */
   name: string;
 }

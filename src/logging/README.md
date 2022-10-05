@@ -5,8 +5,8 @@
 ## Available Backends
 
 - [@lilith/logging-winston](../logging-winston)
-- [@lilith/logging-pino](../logging-pino)
-- [@lilith/logging-tslog](../logging-tslog)
+<!-- - [@lilith/logging-pino](../logging-pino)
+- [@lilith/logging-tslog](../logging-tslog) -->
 
 ## Implementing your own backend
 

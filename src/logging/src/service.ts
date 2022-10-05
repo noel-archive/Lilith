@@ -24,60 +24,35 @@
 import { Service, useContainer, type ChildLifecycleEvents } from '@lilith/core';
 import { LogLevel, LogLevelInt } from './types';
 import type { LoggerFactory } from './factory';
-import type { Constructor } from 'type-fest';
 import { BaseBackend } from './backends/base.backend';
 import { Logger } from './logger';
-import { LogInjectionMeta, LogMetaKey } from './decorators/Log';
-
-export type InferBackendOptions<B> = B extends BaseBackend<infer Options, any, any> ? Options : never;
 
 export interface LogServiceOptions<B extends BaseBackend> {
-  backend: {
-    class: Constructor<B, [InferBackendOptions<B> | undefined]>;
-    options?: InferBackendOptions<B>;
-  };
-
   attachDebugToLogger?: boolean;
+  backend: B;
   level?: LogLevel | LogLevelInt;
 }
 
 // the log service should have a higher priority since the configuration service
 // might use it.
 @Service({ name: 'lilith:logging', priority: 1000 })
-export class LogService<B extends BaseBackend> implements Omit<Logger, 'name'>, ChildLifecycleEvents {
+export class LogService<B extends BaseBackend> implements ChildLifecycleEvents {
   private _defaultLevel: number;
   private _factory: LoggerFactory;
   private _backend: B;
   private _options: LogServiceOptions<B>;
   private _logger: Logger;
 
-  public info!: (...messages: unknown[]) => void;
-  public warn!: (...messages: unknown[]) => void;
-  public trace!: (...messages: unknown[]) => void;
-  public debug!: (...messages: unknown[]) => void;
-  public fatal!: (...messages: unknown[]) => void;
-  public error!: (...messages: unknown[]) => void;
-
-  // 'info' | 'debug' | 'error' | 'fatal' | 'trace' | 'warning'
-
   constructor(options: LogServiceOptions<B>) {
-    const backend = new options.backend.class(
-      options.backend.options !== undefined ? options.backend.options : undefined
-    );
-
     this._defaultLevel = (typeof options.level === 'string' ? LogLevel[options.level] : options.level) ?? 40;
-    this._factory = backend.getLoggerFactory();
-    this._backend = backend;
+    this._factory = options.backend.getLoggerFactory();
+    this._backend = options.backend;
     this._options = options;
     this._logger = this._factory.get('root');
+  }
 
-    // The log service will use the root logger. You should use `LoggerFactory#get` or
-    // the @Log annotation.
-    for (const level of Object.keys(LogLevel)) {
-      this[level.toLowerCase()] = function (this: LogService<B>, ...messages: unknown[]) {
-        if (this.enabled(LogLevel[level])) return this._log.call(this, ...messages);
-      };
-    }
+  get loggerFactory(): B extends BaseBackend<any, infer LF> ? LF : never {
+    return this._factory as unknown as any;
   }
 
   onLoad() {
@@ -85,22 +60,31 @@ export class LogService<B extends BaseBackend> implements Omit<Logger, 'name'>, 
 
     // It will attach to the root logger!
     if (this._options.attachDebugToLogger !== undefined && this._options.attachDebugToLogger) {
-      container.on('debug', (message) => this.debug(message));
+      this._logger.debug('Attaching container event [debug] to root logger!');
+      container.on('debug', (message) => this._logger.debug(message));
     }
 
-    container.on('service:register', (service) => {
-      container.emit('debug', `Registering @Log decorators for service ${service.constructor.name}!`);
+    // container.on('service:register', (service) => {
+    //   container.emit('debug', `Registering @Log decorators for service ${service.$ref.constructor.name}!`);
 
-      const injections: LogInjectionMeta[] = Reflect.getMetadata(LogMetaKey, service.constructor);
-      for (const inject of injections) {
-        Object.defineProperty(service, inject.property, {
-          value: this._factory.get(...inject.name),
-          configurable: false,
-          enumerable: true,
-          writable: false
-        });
-      }
-    });
+    //   const injections: LogInjectionMeta[] = Reflect.getMetadata(LogMetaKey, service.$ref.constructor) ?? [];
+    //   for (const inject of injections) {
+    //     const self = this; // eslint-disable-line
+    //     console.log(service.$ref, inject);
+    //     Object.defineProperty(service.$ref, inject.property, {
+    //       get() {
+    //         return self._factory.get(...inject.name);
+    //       },
+
+    //       set() {
+    //         throw new Error('@Log decorators are not mutable.');
+    //       },
+
+    //       configurable: false,
+    //       enumerable: true
+    //     });
+    //   }
+    // });
   }
 
   onDestroy() {
@@ -109,9 +93,5 @@ export class LogService<B extends BaseBackend> implements Omit<Logger, 'name'>, 
 
   enabled(level: number) {
     return this._defaultLevel <= level;
-  }
-
-  private _log(...messages: unknown[]) {
-    return null;
   }
 }

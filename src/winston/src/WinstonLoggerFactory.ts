@@ -21,34 +21,36 @@
  * SOFTWARE.
  */
 
-/** Represents the log levels as strings. Use {@link LogLevelInt} to get the number representing this level. */
-export type LogLevel = 'info' | 'error' | 'fatal' | 'warn' | 'debug' | 'trace';
+import { LoggerFactory, LogLevelInt } from '@lilith/logging';
+import { WinstonBackend } from './WinstonBackend';
+import { WinstonLogger } from './WinstonLogger';
+import { createLogger } from 'winston';
 
-/**
- * Represents the log level as integers:
- *
- * - 10: fatal
- * - 20: error
- * - 30: warning
- * - 40: info
- * - 50: debug
- * - 60: trace
- */
-export type LogLevelInt = 10 | 20 | 30 | 40 | 50 | 60;
-export const LogLevel: { [x in LogLevel]: LogLevelInt } = {
-  info: 40,
-  error: 20,
-  fatal: 10,
-  warn: 30,
-  debug: 40,
-  trace: 50
-};
+export class WinstonLoggerFactory implements LoggerFactory {
+  private _seperator: string = '.';
 
-export const LogLevelInt: { [x in LogLevelInt]: LogLevel } = {
-  10: 'fatal',
-  20: 'error',
-  30: 'warn',
-  40: 'info',
-  50: 'debug',
-  60: 'trace'
-};
+  constructor(private readonly backend: WinstonBackend) {}
+
+  get seperator() {
+    return this._seperator;
+  }
+
+  set seperator(value: string) {
+    this._seperator = value;
+  }
+
+  get(...paths: string[]) {
+    const name = paths.join(this._seperator);
+    return new WinstonLogger(
+      name,
+      createLogger({
+        transports: this.backend.options.transports,
+        format: this.backend.options.format,
+        level: LogLevelInt[this.backend.defaultLevel],
+        defaultMeta: {
+          name
+        }
+      })
+    );
+  }
+}

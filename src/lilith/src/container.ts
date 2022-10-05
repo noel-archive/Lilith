@@ -200,11 +200,12 @@ export class Container<Variables extends {} = {}> extends EventBus<ContainerEven
       }
     }
 
+    const services: Service[] = [];
     for (const thisImport of this.#options.services ?? []) {
       if (isObject(thisImport)) {
         if (isService(thisImport)) {
           this.#debug(`Found existing service [${thisImport.name}], registering...`);
-          this.addService(thisImport);
+          services.push(thisImport);
 
           continue;
         }
@@ -225,7 +226,7 @@ export class Container<Variables extends {} = {}> extends EventBus<ContainerEven
                 `Class instance ${serviceImport.default} in path [${file}] doesn't use the @Service decorator.`
               );
 
-            await this.addService({
+            services.push({
               priority: attr.priority ?? 0,
               children: attr.children ?? [],
               $ref: serviceImport.default,
@@ -248,7 +249,7 @@ export class Container<Variables extends {} = {}> extends EventBus<ContainerEven
         );
 
         if (!attr) throw new Error(`Object ${thisImport} doesn't use the @Service decorator.`);
-        await this.addService({
+        services.push({
           priority: attr.priority ?? 0,
           children: attr.children ?? [],
           $ref: thisImport,
@@ -272,13 +273,17 @@ export class Container<Variables extends {} = {}> extends EventBus<ContainerEven
         throw new Error(`Class instance ${(thisImport as any).constructor.name} doesn't contain a @Service decorator!`);
 
       this.#debug(`Took ${Date.now() - now}ms to get service metadata`);
-      await this.addService({
+      services.push({
         priority: attr.priority ?? 0,
         children: attr.children ?? [],
         $ref: thisImport,
         type: 'service',
         name: attr.name
       });
+    }
+
+    for (const service of services.sort((a, b) => b.priority - a.priority)) {
+      await this.addService(service);
     }
 
     this.#debug('We are all set! (ㅇㅅㅇ❀) (* ^ ω ^)');

@@ -21,34 +21,23 @@
  * SOFTWARE.
  */
 
-/** Represents the log levels as strings. Use {@link LogLevelInt} to get the number representing this level. */
-export type LogLevel = 'info' | 'error' | 'fatal' | 'warn' | 'debug' | 'trace';
+import { Logger as _WinstonLogger } from 'winston';
+import { Logger, LogLevelInt } from '@lilith/logging';
 
-/**
- * Represents the log level as integers:
- *
- * - 10: fatal
- * - 20: error
- * - 30: warning
- * - 40: info
- * - 50: debug
- * - 60: trace
- */
-export type LogLevelInt = 10 | 20 | 30 | 40 | 50 | 60;
-export const LogLevel: { [x in LogLevel]: LogLevelInt } = {
-  info: 40,
-  error: 20,
-  fatal: 10,
-  warn: 30,
-  debug: 40,
-  trace: 50
-};
+export class WinstonLogger implements Logger {
+  public info!: (...messages: unknown[]) => void;
+  public warn!: (...messages: unknown[]) => void;
+  public fatal!: (...messages: unknown[]) => void;
+  public error!: (...messages: unknown[]) => void;
+  public trace!: (...messages: unknown[]) => void;
+  public debug!: (...messages: unknown[]) => void;
 
-export const LogLevelInt: { [x in LogLevelInt]: LogLevel } = {
-  10: 'fatal',
-  20: 'error',
-  30: 'warn',
-  40: 'info',
-  50: 'debug',
-  60: 'trace'
-};
+  constructor(public name: string, inner: _WinstonLogger) {
+    for (const level of Object.values(LogLevelInt)) {
+      this[level.toLowerCase()] = function (this: WinstonLogger, ...messages: unknown[]) {
+        const lvl = level === 'fatal' ? 'error' : level === 'trace' ? 'verbose' : level;
+        return inner[lvl](messages[0] as string, ...messages.slice(1));
+      };
+    }
+  }
+}

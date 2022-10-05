@@ -21,34 +21,23 @@
  * SOFTWARE.
  */
 
-/** Represents the log levels as strings. Use {@link LogLevelInt} to get the number representing this level. */
-export type LogLevel = 'info' | 'error' | 'fatal' | 'warn' | 'debug' | 'trace';
+import type { LoggerFactory } from '../../src/factory';
+import ConsoleBackend from './console.backend';
+import ConsoleLogger from './logger';
 
-/**
- * Represents the log level as integers:
- *
- * - 10: fatal
- * - 20: error
- * - 30: warning
- * - 40: info
- * - 50: debug
- * - 60: trace
- */
-export type LogLevelInt = 10 | 20 | 30 | 40 | 50 | 60;
-export const LogLevel: { [x in LogLevel]: LogLevelInt } = {
-  info: 40,
-  error: 20,
-  fatal: 10,
-  warn: 30,
-  debug: 40,
-  trace: 50
-};
+export default class ConsoleLoggerFactory implements LoggerFactory {
+  private _sep: string = '.';
 
-export const LogLevelInt: { [x in LogLevelInt]: LogLevel } = {
-  10: 'fatal',
-  20: 'error',
-  30: 'warn',
-  40: 'info',
-  50: 'debug',
-  60: 'trace'
-};
+  get seperator() {
+    return this._sep;
+  }
+
+  set seperator(value: string) {
+    this._sep = value;
+  }
+
+  get(...paths: string[]) {
+    const name = paths.join(this._sep);
+    return new ConsoleLogger(name);
+  }
+}

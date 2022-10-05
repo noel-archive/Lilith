@@ -6,13 +6,10 @@
   "author": "Noel <cutie@floofy.dev>",
   "packageManager": "yarn@3.2.3",
   "workspaces": [
+    "src/winston",
     "src/logging",
-    "src/fastify",
-    "src/nextjs",
     "src/lilith",
-    "src/config",
-    "src/vite",
-    "src/http"
+    "src/config"
   ],
   "scripts": {
     "test:ci": "yarn fmt && yarn lint && node scripts/ci/test-vitest",

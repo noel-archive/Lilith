@@ -30,7 +30,7 @@ const { join } = require('path');
 
 async function main() {
   // for (const project of ['lilith', 'config', 'fastify', 'http', 'logging', 'nextjs', 'vite']) {
-  for (const project of ['lilith', 'config', 'logging']) {
+  for (const project of ['lilith', 'config', 'logging', 'winston']) {
     const proc = spawn('yarn', ['vitest', '--run', '--reporter=json'], { cwd: join(process.cwd(), 'src', project) });
     const chunks = [];
     let code = 0;

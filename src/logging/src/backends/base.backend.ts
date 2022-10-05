@@ -21,9 +21,14 @@
  * SOFTWARE.
  */
 
+import { LogLevel, LogLevelInt } from '../types';
 import type { LoggerFactory } from '../factory';
-import type { LogRecord } from '../types';
-import type { Logger } from '../logger';
+
+export type BaseBackendOptions<O = {}> = _BaseBackendOptions & O;
+
+export interface _BaseBackendOptions {
+  defaultLevel?: LogLevel | LogLevelInt;
+}
 
 /**
  * Represents a base implementation of creating your own log backend. This is responsible for:
@@ -31,22 +36,19 @@ import type { Logger } from '../logger';
  * - creating the logger factory,
  * - creating loggers internally.
  */
-export abstract class BaseBackend<
-  Options extends {} = {},
-  LF extends LoggerFactory = LoggerFactory,
-  LoggerImpl extends Logger = Logger
-> {
-  /**
-   * Writes and flushes a record to the logger.
-   * @param record The record object that is created from the log service.
-   */
-  abstract write(record: LogRecord<any>): void;
+export abstract class BaseBackend<Options extends {} = {}, LF extends LoggerFactory = LoggerFactory> {
+  constructor(public options: BaseBackendOptions<Options>) {}
 
   /**
-   * Gets, or creates a logger by the specified path.
-   * @param paths The path to use.
+   * Returns the default level for this {@link BaseBackend backend} to use when
+   * writing to loggers.
    */
-  abstract getLogger(...paths: string[]): LoggerImpl;
+  get defaultLevel() {
+    if (!this.options.defaultLevel) return 40;
+    if (typeof this.options.defaultLevel === 'string') return LogLevel[this.options.defaultLevel];
+
+    return this.options.defaultLevel;
+  }
 
   /**
    * Returns the logger factory that this backend is responsible for.
