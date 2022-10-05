@@ -4,7 +4,7 @@
   "private": true,
   "version": "0.0.0-dev.0",
   "author": "Noel <cutie@floofy.dev>",
-  "packageManager": "yarn@3.2.3",
+  "packageManager": "yarn@3.2.4",
   "workspaces": [
     "src/winston",
     "src/logging",
