@@ -130,103 +130,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@lilith/config@workspace:src/config":
-  version: 0.0.0-use.local
-  resolution: "@lilith/config@workspace:src/config"
-  dependencies:
-    "@augu/eslint-config": 3.0.0
-    "@augu/tsconfig": 1.1.1
-    "@lilith/core": "workspace:src/lilith"
-    "@ltd/j-toml": 1.35.2
-    "@types/js-yaml": 4.0.5
-    "@types/node": 18.7.20
-    "@typescript-eslint/eslint-plugin": 5.40.1
-    "@typescript-eslint/parser": 5.40.1
-    dot-prop: 7.2.0
-    eslint: 8.24.0
-    eslint-config-prettier: 8.5.0
-    js-yaml: 4.1.0
-    type-fest: 3.1.0
-    typescript: 4.8.3
-    vitest: 0.23.4
-    zod: 3.19.1
-  dependenciesMeta:
-    "@lilith/core":
-      optional: true
-    "@ltd/j-toml":
-      optional: true
-    js-yaml:
-      optional: true
-    zod:
-      optional: true
-  languageName: unknown
-  linkType: soft
-
-"@lilith/core@workspace:src/lilith":
-  version: 0.0.0-use.local
-  resolution: "@lilith/core@workspace:src/lilith"
-  dependencies:
-    "@augu/eslint-config": 3.0.0
-    "@augu/tsconfig": 1.1.1
-    "@noelware/utils": 2.2.1
-    "@types/node": 18.7.20
-    "@typescript-eslint/eslint-plugin": 5.40.1
-    "@typescript-eslint/parser": 5.40.1
-    eslint: 8.24.0
-    eslint-config-prettier: 8.5.0
-    reflect-metadata: 0.1.13
-    type-fest: 3.1.0
-    typescript: 4.8.3
-    vitest: 0.23.4
-  languageName: unknown
-  linkType: soft
-
-"@lilith/logging-winston@workspace:src/winston":
-  version: 0.0.0-use.local
-  resolution: "@lilith/logging-winston@workspace:src/winston"
-  dependencies:
-    "@augu/eslint-config": 3.0.0
-    "@augu/tsconfig": 1.1.1
-    "@lilith/logging": "workspace:src/logging"
-    "@types/node": 18.7.20
-    "@typescript-eslint/eslint-plugin": 5.40.1
-    "@typescript-eslint/parser": 5.40.1
-    eslint: 8.24.0
-    eslint-config-prettier: 8.5.0
-    type-fest: 3.1.0
-    typescript: 4.8.3
-    vitest: 0.23.4
-    winston: 3.8.2
-  dependenciesMeta:
-    "@lilith/logging":
-      optional: true
-    winston:
-      optional: true
-  languageName: unknown
-  linkType: soft
-
-"@lilith/logging@workspace:src/logging":
-  version: 0.0.0-use.local
-  resolution: "@lilith/logging@workspace:src/logging"
-  dependencies:
-    "@augu/eslint-config": 3.0.0
-    "@augu/tsconfig": 1.1.1
-    "@lilith/core": "workspace:src/lilith"
-    "@types/node": 18.7.20
-    "@typescript-eslint/eslint-plugin": 5.40.1
-    "@typescript-eslint/parser": 5.40.1
-    eslint: 8.24.0
-    eslint-config-prettier: 8.5.0
-    leeks.js: 0.2.4
-    type-fest: 3.1.0
-    typescript: 4.8.3
-    vitest: 0.23.4
-  dependenciesMeta:
-    "@lilith/core":
-      optional: true
-  languageName: unknown
-  linkType: soft
-
 "@lilith/root@workspace:.":
   version: 0.0.0-use.local
   resolution: "@lilith/root@workspace:."
@@ -280,6 +183,103 @@ __metadata:
   checksum: 190c643f156d8f8f277bf2a6078af1ffde1fd43f498f187c2db24d35b4b4b5785c02c7dc52e356497b9a1b65b13edc996de08de0b961c32844364da02986dc53
   languageName: node
   linkType: hard
+
+"@noelware/lilith-config@workspace:src/config":
+  version: 0.0.0-use.local
+  resolution: "@noelware/lilith-config@workspace:src/config"
+  dependencies:
+    "@augu/eslint-config": 3.0.0
+    "@augu/tsconfig": 1.1.1
+    "@ltd/j-toml": 1.35.2
+    "@noelware/lilith": "workspace:src/lilith"
+    "@types/js-yaml": 4.0.5
+    "@types/node": 18.7.20
+    "@typescript-eslint/eslint-plugin": 5.40.1
+    "@typescript-eslint/parser": 5.40.1
+    dot-prop: 7.2.0
+    eslint: 8.24.0
+    eslint-config-prettier: 8.5.0
+    js-yaml: 4.1.0
+    type-fest: 3.1.0
+    typescript: 4.8.3
+    vitest: 0.23.4
+    zod: 3.19.1
+  dependenciesMeta:
+    "@ltd/j-toml":
+      optional: true
+    "@noelware/lilith":
+      optional: true
+    js-yaml:
+      optional: true
+    zod:
+      optional: true
+  languageName: unknown
+  linkType: soft
+
+"@noelware/lilith-logging-winston@workspace:src/winston":
+  version: 0.0.0-use.local
+  resolution: "@noelware/lilith-logging-winston@workspace:src/winston"
+  dependencies:
+    "@augu/eslint-config": 3.0.0
+    "@augu/tsconfig": 1.1.1
+    "@noelware/lilith-logging": "workspace:src/logging"
+    "@types/node": 18.7.20
+    "@typescript-eslint/eslint-plugin": 5.40.1
+    "@typescript-eslint/parser": 5.40.1
+    eslint: 8.24.0
+    eslint-config-prettier: 8.5.0
+    type-fest: 3.1.0
+    typescript: 4.8.3
+    vitest: 0.23.4
+    winston: 3.8.2
+  dependenciesMeta:
+    "@noelware/lilith-logging":
+      optional: true
+    winston:
+      optional: true
+  languageName: unknown
+  linkType: soft
+
+"@noelware/lilith-logging@workspace:src/logging":
+  version: 0.0.0-use.local
+  resolution: "@noelware/lilith-logging@workspace:src/logging"
+  dependencies:
+    "@augu/eslint-config": 3.0.0
+    "@augu/tsconfig": 1.1.1
+    "@noelware/lilith": "workspace:src/lilith"
+    "@types/node": 18.7.20
+    "@typescript-eslint/eslint-plugin": 5.40.1
+    "@typescript-eslint/parser": 5.40.1
+    eslint: 8.24.0
+    eslint-config-prettier: 8.5.0
+    leeks.js: 0.2.4
+    type-fest: 3.1.0
+    typescript: 4.8.3
+    vitest: 0.23.4
+  dependenciesMeta:
+    "@noelware/lilith":
+      optional: true
+  languageName: unknown
+  linkType: soft
+
+"@noelware/lilith@workspace:src/lilith":
+  version: 0.0.0-use.local
+  resolution: "@noelware/lilith@workspace:src/lilith"
+  dependencies:
+    "@augu/eslint-config": 3.0.0
+    "@augu/tsconfig": 1.1.1
+    "@noelware/utils": 2.2.1
+    "@types/node": 18.7.20
+    "@typescript-eslint/eslint-plugin": 5.40.1
+    "@typescript-eslint/parser": 5.40.1
+    eslint: 8.24.0
+    eslint-config-prettier: 8.5.0
+    reflect-metadata: 0.1.13
+    type-fest: 3.1.0
+    typescript: 4.8.3
+    vitest: 0.23.4
+  languageName: unknown
+  linkType: soft
 
 "@noelware/utils@npm:2.2.1":
   version: 2.2.1
