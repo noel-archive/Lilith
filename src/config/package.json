@@ -1,5 +1,5 @@
 {
-  "name": "@lilith/config",
+  "name": "@noelware/lilith-config",
   "description": "🧵 Service to use different configuration providers in a single Lilith service!",
   "version": "0.0.0-dev.0",
   "main": "dist/index.js",
@@ -39,7 +39,7 @@
     "vitest": "0.23.4"
   },
   "optionalDependencies": {
-    "@lilith/core": "workspace:src/lilith",
+    "@noelware/lilith": "workspace:src/lilith",
     "@ltd/j-toml": "1.35.2",
     "js-yaml": "4.1.0",
     "zod": "3.19.1"

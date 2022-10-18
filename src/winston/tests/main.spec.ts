@@ -21,42 +21,8 @@
  * SOFTWARE.
  */
 
-import { LoggerFactory, LogLevelInt } from '@lilith/logging';
-import { WinstonBackend } from './WinstonBackend';
-import { WinstonLogger } from './WinstonLogger';
-import { createLogger } from 'winston';
+import { describe, test, expect } from 'vitest';
 
-export class WinstonLoggerFactory implements LoggerFactory {
-  private _loggers: Map<string, Logger> = new Map();
-  private _seperator: string = '.';
-
-  constructor(private readonly backend: WinstonBackend) {}
-
-  get seperator() {
-    return this._seperator;
-  }
-
-  set seperator(value: string) {
-    this._seperator = value;
-  }
-
-  get(...paths: string[]) {
-    const name = paths.join(this._seperator);
-    if (this._loggers.has(name)) return this._loggers.get(name)!;
-
-    const logger = new WinstonLogger(
-      name,
-      createLogger({
-        transports: this.backend.options.transports,
-        format: this.backend.options.format,
-        level: LogLevelInt[this.backend.defaultLevel],
-        defaultMeta: {
-          name
-        }
-      })
-    );
-
-    this._loggers.set(name, logger);
-    return logger;
-  }
-}
+describe('@noelware/lilith-winston-logging', () => {
+    test('1 + 1 = 2?', () => expect(1 + 1).toBe(2));
+});

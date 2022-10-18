@@ -4,8 +4,8 @@
 
 **Lilith** is Noelware's framework to build JavaScript-based microservices with TypeScript! It is used to build robust applications with TypeScript with the tools you need to build it! Lilith comes with pre-built libraries that makes it easy to work with:
 
-- `@lilith/logging` **~** Package to handle logging scenarios, combined with the `@lilith/config` package also!
-- `@lilith/config` **~** Package to handle different configuration sources, that are easily injectable with the `@Variable` decorator.
+- `@noelware/lilith-logging` **~** Package to handle logging scenarios, combined with the `@noelware/lilith-config` package also!
+- `@noelware/lilith-config` **~** Package to handle different configuration sources, that are easily injectable with the `@Variable` decorator.
 <!-- - `@lilith/http` **~** Package for creating a minimal HTTP server with Lilith's functionality. It also includes Next.js, Nuxt.js, and Vite integration to combine your backend and frontend together. -->
 
 ## Usage
@@ -14,13 +14,13 @@
 > refractor your whole application that was built upon Lilith. You can read up on the [migration](#migrating-to-v6) section.
 
 ```sh
-$ npm install @lilith/core
-$ yarn add @lilith/core
-$ pnpm install @lilith/core
+$ npm install @noelware/lilith
+$ yarn add @noelware/lilith
+$ pnpm install @noelware/lilith
 ```
 
 ```ts
-import { createLilith, singleton, service, inject } from '@lilith/core';
+import { createLilith, singleton, service, inject } from '@noelware/lilith';
 
 const container = createLilith({
   singletons: [
@@ -56,20 +56,20 @@ const service = inject('myservice');
 
 ## Packages
 
-### @lilith/core
+### @noelware/lilith
 
-**@lilith/core** is the main library that ties together with the new packages like **@lilith/logging**. You use **@lilith/core** to manage the lifecycle of the managed IoC container to do dependency injection out of the box.
+**@noelware/lilith** is the main library that ties together with the new packages like **@noelware/lilith-logging**. You use **@noelware/lilith** to manage the lifecycle of the managed IoC container to do dependency injection out of the box.
 
-**@lilith/core** doesn't need any peer dependencies, but you will need to have `reflect-metadata` loaded before using **@lilith/core** because it depends on it!
+**@noelware/lilith** doesn't need any peer dependencies, but you will need to have `reflect-metadata` loaded before using **@noelware/lilith** because it depends on it!
 
 ```sh
-$ npm install @lilith/core
-$ yarn add @lilith/core
-$ pnpm install @lilith/core
+$ npm install @noelware/lilith
+$ yarn add @noelware/lilith
+$ pnpm install @noelware/lilith
 ```
 
 ```ts
-import { Service, Inject, createLilith } from '@lilith/core';
+import { Service, Inject, createLilith } from '@noelware/lilith';
 
 @Service({ name: 'a name' })
 class MyService {
@@ -111,20 +111,20 @@ container.start();
 | ~~~~~~~~~~~~~~ |  \----> |    a name    |
 ```
 
-### @lilith/logging
+### @noelware/lilith-logging
 
-**@lilith/logging** is a service package that lets you inject a `LoggerFactoryService` into your services and creates a **Logger** for using logging. This package requires a peer dependency on **winston**:
+**@noelware/lilith-logging** is a service package that lets you inject a `LoggerFactoryService` into your services and creates a **Logger** for using logging. This package requires a peer dependency on **winston**:
 
 ```sh
-$ npm install @lilith/core @lilith/logging @lilith/logging-winston winston
-$ yarn add @lilith/core @lilith/logging @lilith/logging-winston winston
-$ pnpm install @lilith/core @lilith/logging @lilith/logging-winston winston
+$ npm install @noelware/lilith @noelware/lilith-logging @noelware/lilith-logging-winston winston
+$ yarn add @noelware/lilith @noelware/lilith-logging @noelware/lilith-logging-winston winston
+$ pnpm install @noelware/lilith @noelware/lilith-logging @noelware/lilith-logging-winston winston
 ```
 
 ```ts
-import { Service, Inject, createLilith } from '@lilith/core';
-import { LogService, type Logger } from '@lilith/logging';
-import { WinstonBackend } from '@lilith/logging-winston';
+import { Service, Inject, createLilith } from '@noelware/lilith';
+import { LogService, type Logger } from '@noelware/lilith-logging';
+import { WinstonBackend } from '@noelware/lilith-logging-winston';
 import winston from 'winston';
 
 @Service({ name: 'my service name' })
@@ -154,26 +154,26 @@ const container = createLilith({
 container.start();
 ```
 
-### @lilith/config
+### @noelware/lilith-config
 
-**@lilith/config** is a service that gives you a way to simplify configuration files with a **Zod** schema. It has loaders for:
+**@noelware/lilith-config** is a service that gives you a way to simplify configuration files with a **Zod** schema. It has loaders for:
 
 - YAML (requires `js-yaml`)
 - JSON (no extra dependencies)
 - TOML (requires `@ltd/j-toml`)
 <!-- - HCL (requires `@noelware/hcl`) -->
 
-**@lilith/config** has a peer dependency on **zod** if you wish to have schema validation. It is not required to have **zod** installed, it'll just ignore the configuration schema if provided.
+**@noelware/lilith-config** has a peer dependency on **zod** if you wish to have schema validation. It is not required to have **zod** installed, it'll just ignore the configuration schema if provided.
 
 ```sh
-$ npm install @lilith/core @lilith/config zod
-$ yarn add @lilith/core @lilith/config zod
-$ pnpm install @lilith/core @lilith/config zod
+$ npm install @noelware/lilith @noelware/lilith-config zod
+$ yarn add @noelware/lilith @noelware/lilith-config zod
+$ pnpm install @noelware/lilith @noelware/lilith-config zod
 ```
 
 ```ts
-import { Service, Inject, createLilith } from '@lilith/core';
-import { ConfigService, YamlLoader } from '@lilith/config';
+import { Service, Inject, createLilith } from '@noelware/lilith';
+import { ConfigService, YamlLoader } from '@noelware/lilith-config';
 import z from 'zod';
 
 export interface Config {
@@ -229,14 +229,14 @@ It also supports request body, query, and path parameter validation out of the b
 This example uses **fastify** as the backend HTTP library, and **zod** for simple validation.
 
 ```sh
-$ npm install @lilith/core @lilith/http fastify zod
-$ yarn add @lilith/core @lilith/http fastify zod
-$ pnpm install @lilith/core @lilith/http fastify zod
+$ npm install @noelware/lilith @lilith/http fastify zod
+$ yarn add @noelware/lilith @lilith/http fastify zod
+$ pnpm install @noelware/lilith @lilith/http fastify zod
 ```
 
 ```ts
 import { Router, FastifyBackend, HttpService, Get, Post, OpenAPI, Request, Response } from '@lilith/http';
-import { Service, Inject, createLilith } from '@lilith/core';
+import { Service, Inject, createLilith } from '@noelware/lilith';
 import z from 'zod';
 
 @Service({ name: 'my service' })
@@ -311,8 +311,8 @@ const container = createLilith({
       port: 12345,
 
       // if `logger` is set to true, it will find
-      // the @lilith/logging service or disables it
-      // if there is no @lilith/logging service. You can also
+      // the @noelware/lilith-logging service or disables it
+      // if there is no @noelware/lilith-logging service. You can also
       // use the logger options in the `fastify` function.
       backend: new FastifyBackend({ logger: true }),
       routers: [

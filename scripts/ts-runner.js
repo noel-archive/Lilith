@@ -1,3 +1,5 @@
+#!/usr/bin/env node
+
 /*
  * 🧵 Lilith: Application framework for TypeScript to build robust, and simple services
  * Copyright (c) 2021-2022 Noelware <team@noelware.org>
@@ -21,42 +23,13 @@
  * SOFTWARE.
  */
 
-import { LoggerFactory, LogLevelInt } from '@lilith/logging';
-import { WinstonBackend } from './WinstonBackend';
-import { WinstonLogger } from './WinstonLogger';
-import { createLogger } from 'winston';
+// @ts-check
 
-export class WinstonLoggerFactory implements LoggerFactory {
-  private _loggers: Map<string, Logger> = new Map();
-  private _seperator: string = '.';
+const main = async() => {
+    return 0;
+};
 
-  constructor(private readonly backend: WinstonBackend) {}
-
-  get seperator() {
-    return this._seperator;
-  }
-
-  set seperator(value: string) {
-    this._seperator = value;
-  }
-
-  get(...paths: string[]) {
-    const name = paths.join(this._seperator);
-    if (this._loggers.has(name)) return this._loggers.get(name)!;
-
-    const logger = new WinstonLogger(
-      name,
-      createLogger({
-        transports: this.backend.options.transports,
-        format: this.backend.options.format,
-        level: LogLevelInt[this.backend.defaultLevel],
-        defaultMeta: {
-          name
-        }
-      })
-    );
-
-    this._loggers.set(name, logger);
-    return logger;
-  }
-}
+main().catch(ex => {
+    console.error('TypeScript scripting runner failed:', ex);
+    process.exit(1);
+});

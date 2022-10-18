@@ -1,5 +1,5 @@
 {
-  "name": "@lilith/logging",
+  "name": "@noelware/lilith-logging",
   "description": "🧵 Service library that acts like a logging facade that is injectable to any service",
   "version": "0.0.0-dev.0",
   "main": "dist/index.js",
@@ -38,6 +38,6 @@
     "vitest": "0.23.4"
   },
   "optionalDependencies": {
-    "@lilith/core": "workspace:src/lilith"
+    "@noelware/lilith": "workspace:src/lilith"
   }
 }

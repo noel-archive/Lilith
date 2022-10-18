@@ -1,6 +1,6 @@
 {
-  "name": "@lilith/logging-winston",
-  "description": "🧵 Logger adapter for @lilith/logging to use winston as the logging backend",
+  "name": "@noelware/lilith-logging-winston",
+  "description": "🧵 Logger adapter for @noelware/lilith-logging to use winston as the logging backend",
   "version": "0.0.0-dev.0",
   "main": "dist/index.js",
   "author": "Noel <cutie@floofy.dev>, Noelware Team <team@noelware.org>",
@@ -35,7 +35,7 @@
     "vitest": "0.23.4"
   },
   "optionalDependencies": {
-    "@lilith/logging": "workspace:src/logging",
+    "@noelware/lilith-logging": "workspace:src/logging",
     "winston": "3.8.2"
   }
 }

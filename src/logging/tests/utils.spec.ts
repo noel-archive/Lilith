@@ -119,20 +119,20 @@ describe('@lilith/logging :: Utils', () => {
       "a string
       Error :: we have been booped!!!!!
          * [1m[2min[0m[0m [1m[2mchunk-runtime-chain.0ab05798.mjs[0m[0m
-           [2m~[0m [3m[1m[2m/mnt/storage/Projects/Noelware/Libraries/TypeScript/lilith/node_modules/vitest/dist/chunk-runtime-chain.0ab05798.mjs:2266:13[0m[0m[0m
-           [2m~[0m [3m[1m[2m/mnt/storage/Projects/Noelware/Libraries/TypeScript/lilith/node_modules/vitest/dist/chunk-runtime-chain.0ab05798.mjs:2141:26[0m[0m[0m
+           [2m~[0m [3m[1m[2m${resolved}/node_modules/vitest/dist/chunk-runtime-chain.0ab05798.mjs:2266:13[0m[0m[0m
+           [2m~[0m [3m[1m[2m${resolved}/node_modules/vitest/dist/chunk-runtime-chain.0ab05798.mjs:2141:26[0m[0m[0m
          * [1m[2min[0m[0m [1m[2mchunk-runtime-error.f5506f40.mjs[0m[0m
-           [2m~[0m [3m[1m[2m/mnt/storage/Projects/Noelware/Libraries/TypeScript/lilith/node_modules/vitest/dist/chunk-runtime-error.f5506f40.mjs:540:42[0m[0m[0m
-           [2m~[0m [3m[1m[2m/mnt/storage/Projects/Noelware/Libraries/TypeScript/lilith/node_modules/vitest/dist/chunk-runtime-error.f5506f40.mjs:635:15[0m[0m[0m
-           [2m~[0m [3m[1m[2m/mnt/storage/Projects/Noelware/Libraries/TypeScript/lilith/node_modules/vitest/dist/chunk-runtime-error.f5506f40.mjs:635:15[0m[0m[0m
-           [2m~[0m [3m[1m[2m/mnt/storage/Projects/Noelware/Libraries/TypeScript/lilith/node_modules/vitest/dist/chunk-runtime-error.f5506f40.mjs:767:5[0m[0m[0m
-           [2m~[0m [3m[1m[2m/mnt/storage/Projects/Noelware/Libraries/TypeScript/lilith/node_modules/vitest/dist/chunk-runtime-error.f5506f40.mjs:785:3[0m[0m[0m
+           [2m~[0m [3m[1m[2m${resolved}/node_modules/vitest/dist/chunk-runtime-error.f5506f40.mjs:540:42[0m[0m[0m
+           [2m~[0m [3m[1m[2m${resolved}/node_modules/vitest/dist/chunk-runtime-error.f5506f40.mjs:635:15[0m[0m[0m
+           [2m~[0m [3m[1m[2m${resolved}/node_modules/vitest/dist/chunk-runtime-error.f5506f40.mjs:635:15[0m[0m[0m
+           [2m~[0m [3m[1m[2m${resolved}/node_modules/vitest/dist/chunk-runtime-error.f5506f40.mjs:767:5[0m[0m[0m
+           [2m~[0m [3m[1m[2m${resolved}/node_modules/vitest/dist/chunk-runtime-error.f5506f40.mjs:785:3[0m[0m[0m
          * [1m[2min[0m[0m [1m[2mentry.mjs[0m[0m
-           [2m~[0m [3m[1m[2m/mnt/storage/Projects/Noelware/Libraries/TypeScript/lilith/node_modules/vitest/dist/entry.mjs:83:9[0m[0m[0m
-           [2m~[0m [3m[1m[2m/mnt/storage/Projects/Noelware/Libraries/TypeScript/lilith/node_modules/vitest/dist/chunk-runtime-error.f5506f40.mjs:293:5[0m[0m[0m
-           [2m~[0m [3m[1m[2m/mnt/storage/Projects/Noelware/Libraries/TypeScript/lilith/node_modules/vitest/dist/entry.mjs:76:5[0m[0m[0m
+           [2m~[0m [3m[1m[2m${resolved}/node_modules/vitest/dist/entry.mjs:83:9[0m[0m[0m
+           [2m~[0m [3m[1m[2m${resolved}/node_modules/vitest/dist/chunk-runtime-error.f5506f40.mjs:293:5[0m[0m[0m
+           [2m~[0m [3m[1m[2m${resolved}/node_modules/vitest/dist/entry.mjs:76:5[0m[0m[0m
          * [1m[2min[0m[0m [1m[2mworker.js[0m[0m
-           [2m~[0m [3m[1m[2mfile:///mnt/storage/Projects/Noelware/Libraries/TypeScript/lilith/node_modules/tinypool/dist/esm/worker.js:109:20[0m[0m[0m
+           [2m~[0m [3m[1m[2mfile://${resolved}/node_modules/tinypool/dist/esm/worker.js:109:20[0m[0m[0m
       1234
       [36m[Function (anonymous)][39m
       { a: { deep: { object: [33mtrue[39m } } }"

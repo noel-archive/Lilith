@@ -1,6 +1,6 @@
-# 🧵 @lilith/logging
+# 🧵 @noelware/lilith-logging*
 
-**@lilith/config** is a service library that acts like a logging facade that is injectable to any service. Read more on the [root repository](https://github.com/Noelware/Lilith/blob/master/README.md) to know more.
+**@noelware/lilith-logging** is a service library that acts like a logging facade that is injectable to any service. Read more on the [root repository](https://github.com/Noelware/Lilith/blob/master/README.md) to know more.
 
 ## Available Backends
 

@@ -1,5 +1,5 @@
 {
-  "name": "@lilith/core",
+  "name": "@noelware/lilith",
   "description": "🧵 Application framework for TypeScript to build robust, and simple services",
   "version": "0.0.0-dev.0",
   "main": "dist/index.js",

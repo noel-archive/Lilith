@@ -33,7 +33,6 @@ async function main() {
   for (const project of ['lilith', 'config', 'logging', 'winston']) {
     const proc = spawn('yarn', ['vitest', '--run', '--reporter=json'], { cwd: join(process.cwd(), 'src', project) });
     const chunks = [];
-    let code = 0;
 
     proc.stdout.on('data', (chunk) => chunks.push(chunk));
     proc.stderr.on('data', (chunk) => console.error(chunk.toString()));
@@ -64,8 +63,6 @@ async function main() {
       for (const assertion of result.assertionResults) {
         if (assertion.status === 'failed') {
           for (const message of assertion.failureMessages) {
-            code = 1;
-
             error(`${assertion.title} in suite ${assertion.ancestorTitles[1]} :: FAILED [${message}]`, {
               file: result.name,
               startLine: assertion.location.line,
@@ -77,13 +74,10 @@ async function main() {
         }
       }
     }
-
-    return code;
   }
-} // (x/y)*100
+}
 
 main()
-  .then(process.exit)
   .catch((ex) => {
     error(ex);
     process.exit(1);
