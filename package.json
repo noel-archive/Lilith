@@ -31,7 +31,7 @@
     "log-symbols": "5.1.0",
     "prettier": "2.7.1",
     "rimraf": "3.0.2",
-    "tsup": "6.3.0",
+    "tsup": "6.4.0",
     "vitest": "0.23.4"
   }
 }
