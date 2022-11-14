@@ -145,7 +145,7 @@ __metadata:
     log-symbols: 5.1.0
     prettier: 2.7.1
     rimraf: 3.0.2
-    tsup: 6.4.0
+    tsup: 6.5.0
     vitest: 0.23.4
   languageName: unknown
   linkType: soft
@@ -3061,9 +3061,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"tsup@npm:6.4.0":
-  version: 6.4.0
-  resolution: "tsup@npm:6.4.0"
+"tsup@npm:6.5.0":
+  version: 6.5.0
+  resolution: "tsup@npm:6.5.0"
   dependencies:
     bundle-require: ^3.1.2
     cac: ^6.7.12
@@ -3093,7 +3093,7 @@ __metadata:
   bin:
     tsup: dist/cli-default.js
     tsup-node: dist/cli-node.js
-  checksum: a8bcb05265783c38e7c3a5c1d849736dda6122fc15ff78f4b76245cfe2bab93e0ddf74487cd5fe52e23d5fc7600dad154d0f5d1ed3dcc6b429b582d1dd4a49c9
+  checksum: 625082f2a2afc63024ddd54f5aca28372a7b4ec4f7c402f8aacefd0c56d8da7250665dbb4097d40edcf2cbd4168d96ed4593ecb903ab36e625628f375980e266
   languageName: node
   linkType: hard
 
