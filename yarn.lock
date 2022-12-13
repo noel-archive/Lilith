@@ -193,7 +193,7 @@ __metadata:
     "@ltd/j-toml": 1.35.3
     "@noelware/lilith": "workspace:src/lilith"
     "@types/js-yaml": 4.0.5
-    "@types/node": 18.11.13
+    "@types/node": 18.11.14
     "@typescript-eslint/eslint-plugin": 5.46.1
     "@typescript-eslint/parser": 5.46.1
     dot-prop: 7.2.0
@@ -223,7 +223,7 @@ __metadata:
     "@augu/eslint-config": 3.0.0
     "@augu/tsconfig": 1.1.1
     "@noelware/lilith-logging": "workspace:src/logging"
-    "@types/node": 18.11.13
+    "@types/node": 18.11.14
     "@typescript-eslint/eslint-plugin": 5.46.1
     "@typescript-eslint/parser": 5.46.1
     eslint: 8.24.0
@@ -247,7 +247,7 @@ __metadata:
     "@augu/eslint-config": 3.0.0
     "@augu/tsconfig": 1.1.1
     "@noelware/lilith": "workspace:src/lilith"
-    "@types/node": 18.11.13
+    "@types/node": 18.11.14
     "@typescript-eslint/eslint-plugin": 5.46.1
     "@typescript-eslint/parser": 5.46.1
     eslint: 8.24.0
@@ -269,7 +269,7 @@ __metadata:
     "@augu/eslint-config": 3.0.0
     "@augu/tsconfig": 1.1.1
     "@noelware/utils": 2.2.1
-    "@types/node": 18.11.13
+    "@types/node": 18.11.14
     "@typescript-eslint/eslint-plugin": 5.46.1
     "@typescript-eslint/parser": 5.46.1
     eslint: 8.24.0
@@ -386,10 +386,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/node@npm:18.11.13":
-  version: 18.11.13
-  resolution: "@types/node@npm:18.11.13"
-  checksum: b0c1aa3bd2f5df8240e61096a49d6d4be600109b824d23408ec4ba1ec057dc0c60588e09f73b8a60455ad26d367e9c5562fad8403099f885cbc7b4cace83ec4c
+"@types/node@npm:18.11.14":
+  version: 18.11.14
+  resolution: "@types/node@npm:18.11.14"
+  checksum: 1effaf6d55bbcccde9bca763e6454ebf92047726450256ccc0673bf44e4661fbddcd788b0779bad8a13809b05a7bdcbfba81db0713235478b866d553be864be9
   languageName: node
   linkType: hard
 
