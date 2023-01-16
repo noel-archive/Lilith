@@ -150,10 +150,10 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@ltd/j-toml@npm:1.37.0":
-  version: 1.37.0
-  resolution: "@ltd/j-toml@npm:1.37.0"
-  checksum: 59f9a1a590fa942a8d0b90d513533ba05c835ec19efc526cfb435f566fcc26de91002bc2afbc5b7bf623f4a726b58c478fe37015528c1e8a6c23eeef5abf7589
+"@ltd/j-toml@npm:1.38.0":
+  version: 1.38.0
+  resolution: "@ltd/j-toml@npm:1.38.0"
+  checksum: 34f5d0ec652e790a7a733f0d3a8d9957d63997bd0efc13a61beb9d772bae75519453884fbc3fd6a2d5fe15674834bdd57ca1824bb1de8f829e5ce195fc5fa3ea
   languageName: node
   linkType: hard
 
@@ -190,7 +190,7 @@ __metadata:
   dependencies:
     "@augu/eslint-config": 3.0.0
     "@augu/tsconfig": 1.1.1
-    "@ltd/j-toml": 1.37.0
+    "@ltd/j-toml": 1.38.0
     "@noelware/lilith": "workspace:src/lilith"
     "@types/js-yaml": 4.0.5
     "@types/node": 18.11.18
