@@ -23,7 +23,7 @@
     "lint": "eslint src --ext .ts,.tsx --fix"
   },
   "devDependencies": {
-    "@augu/eslint-config": "3.0.0",
+    "@augu/eslint-config": "4.0.0",
     "@augu/tsconfig": "1.1.1",
     "@types/node": "18.11.19",
     "@typescript-eslint/eslint-plugin": "5.50.0",
