@@ -23,7 +23,7 @@
     "lint": "eslint src --ext .ts,.tsx --fix"
   },
   "dependencies": {
-    "leeks.js": "0.2.4"
+    "leeks.js": "0.3.0"
   },
   "devDependencies": {
     "@augu/eslint-config": "4.0.1",

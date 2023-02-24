@@ -339,7 +339,7 @@ __metadata:
     "@types/rimraf": 3.0.2
     eslint: 8.24.0
     eslint-config-prettier: 8.6.0
-    leeks.js: 0.2.4
+    leeks.js: 0.3.0
     log-symbols: 5.1.0
     prettier: 2.7.1
     rimraf: 4.1.2
@@ -450,7 +450,7 @@ __metadata:
     "@typescript-eslint/parser": 5.52.0
     eslint: 8.24.0
     eslint-config-prettier: 8.6.0
-    leeks.js: 0.2.4
+    leeks.js: 0.3.0
     type-fest: 3.6.0
     typescript: 4.9.5
     vitest: 0.23.4
@@ -2914,10 +2914,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"leeks.js@npm:0.2.4":
-  version: 0.2.4
-  resolution: "leeks.js@npm:0.2.4"
-  checksum: 16a0b89c494c9191350854164bf56780bc01548a1af125d15251953fb41859af0ef2103d58c261db85d7a75876761f83188daea3dd535be70fb494a7fd47bc96
+"leeks.js@npm:0.3.0":
+  version: 0.3.0
+  resolution: "leeks.js@npm:0.3.0"
+  checksum: 543f297f6ef4e0235e1c388134f2e60f64cf2197dfa2096a7f81d08b01dc165ccd2b2d9cb60f4fec9bc8007d0c44a89160343a70800b49e94c2b27306ebcad34
   languageName: node
   linkType: hard
 
