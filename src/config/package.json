@@ -42,6 +42,6 @@
     "@ltd/j-toml": "1.38.0",
     "@noelware/lilith": "workspace:src/lilith",
     "js-yaml": "4.1.0",
-    "zod": "3.20.6"
+    "zod": "3.21.4"
   }
 }
