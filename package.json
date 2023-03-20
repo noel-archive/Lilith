@@ -26,7 +26,7 @@
     "@types/eslint": "8.4.6",
     "@types/rimraf": "3.0.2",
     "eslint": "8.24.0",
-    "eslint-config-prettier": "8.6.0",
+    "eslint-config-prettier": "8.8.0",
     "leeks.js": "0.2.4",
     "log-symbols": "5.1.0",
     "prettier": "2.7.1",
