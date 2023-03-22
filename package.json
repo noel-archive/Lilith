@@ -30,7 +30,7 @@
     "leeks.js": "0.2.4",
     "log-symbols": "5.1.0",
     "prettier": "2.7.1",
-    "rimraf": "4.1.2",
+    "rimraf": "4.4.1",
     "tsup": "6.6.3",
     "vitest": "0.23.4"
   }
