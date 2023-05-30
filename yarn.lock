@@ -398,7 +398,7 @@ __metadata:
     eslint: 8.24.0
     eslint-config-prettier: 8.6.0
     js-yaml: 4.1.0
-    type-fest: 3.6.0
+    type-fest: 3.11.1
     typescript: 4.9.5
     vitest: 0.23.4
     zod: 3.20.6
@@ -426,7 +426,7 @@ __metadata:
     "@typescript-eslint/parser": 5.52.0
     eslint: 8.24.0
     eslint-config-prettier: 8.6.0
-    type-fest: 3.6.0
+    type-fest: 3.11.1
     typescript: 4.9.5
     vitest: 0.23.4
     winston: 3.8.2
@@ -451,7 +451,7 @@ __metadata:
     eslint: 8.24.0
     eslint-config-prettier: 8.6.0
     leeks.js: 0.2.4
-    type-fest: 3.6.0
+    type-fest: 3.11.1
     typescript: 4.9.5
     vitest: 0.23.4
   dependenciesMeta:
@@ -473,7 +473,7 @@ __metadata:
     eslint: 8.24.0
     eslint-config-prettier: 8.6.0
     reflect-metadata: 0.1.13
-    type-fest: 3.6.0
+    type-fest: 3.11.1
     typescript: 4.9.5
     vitest: 0.23.4
   languageName: unknown
@@ -4313,10 +4313,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"type-fest@npm:3.6.0":
-  version: 3.6.0
-  resolution: "type-fest@npm:3.6.0"
-  checksum: 3cb3b27fc1dc69e0a7524041d9d32cfd3786b16591952e0b2b87ca44b53acaed1bf86ee62a7cc3033a55154d44542e8b488d500d1b363d828f62a9fae9d2a043
+"type-fest@npm:3.11.1":
+  version: 3.11.1
+  resolution: "type-fest@npm:3.11.1"
+  checksum: 33be49e3b671c2ff3b5e320ef8c160c488205b08ab7631369116909a1baf2aebfcf45234c045e6902b8aa35730ac2bfd0655ea9e0fe3f8d26af9d99a16b07abd
   languageName: node
   linkType: hard
 
